@@ -66,6 +66,18 @@ defmodule NetAddrTest do
     NetAddr.combine_bytes_into_number([1,1,1,1]) |> result
   end
 
+  fact "parses IPv4 address and mask" do
+    result = %NetAddr.Prefix{network: <<192,0,2,0>>, length: 24}
+
+    NetAddr.ipv4("192.0.2.1", "255.255.255.0") |> result
+  end
+
+  fact "pretty-prints IPv4 prefix" do
+    %NetAddr.Prefix{network: <<192,0,2,0>>, length: 24}
+    |> NetAddr.prefix_to_ipv4_cidr
+    |> "192.0.2.0/24"
+  end
+
   #fact "pretty-prints IPv6 prefix" do
   #  %NetAddr.Prefix{network: <<0xfe,0x80, 0::12 * 8, 0xc1, 0x01>>, length: 128}
   #  |> NetAddr.prefix_to_ipv6_string

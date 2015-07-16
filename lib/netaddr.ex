@@ -32,6 +32,17 @@ defmodule NetAddr do
     end)
   end
 
+  def prefix_to_ipv4_cidr(prefix) do
+    network = prefix
+    |> NetAddr.Prefix.network
+    |> :binary.bin_to_list
+    |> Enum.join(".")
+
+    prefix_length = NetAddr.Prefix.length(prefix)
+
+    "#{network}/#{prefix_length}"
+  end
+
   def prefix_to_ipv6_string(prefix) do
     prefix
     |> NetAddr.Prefix.network
@@ -74,6 +85,14 @@ defmodule NetAddr do
     |> Tuple.to_list
     |> :binary.list_to_bin
     |> prefix(length, 32)
+  end
+  def ipv4(address_string, mask_string) when is_binary(mask_string) do
+    length = mask_string
+    |> ipv4
+    |> NetAddr.Prefix.network
+    |> mask_to_length
+
+    ipv4(address_string, length)
   end
 
   def ipv4_cidr(cidr_string) do
