@@ -51,7 +51,7 @@ iex> NetAddr.prefix_length_to_mask(64, 128)
 <<255, 255, 255, 255, 255, 255, 255, 255, 0, 0, 0, 0, 0, 0, 0, 0>>
 ```
 
-### Handle addresses of arbitrary length:
+### Arbitrary length addresses:
 
 ```
 iex> NetAddr.prefix(<<1, 2, 3, 4, 5, 6>>, 40, 6) 

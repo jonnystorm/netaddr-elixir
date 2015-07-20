@@ -15,16 +15,32 @@ defmodule NetAddr do
     def length(prefix) do
       prefix.length
     end
+
+    @spec length(Prefix.t, non_neg_integer) :: Prefix.t
+    def length(prefix, value) when is_integer(value) do
+      new_prefix_length = value |> Math.mod(bit_size prefix.network)
+
+      mask = new_prefix_length
+      |> NetAddr.prefix_length_to_mask(byte_size prefix.network)
+
+      network = Vector.bit_and(prefix.network, mask)
+
+      %Prefix{prefix|network: network, length: new_prefix_length}
+    end
   end
 
   @spec prefix(Bitstring.t, non_neg_integer, pos_integer) :: NetAddr.Prefix.t
   def prefix(address, prefix_length, size_in_bytes)
       when byte_size(address) == size_in_bytes
       and prefix_length in 0..(size_in_bytes * 8) do
-    mask = prefix_length_to_mask(prefix_length, size_in_bytes)
-    network = Vector.bit_and(address, mask)
-
-    %NetAddr.Prefix{network: network, length: prefix_length}
+    %NetAddr.Prefix{network: address}
+    |> NetAddr.Prefix.length(prefix_length)
+  end
+  def prefix(address, prefix_length, size_in_bytes)
+      when prefix_length in 0..(size_in_bytes * 8) do
+    address
+    |> Vector.embed(size_in_bytes)
+    |> prefix(prefix_length, size_in_bytes)
   end
 
 
