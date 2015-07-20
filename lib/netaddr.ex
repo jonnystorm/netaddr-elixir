@@ -4,34 +4,90 @@ defmodule NetAddr do
   defmodule Prefix do
     defstruct network: nil, length: nil
 
-    @type t :: %Prefix{network: bitstring, length: pos_integer}
+    @type t :: %Prefix{network: Bitstring.t, length: non_neg_integer}
 
+    @spec network(Prefix.t) :: Bitstring.t
     def network(prefix) do
       prefix.network
     end
 
+    @spec length(Prefix.t) :: non_neg_integer
     def length(prefix) do
       prefix.length
     end
   end
 
-  def prefix(address, length, size)
-      when bit_size(address) == size and length in 0..size do
-    mask = length_to_mask(length, size)
+  @spec prefix(Bitstring.t, non_neg_integer, pos_integer) :: NetAddr.Prefix.t
+  def prefix(address, prefix_length, size_in_bytes)
+      when byte_size(address) == size_in_bytes
+      and prefix_length in 0..(size_in_bytes * 8) do
+    mask = prefix_length_to_mask(prefix_length, size_in_bytes)
     network = Vector.bit_and(address, mask)
 
-    %NetAddr.Prefix{network: network, length: length}
+    %NetAddr.Prefix{network: network, length: prefix_length}
   end
 
-  def combine_bytes_into_number(bytes) do
-    bytes
-    |> Enum.reverse
-    |> Enum.with_index
-    |> Enum.reduce(0, fn({byte, index}, acc) ->
-      acc + bsl(byte, index * 8)
-    end)
+
+  ## Conversion ##
+
+  @spec prefix_length_to_mask(non_neg_integer, pos_integer) :: Bitstring.t
+  def prefix_length_to_mask(prefix_length, mask_length_in_bytes)
+      when prefix_length <= (mask_length_in_bytes * 8) do
+    ones = bsl(1, prefix_length) - 1
+    mask_length_in_bits = mask_length_in_bytes * 8
+    mask_number = bsl(ones, mask_length_in_bits - prefix_length)
+
+    <<mask_number :: size(mask_length_in_bits)>>
   end
 
+  @spec mask_to_prefix_length(Bitstring.t) :: non_neg_integer
+  def mask_to_prefix_length(mask) do
+    mask
+    |> :binary.bin_to_list
+    |> Enum.map(fn byte -> Math.Binary.ones(byte) end)
+    |> Enum.sum
+  end
+
+  defp combine_bytes_into_decimal(bytes) do
+    Math.collapse(bytes, 256)
+  end
+
+  defp split_decimal_into_bytes(decimal, byte_count) do
+    decimal
+    |> Math.expand(256)
+    |> Vector.embed(byte_count)
+  end
+
+  @spec aton(Bitstring.t) :: non_neg_integer
+  def aton(address) do
+    address
+    |> :binary.bin_to_list
+    |> combine_bytes_into_decimal
+  end
+
+  @spec ntoa(non_neg_integer, pos_integer) :: Bitstring.t
+  def ntoa(decimal, size) do
+    byte_count = Float.ceil(size / 8) |> trunc
+
+    decimal
+    |> split_decimal_into_bytes(byte_count)
+    |> :binary.list_to_bin
+  end
+
+  @spec ipv4_ntoa(non_neg_integer) :: Bitstring.t
+  def ipv4_ntoa(decimal) do
+    ntoa(decimal, 32)
+  end
+
+  @spec ipv6_ntoa(non_neg_integer) :: Bitstring.t
+  def ipv6_ntoa(decimal) do
+    ntoa(decimal, 128)
+  end
+
+
+  ## Pretty-printing ##
+
+  @spec prefix_to_ipv4_cidr(NetAddr.Prefix.t) :: String.t
   def prefix_to_ipv4_cidr(prefix) do
     network = prefix
     |> NetAddr.Prefix.network
@@ -43,58 +99,115 @@ defmodule NetAddr do
     "#{network}/#{prefix_length}"
   end
 
-  def prefix_to_ipv6_string(prefix) do
-    prefix
+  @spec decimal_to_string_in_new_base(non_neg_integer, pos_integer) :: Bitstring.t
+  def decimal_to_string_in_new_base(decimal, base) do
+    [list] = :io_lib.format("~.#{base}B", [decimal])
+
+    :binary.list_to_bin(list)
+  end
+
+  @spec decimal_to_hexadecimal_string(non_neg_integer) :: String.t
+  def decimal_to_hexadecimal_string(decimal) do
+    decimal_to_string_in_new_base(decimal, 16)
+  end
+
+  defp hexadecimal_character_to_decimal(hex_character) do
+    %{
+      "0" => 0,
+      "1" => 1,
+      "2" => 2,
+      "3" => 3,
+      "4" => 4,
+      "5" => 5,
+      "6" => 6,
+      "7" => 7,
+      "8" => 8,
+      "9" => 9,
+      "a" => 10, "A" => 10,
+      "b" => 11, "B" => 11,
+      "c" => 12, "C" => 12,
+      "d" => 13, "D" => 13,
+      "e" => 14, "E" => 14,
+      "f" => 15, "F" => 15
+    }[hex_character]
+  end
+
+  @spec hexadecimal_string_to_decimal(String.t) :: non_neg_integer
+  def hexadecimal_string_to_decimal(hex_string) do
+    pad_size = rem(byte_size(hex_string), 2) * 8
+    hex_string = <<0::size(pad_size)>> <> hex_string
+
+    hex_string
+    |> :binary.bin_to_list
+    |> Enum.reverse
+    |> Enum.with_index
+    |> Enum.reduce(0, fn({character, index}, decimal) ->
+      dec_part = hexadecimal_character_to_decimal(<<character>>)
+
+      decimal + dec_part * Math.Binary.pow2(index * 4)
+    end)
+  end
+
+  @spec prefix_to_ipv6_prefix_string(NetAddr.Prefix.t) :: String.t
+  def prefix_to_ipv6_prefix_string(prefix) do
+    length = NetAddr.Prefix.length(prefix)
+
+    string = prefix
     |> NetAddr.Prefix.network
     |> :binary.bin_to_list
     |> Enum.chunk(2)
-    |> Enum.map(fn word -> combine_bytes_into_number(word) end)
+    |> Enum.map(fn word ->
+      word
+      |> combine_bytes_into_decimal
+      |> decimal_to_hexadecimal_string
+    end)
     |> Enum.join(":")
+
+    String.downcase "#{string}/#{length}"
   end
 
-  def length_to_mask(prefix_length, mask_length)
-      when prefix_length <= mask_length do
-    ones = bsl(1, prefix_length) - 1
-    mask_number = bsl(ones, mask_length - prefix_length)
-
-    <<mask_number :: size(mask_length)>>
+  @spec compress_ipv6_string(String.t) :: String.t
+  def compress_ipv6_string(string) do
+    string
+    |> String.reverse
+    |> String.replace(~r/:(0:)+/, "::", global: false)
+    |> String.reverse
   end
 
-  def mask_to_length(mask) do
-    mask
-    |> :binary.bin_to_list
-    |> Enum.map(fn byte -> Math.Binary.ones(byte) end)
-    |> Enum.sum
-  end
 
-  defp ipv4_string_to_tuple(address_string) do
+  ## Parsing ##
+
+  defp ipv4_string_to_bytes(address_string) do
     {:ok, address_tuple} = address_string
     |> :binary.bin_to_list
     |> :inet.parse_ipv4_address
 
-    address_tuple
+    Tuple.to_list address_tuple
   end
 
+  @spec ipv4(String.t) :: NetAddr.Prefix.t
   def ipv4(address_string) do
     ipv4(address_string, 32)
   end
 
+  @spec ipv4(String.t, non_neg_integer) :: NetAddr.Prefix.t
+  @spec ipv4(String.t, String.t) :: NetAddr.Prefix.t
   def ipv4(address_string, length) when is_integer(length) do
     address_string
-    |> ipv4_string_to_tuple
-    |> Tuple.to_list
+    |> ipv4_string_to_bytes
     |> :binary.list_to_bin
-    |> prefix(length, 32)
+    |> prefix(length, 4)
   end
   def ipv4(address_string, mask_string) when is_binary(mask_string) do
     length = mask_string
     |> ipv4
     |> NetAddr.Prefix.network
-    |> mask_to_length
+    |> mask_to_prefix_length
 
     ipv4(address_string, length)
   end
 
+  @spec ipv4_cidr(String.t) :: NetAddr.Prefix.t
   def ipv4_cidr(cidr_string) do
     [address_string, length_string] = String.split(cidr_string, "/")
     length = String.to_integer length_string
@@ -102,32 +215,29 @@ defmodule NetAddr do
     ipv4(address_string, length)
   end
 
-  defp ipv6_string_to_tuple(address_string) do
+  defp ipv6_string_to_byte_words(address_string) do
     {:ok, address_tuple} = address_string
     |> :binary.bin_to_list
     |> :inet.parse_ipv6_address
 
-    address_tuple
+    Tuple.to_list address_tuple
   end
 
-  def split_number_into_bytes(number, byte_count) do
-    bits = byte_count * 8
-    :binary.bin_to_list(<<number :: size(bits)>>)
-  end
-
+  @spec ipv6(String.t) :: NetAddr.Prefix.t
   def ipv6(address_string) do
     ipv6(address_string, 128)
   end
 
+  @spec ipv6(String.t) :: NetAddr.Prefix.t
   def ipv6(address_string, length) do
     address_string
-    |> ipv6_string_to_tuple
-    |> Tuple.to_list
-    |> Enum.flat_map(fn word -> split_number_into_bytes(word, 2) end)
+    |> ipv6_string_to_byte_words
+    |> Enum.flat_map(fn word -> split_decimal_into_bytes(word, 2) end)
     |> :binary.list_to_bin
-    |> prefix(length, 128)
+    |> prefix(length, 16)
   end
 
+  @spec ipv6_prefix(String.t) :: NetAddr.Prefix.t
   def ipv6_prefix(prefix_string) do
     [address_string, length_string] = String.split(prefix_string, "/")
     length = String.to_integer length_string

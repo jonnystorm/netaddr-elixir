@@ -1,4 +1,4 @@
 %{"amrita": {:git, "git://github.com/josephwilk/amrita.git", "f51ae5225fb77ed0238e29fc80dbfa95e77c3ceb", []},
-  "jds_math_ex": {:git, "https://github.com/jonnystorm/jds-math-elixir", "1343f9b509e0871f489eae92d9dcff4565409e09", []},
-  "linear_ex": {:git, "https://github.com/jonnystorm/linear-elixir", "be042d9bab539ddea47a7b0e6a8a24cc1671acce", []},
+  "jds_math_ex": {:git, "https://github.com/jonnystorm/jds-math-elixir", "871c47019fb51f76a344bab71ca95c1a9458313a", []},
+  "linear_ex": {:git, "https://github.com/jonnystorm/linear-elixir", "138a6cd31fa0a61ff1fab4648fe05fe4f44ea4f1", []},
   "meck": {:git, "git://github.com/eproxus/meck.git", "fc362e037f424250130bca32d6bf701f2f49dc75", [branch: "master"]}}
