@@ -18,7 +18,7 @@ defmodule NetAddr do
 
     @spec length(Prefix.t, non_neg_integer) :: Prefix.t
     def length(prefix, value) when is_integer(value) do
-      new_prefix_length = value |> Math.mod(bit_size prefix.network)
+      new_prefix_length = value |> Math.mod(bit_size(prefix.network) + 1)
 
       mask = new_prefix_length
       |> NetAddr.prefix_length_to_mask(byte_size prefix.network)
