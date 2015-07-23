@@ -119,7 +119,9 @@ defmodule NetAddr do
   def decimal_to_string_in_new_base(decimal, base) do
     [list] = :io_lib.format("~.#{base}B", [decimal])
 
-    :binary.list_to_bin(list)
+    list
+    |> :binary.list_to_bin
+    |> String.downcase
   end
 
   @spec decimal_to_hexadecimal_string(non_neg_integer) :: String.t
