@@ -2,13 +2,13 @@ defmodule NetAddr do
   use Bitwise
 
   defmodule Prefix do
-    defstruct network: nil, length: nil
+    defstruct address: nil, length: nil
 
-    @type t :: %Prefix{network: Bitstring.t, length: non_neg_integer}
+    @type t :: %Prefix{address: Bitstring.t, length: non_neg_integer}
 
-    @spec network(Prefix.t) :: Bitstring.t
-    def network(prefix) do
-      prefix.network
+    @spec address(Prefix.t) :: Bitstring.t
+    def address(prefix) do
+      prefix.address
     end
 
     @spec length(Prefix.t) :: non_neg_integer
@@ -18,14 +18,14 @@ defmodule NetAddr do
 
     @spec length(Prefix.t, non_neg_integer) :: Prefix.t
     def length(prefix, value) when is_integer(value) do
-      new_prefix_length = value |> Math.mod(bit_size(prefix.network) + 1)
+      new_prefix_length = value |> Math.mod(bit_size(prefix.address) + 1)
 
       mask = new_prefix_length
-      |> NetAddr.prefix_length_to_mask(byte_size prefix.network)
+      |> NetAddr.prefix_length_to_mask(byte_size prefix.address)
 
-      network = Vector.bit_and(prefix.network, mask)
+      address = Vector.bit_and(prefix.address, mask)
 
-      %Prefix{prefix|network: network, length: new_prefix_length}
+      %Prefix{prefix|address: address, length: new_prefix_length}
     end
   end
 
@@ -33,7 +33,7 @@ defmodule NetAddr do
   def prefix(address, prefix_length, size_in_bytes)
       when byte_size(address) == size_in_bytes
       and prefix_length in 0..(size_in_bytes * 8) do
-    %NetAddr.Prefix{network: address}
+    %NetAddr.Prefix{address: address}
     |> NetAddr.Prefix.length(prefix_length)
   end
   def prefix(address, prefix_length, size_in_bytes)
@@ -105,14 +105,14 @@ defmodule NetAddr do
 
   @spec prefix_to_ipv4_cidr(NetAddr.Prefix.t) :: String.t
   def prefix_to_ipv4_cidr(prefix) do
-    network = prefix
-    |> NetAddr.Prefix.network
+    address = prefix
+    |> NetAddr.Prefix.address
     |> :binary.bin_to_list
     |> Enum.join(".")
 
     prefix_length = NetAddr.Prefix.length(prefix)
 
-    "#{network}/#{prefix_length}"
+    "#{address}/#{prefix_length}"
   end
 
   @spec decimal_to_string_in_new_base(non_neg_integer, pos_integer) :: Bitstring.t
@@ -171,7 +171,7 @@ defmodule NetAddr do
     length = NetAddr.Prefix.length(prefix)
 
     string = prefix
-    |> NetAddr.Prefix.network
+    |> NetAddr.Prefix.address
     |> :binary.bin_to_list
     |> Enum.chunk(2)
     |> Enum.map(fn word ->
@@ -190,6 +190,14 @@ defmodule NetAddr do
     |> String.reverse
     |> String.replace(~r/:(0:)+/, "::", global: false)
     |> String.reverse
+  end
+
+  def prefix_to_mac(prefix) do
+    prefix
+    |> NetAddr.Prefix.address
+    |> :binary.bin_to_list
+    |> Enum.map(fn byte -> NetAddr.decimal_to_hexadecimal_string byte end)
+    |> Enum.join("-")
   end
 
 
@@ -219,7 +227,7 @@ defmodule NetAddr do
   def ipv4(address_string, mask_string) when is_binary(mask_string) do
     length = mask_string
     |> ipv4
-    |> NetAddr.Prefix.network
+    |> NetAddr.Prefix.address
     |> mask_to_prefix_length
 
     ipv4(address_string, length)
@@ -304,24 +312,21 @@ defmodule NetAddr do
     string
     |> String.strip
     |> parse_mac_address
+    |> NetAddr.prefix(48, 6)
   end
 
 
   ## Utilities ##
 
-  def network(prefix) do
-    NetAddr.Prefix.network prefix
-  end
-
   def apply_mask(mask, prefix) do
     prefix
-    |> NetAddr.Prefix.network
+    |> NetAddr.Prefix.address
     |> Vector.bit_and(mask)
   end
 
   def contains?(prefix1, prefix2) do
     address_size = prefix1
-    |> NetAddr.Prefix.network
+    |> NetAddr.Prefix.address
     |> byte_size
 
     masked_network = prefix1
@@ -329,6 +334,6 @@ defmodule NetAddr do
     |> prefix_length_to_mask(address_size)
     |> apply_mask(prefix2)
 
-    masked_network == network(prefix1)
+    masked_network == NetAddr.Prefix.address(prefix1)
   end
 end
