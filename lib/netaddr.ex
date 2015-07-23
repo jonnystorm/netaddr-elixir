@@ -129,22 +129,22 @@ defmodule NetAddr do
 
   defp hexadecimal_character_to_decimal(hex_character) do
     %{
-      "0" => 0,
-      "1" => 1,
-      "2" => 2,
-      "3" => 3,
-      "4" => 4,
-      "5" => 5,
-      "6" => 6,
-      "7" => 7,
-      "8" => 8,
-      "9" => 9,
-      "a" => 10, "A" => 10,
-      "b" => 11, "B" => 11,
-      "c" => 12, "C" => 12,
-      "d" => 13, "D" => 13,
-      "e" => 14, "E" => 14,
-      "f" => 15, "F" => 15
+      ?0 => 0,
+      ?1 => 1,
+      ?2 => 2,
+      ?3 => 3,
+      ?4 => 4,
+      ?5 => 5,
+      ?6 => 6,
+      ?7 => 7,
+      ?8 => 8,
+      ?9 => 9,
+      ?a => 10, ?A => 10,
+      ?b => 11, ?B => 11,
+      ?c => 12, ?C => 12,
+      ?d => 13, ?D => 13,
+      ?e => 14, ?E => 14,
+      ?f => 15, ?F => 15
     }[hex_character]
   end
 
@@ -158,7 +158,7 @@ defmodule NetAddr do
     |> Enum.reverse
     |> Enum.with_index
     |> Enum.reduce(0, fn({character, index}, decimal) ->
-      dec_part = hexadecimal_character_to_decimal(<<character>>)
+      dec_part = hexadecimal_character_to_decimal(character)
 
       decimal + dec_part * Math.Binary.pow2(index * 4)
     end)
@@ -259,5 +259,74 @@ defmodule NetAddr do
     length = String.to_integer length_string
 
     ipv6(address_string, length)
+  end
+
+  defp _parse_mac_address(<<>>, {[], acc}) do
+    :binary.list_to_bin acc
+  end
+  defp _parse_mac_address(<<>>, {byte_acc, acc}) do
+    byte = Math.collapse byte_acc, 16
+
+    :binary.list_to_bin(acc ++ [byte])
+  end
+  defp _parse_mac_address(string, {byte_acc, acc}) when length(byte_acc) == 2 do
+    byte = Math.collapse byte_acc, 16
+
+    _parse_mac_address(string, {[], acc ++ [byte]})
+  end
+  defp _parse_mac_address(<<head, tail::binary>>, {[], acc})
+      when head in ':-. ' do
+    _parse_mac_address(tail, {[], acc})
+  end
+  defp _parse_mac_address(<<head, tail::binary>>, {byte_acc, acc})
+      when head in ':-. ' do
+    byte = Math.collapse byte_acc, 16
+
+    _parse_mac_address(tail, {[], acc ++ [byte]})
+  end
+  defp _parse_mac_address(<<head, tail::binary>>, {byte_acc, acc})
+      when head in ?0..?9 or head in ?a..?f or head in ?A..?F do
+    nibble = hexadecimal_character_to_decimal head
+
+    _parse_mac_address(tail, {byte_acc ++ [nibble], acc})
+  end
+  defp _parse_mac_address(<<_, tail::binary>>, {byte_acc, acc}) do
+    _parse_mac_address(tail, {byte_acc, acc})
+  end
+
+  defp parse_mac_address(string) do
+    _parse_mac_address(string, {[], []})
+  end
+
+  def mac(string) do
+    string
+    |> String.strip
+    |> parse_mac_address
+  end
+
+
+  ## Utilities ##
+
+  def network(prefix) do
+    NetAddr.Prefix.network prefix
+  end
+
+  def apply_mask(mask, prefix) do
+    prefix
+    |> NetAddr.Prefix.network
+    |> Vector.bit_and(mask)
+  end
+
+  def contains?(prefix1, prefix2) do
+    address_size = prefix1
+    |> NetAddr.Prefix.network
+    |> byte_size
+
+    masked_network = prefix1
+    |> NetAddr.Prefix.length
+    |> prefix_length_to_mask(address_size)
+    |> apply_mask(prefix2)
+
+    masked_network == network(prefix1)
   end
 end

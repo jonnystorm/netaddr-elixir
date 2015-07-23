@@ -108,4 +108,58 @@ defmodule NetAddrTest do
     |> NetAddr.compress_ipv6_string
     |> "fe80:0:c100::1/128"
   end
+
+  fact "parses a hyphen-delimited MAC address" do
+    result = <<0x01, 0x23, 0x45, 0x67, 0x89, 0xab>>
+
+    NetAddr.mac("01-23-45-67-89-AB") |> result
+  end
+  fact "parses a different hyphen-delimited MAC address" do
+    result = <<0xc0, 0xff, 0x33, 0xc0, 0xff, 0x33>>
+
+    assert NetAddr.mac("C0-FF-33-C0-FF-33") == result
+  end
+  fact "parses a colon-delimited MAC address" do
+    result = <<0x01, 0x23, 0x45, 0x67, 0x89, 0xab>>
+
+    NetAddr.mac("01:23:45:67:89:AB") |> result
+  end
+  fact "parses a space-delimited MAC address" do
+    result = <<0x01, 0x23, 0x45, 0x67, 0x89, 0xab>>
+
+    NetAddr.mac("01 23 45 67 89 AB") |> result
+  end
+  fact "parses a MAC address with lowercase letters" do
+    result = <<0x01, 0x23, 0x45, 0x67, 0x89, 0xab>>
+
+    NetAddr.mac("01-23-45-67-89-ab") |> result
+  end
+  fact "parses a MAC address with single-digit parts" do
+    result = <<0x01, 0x23, 0x45, 0x67, 0x89, 0xab>>
+
+    NetAddr.mac("1-23-45-67-89-ab") |> result
+  end
+  fact "parses a MAC address with no delimiting characters" do
+    result = <<0x01, 0x23, 0x45, 0x67, 0x89, 0xab>>
+
+    assert NetAddr.mac("0123456789ab") == result
+  end
+  fact "parses a MAC address with extraneous characters" do
+    result = <<0x01, 0x23, 0x45, 0x67, 0x89, 0xab>>
+
+    assert NetAddr.mac("\"0123456789ab \"") == result
+  end
+  #fact "fails when parsing a MAC address with no delimiting characters and too few digits" do
+  #  fn -> NetAddr.mac("123456789ab") end |> raises ArgumentError
+  #end
+  #fact "fails when parsing invalid MAC address" do
+  #  fn -> NetAddr.mac("01-23-45-67-89-ag") end |> raises ArgumentError
+  #end
+
+  fact "determines that one prefix contains another" do
+    prefix1 = %NetAddr.Prefix{network: <<192,0,2,0>>, length: 24}
+    prefix2 = %NetAddr.Prefix{network: <<192,0,2,128>>, length: 25}
+
+    assert prefix1 |> NetAddr.contains?(prefix2) == true
+  end
 end
