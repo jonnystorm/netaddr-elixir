@@ -192,11 +192,14 @@ defmodule NetAddr do
     |> String.reverse
   end
 
-  def prefix_to_mac(prefix) do
+  def prefix_to_mac(prefix, delimiter \\ ":") do
     prefix
     |> NetAddr.Prefix.address
     |> :binary.bin_to_list
-    |> Enum.map(fn byte -> NetAddr.decimal_to_hexadecimal_string byte end)
+    |> Enum.map(fn byte -> byte
+      |> NetAddr.decimal_to_hexadecimal_string
+      |> String.rjust(2, ?0)
+    end)
     |> Enum.join("-")
   end
 
