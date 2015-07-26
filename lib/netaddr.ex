@@ -200,7 +200,7 @@ defmodule NetAddr do
       |> NetAddr.decimal_to_hexadecimal_string
       |> String.rjust(2, ?0)
     end)
-    |> Enum.join("-")
+    |> Enum.join(delimiter)
   end
 
 
