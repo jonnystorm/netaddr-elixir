@@ -69,6 +69,12 @@ defmodule NetAddrTest do
 
   fact "pretty-prints IPv4 prefix" do
     %NetAddr.Prefix{address: <<192,0,2,0>>, length: 24}
+    |> NetAddr.prefix_to_ipv4
+    |> "192.0.2.0"
+  end
+
+  fact "pretty-prints IPv4 prefix as CIDR" do
+    %NetAddr.Prefix{address: <<192,0,2,0>>, length: 24}
     |> NetAddr.prefix_to_ipv4_cidr
     |> "192.0.2.0/24"
   end

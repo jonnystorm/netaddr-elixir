@@ -103,13 +103,17 @@ defmodule NetAddr do
 
   ## Pretty-printing ##
 
-  @spec prefix_to_ipv4_cidr(NetAddr.Prefix.t) :: String.t
-  def prefix_to_ipv4_cidr(prefix) do
-    address = prefix
+  @spec prefix_to_ipv4(NetAddr.Prefix.t) :: String.t
+  def prefix_to_ipv4(prefix) do
+    prefix
     |> NetAddr.Prefix.address
     |> :binary.bin_to_list
     |> Enum.join(".")
+  end
 
+  @spec prefix_to_ipv4_cidr(NetAddr.Prefix.t) :: String.t
+  def prefix_to_ipv4_cidr(prefix) do
+    address = prefix_to_ipv4 prefix
     prefix_length = NetAddr.Prefix.length(prefix)
 
     "#{address}/#{prefix_length}"
