@@ -207,11 +207,16 @@ defmodule NetAddr do
   ## Parsing ##
 
   defp ipv4_string_to_bytes(address_string) do
-    {:ok, address_tuple} = address_string
-    |> :binary.bin_to_list
-    |> :inet.parse_ipv4_address
+    try do
+      {:ok, address_tuple} = address_string
+      |> :binary.bin_to_list
+      |> :inet.parse_ipv4_address
 
-    Tuple.to_list address_tuple
+      Tuple.to_list address_tuple
+    rescue
+      _ in MatchError ->
+        raise ArgumentError, message: "Cannot parse as IPv4: '#{address_string}'"
+    end
   end
 
   @spec ipv4(String.t) :: NetAddr.Prefix.t
