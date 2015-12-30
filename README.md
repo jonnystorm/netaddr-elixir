@@ -1,5 +1,6 @@
 netaddr-elixir
 =========
+[![Build Status](https://travis-ci.org/jonnystorm/netaddr-elixir.svg?branch=master)](https://travis-ci.org/jonnystorm/netaddr-elixir)
 
 ### Parsing:
 
