@@ -4,8 +4,8 @@ netaddr-elixir
 ### Parsing:
 
 ```
-iex> NetAddr.ipv4_cidr "192.0.2.1/23"
-%NetAddr.Prefix{length: 23, network: <<192, 0, 2, 0>>}
+iex> NetAddr.ipv4_cidr "192.0.2.1/24"
+%NetAddr.Prefix{length: 24, network: <<192, 0, 2, 0>>}
 
 iex> NetAddr.ipv4 "192.0.2.1"
 %NetAddr.Prefix{length: 32, network: <<192, 0, 2, 1>>}
@@ -20,8 +20,8 @@ iex> NetAddr.ipv6 "fe80:0:c100::c401"
 ### Pretty-printing:
 
 ```
-iex> NetAddr.ipv4_cidr("192.0.2.1/23") |> NetAddr.prefix_to_ipv4_cidr                                          
-"192.0.2.1/32"
+iex> NetAddr.ipv4_cidr("192.0.2.1/24") |> NetAddr.prefix_to_ipv4_cidr                                          
+"192.0.2.1/24"
 
 iex> NetAddr.ipv6("fe80:0:c100::c401") |> NetAddr.prefix_to_ipv6_prefix_string |> NetAddr.compress_ipv6_string
 "fe80:0:c100::c401/128"
@@ -30,6 +30,10 @@ iex> NetAddr.ipv6("fe80:0:c100::c401") |> NetAddr.prefix_to_ipv6_prefix_string |
 ### Conversion:
 
 ```
+iex> NetAddr.ipv4("192.0.2.1/24") |> NetAddr.Prefix.length(22)
+%NetAddr.Prefix{address: <<192, 0, 0, 0>>, length: 22}
+
+
 iex> NetAddr.aton <<192,0,2,1>>
 3221225985
 
