@@ -16,7 +16,6 @@ defmodule NetAddr.Mixfile do
 
   defp deps do
     [
-      {:amrita, github: "josephwilk/amrita"},
       {:jds_math_ex, git: "https://github.com/jonnystorm/jds-math-elixir"},
       {:linear_ex, git: "https://github.com/jonnystorm/linear-elixir"}
     ]
