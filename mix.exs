@@ -3,7 +3,7 @@ defmodule NetAddr.Mixfile do
 
   def project do
     [app: :netaddr_ex,
-     version: "0.0.3",
+     version: "0.0.4",
      elixir: "~> 1.0",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
@@ -11,8 +11,7 @@ defmodule NetAddr.Mixfile do
   end
 
   def application do
-    [
-      applications: [
+    [ applications: [
         :logger,
         :jds_math_ex,
         :linear_ex
@@ -21,8 +20,7 @@ defmodule NetAddr.Mixfile do
   end
 
   defp deps do
-    [
-      {:jds_math_ex, git: "https://github.com/jonnystorm/jds-math-elixir"},
+    [ {:jds_math_ex, git: "https://github.com/jonnystorm/jds-math-elixir"},
       {:linear_ex, git: "https://github.com/jonnystorm/linear-elixir"}
     ]
   end
