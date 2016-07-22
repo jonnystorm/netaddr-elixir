@@ -1,2 +1,2 @@
-%{"jds_math_ex": {:git, "https://github.com/jonnystorm/jds-math-elixir", "a3ac58bb4d91583ed6117890c1cd69f168f505f8", []},
-  "linear_ex": {:git, "https://github.com/jonnystorm/linear-elixir", "5e80d8bb38c98b6dd85f4523a8178bf867c70de6", []}}
+%{"jds_math_ex": {:git, "https://github.com/jonnystorm/jds-math-elixir", "10d5cdf175b6a12b5ca9d97e4cb998e3324d6561", []},
+  "linear_ex": {:git, "https://github.com/jonnystorm/linear-elixir", "a6a3dd8889d921878e8c01268fbad7714c599bd0", []}}
