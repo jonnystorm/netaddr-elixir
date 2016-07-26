@@ -6,7 +6,7 @@ defmodule NetAddr.Mixfile do
       version: "0.0.6",
       name: "NetAddr",
       source_url: "https://github.com/jonnystorm/netaddr-elixir",
-      elixir: "~> 1.1",
+      elixir: "~> 1.2",
       build_embedded: Mix.env == :prod,
       start_permanent: Mix.env == :prod,
       deps: deps,
