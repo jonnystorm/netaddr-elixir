@@ -498,6 +498,8 @@ defmodule NetAddr do
       iex> NetAddr.ip("fe80::c101/64")
       %NetAddr.IPv6{address: <<0xfe,0x80,0::12*8,0xc1,0x01>>, length: 64}
   """
+  @spec ip(String.t) :: NetAddr.IPv4.t | NetAddr.IPv6.t
+
   def ip(ip_string) do
     [ip_address_string | split_residue] = String.split ip_string, "/", parts: 2
 
@@ -520,6 +522,10 @@ defmodule NetAddr do
       iex> NetAddr.ip "fe80:0:c100::c401", 64
       %NetAddr.IPv6{address: <<254, 128, 0, 0, 193, 0, 0, 0, 0, 0, 0, 0, 0, 0, 196, 1>>, length: 64}
   """
+  @spec ip(String.t, String.t) :: NetAddr.IPv4.t | NetAddr.IPv6.t
+  @spec ip(String.t, non_neg_integer) :: NetAddr.IPv4.t | NetAddr.IPv6.t
+
+  def ip(ip_address_string, ip_mask_string_or_length)
   def ip(ip_address_string, ip_mask_string) when is_binary(ip_mask_string) do
     %{address: ip_mask} = ip ip_mask_string, nil
 
