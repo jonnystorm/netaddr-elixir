@@ -9,27 +9,27 @@ See the [API documentation](http://jonnystorm.github.io/netaddr-elixir).
 ### Parsing:
 
 ```
-iex> NetAddr.ipv4_cidr "192.0.2.1/24"
+iex> NetAddr.ip "192.0.2.1/24"
 %NetAddr.IPv4{address: <<192, 0, 2, 1>>, length: 24}
 
-iex> NetAddr.ipv4 "192.0.2.1"
+iex> NetAddr.ip "192.0.2.1"
 %NetAddr.IPv4{address: <<192, 0, 2, 1>>, length: 32}
 
 
-iex> NetAddr.ipv6_cidr "fe80:0:c100::c401/64"
+iex> NetAddr.ip "fe80:0:c100::c401/64"
 %NetAddr.IPv6{address: <<254, 128, 0, 0, 193, 0, 0, 0, 0, 0, 0, 0, 0, 0, 196, 1>>, length: 64}
 
-iex> NetAddr.ipv6 "fe80:0:c100::c401"
+iex> NetAddr.ip "fe80:0:c100::c401"
 %NetAddr.IPv6{address: <<254, 128, 0, 0, 193, 0, 0, 0, 0, 0, 0, 0, 0, 0, 196, 1>>, length: 128}
 ```
 
 ### Pretty-printing:
 
 ```
-iex> "#{NetAddr.ipv4_cidr("192.0.2.1/24")}"
+iex> "#{NetAddr.ip("192.0.2.1/24")}"
 "192.0.2.1/24"
 
-iex> "#{NetAddr.ipv6("fe80:0:c100::c401")}"
+iex> "#{NetAddr.ip("fe80:0:c100::c401")}"
 "fe80:0:c100::c401/128"
 ```
 
@@ -39,7 +39,7 @@ iex> "#{NetAddr.ipv6("fe80:0:c100::c401")}"
 iex> NetAddr.network NetAddr.ipv4_cidr("192.0.2.1/24")
 "192.0.2.0"
 
-iex> NetAddr.ipv4_cidr("192.0.2.1/24") |> NetAddr.address_length(22) |> NetAddr.network
+iex> NetAddr.ip("192.0.2.1/24") |> NetAddr.address_length(22) |> NetAddr.network
 "192.0.0.0"
 
 
@@ -64,7 +64,7 @@ iex> NetAddr.length_to_mask(64, 16)
 <<255, 255, 255, 255, 255, 255, 255, 255, 0, 0, 0, 0, 0, 0, 0, 0>>
 
 
-iex> NetAddr.ipv4_cidr("198.51.100.0/24") |> NetAddr.netaddr_to_range
+iex> NetAddr.ip("198.51.100.0/24") |> NetAddr.netaddr_to_range
 3325256704..3325256959
 
 iex> NetAddr.range_to_netaddr 3325256704..3325256959, 4
