@@ -5,7 +5,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.13.0">
-    <title>README – NetAddr v0.0.5</title>
+    <title>README – NetAddr v0.0.6</title>
     <link rel="stylesheet" href="dist/app-9c1e3d5aa2.css" />
     
     <script src="dist/sidebar_items.js"></script>
@@ -26,7 +26,7 @@
         NetAddr
       </h1>
       <h2 class="sidebar-projectVersion">
-        v0.0.5
+        v0.0.6
       </h2>
     </div>
     
@@ -63,30 +63,31 @@
 <h1>netaddr-elixir</h1>
 <p><a href="https://travis-ci.org/jonnystorm/netaddr-elixir"><img src="https://travis-ci.org/jonnystorm/netaddr-elixir.svg?branch=master" alt="Build Status"/></a></p>
 <p>General functions for network address parsing and manipulation, with support for addresses of arbitrary size.</p>
+<p>See the <a href="http://jonnystorm.github.io/netaddr-elixir">API documentation</a>.</p>
 <h3>Parsing:</h3>
-<pre><code class="iex elixir">iex&gt; NetAddr.ipv4_cidr &quot;192.0.2.1/24&quot;
+<pre><code class="iex elixir">iex&gt; NetAddr.ip &quot;192.0.2.1/24&quot;
 %NetAddr.IPv4{address: &lt;&lt;192, 0, 2, 1&gt;&gt;, length: 24}
 
-iex&gt; NetAddr.ipv4 &quot;192.0.2.1&quot;
+iex&gt; NetAddr.ip &quot;192.0.2.1&quot;
 %NetAddr.IPv4{address: &lt;&lt;192, 0, 2, 1&gt;&gt;, length: 32}
 
 
-iex&gt; NetAddr.ipv6_cidr &quot;fe80:0:c100::c401/64&quot;
+iex&gt; NetAddr.ip &quot;fe80:0:c100::c401/64&quot;
 %NetAddr.IPv6{address: &lt;&lt;254, 128, 0, 0, 193, 0, 0, 0, 0, 0, 0, 0, 0, 0, 196, 1&gt;&gt;, length: 64}
 
-iex&gt; NetAddr.ipv6 &quot;fe80:0:c100::c401&quot;
+iex&gt; NetAddr.ip &quot;fe80:0:c100::c401&quot;
 %NetAddr.IPv6{address: &lt;&lt;254, 128, 0, 0, 193, 0, 0, 0, 0, 0, 0, 0, 0, 0, 196, 1&gt;&gt;, length: 128}</code></pre>
 <h3>Pretty-printing:</h3>
-<pre><code class="iex elixir">iex&gt; &quot;#{NetAddr.ipv4_cidr(&quot;192.0.2.1/24&quot;)}&quot;
+<pre><code class="iex elixir">iex&gt; &quot;#{NetAddr.ip(&quot;192.0.2.1/24&quot;)}&quot;
 &quot;192.0.2.1/24&quot;
 
-iex&gt; &quot;#{NetAddr.ipv6(&quot;fe80:0:c100::c401&quot;)}&quot;
+iex&gt; &quot;#{NetAddr.ip(&quot;fe80:0:c100::c401&quot;)}&quot;
 &quot;fe80:0:c100::c401/128&quot;</code></pre>
 <h3>Conversion:</h3>
 <pre><code class="iex elixir">iex&gt; NetAddr.network NetAddr.ipv4_cidr(&quot;192.0.2.1/24&quot;)
 &quot;192.0.2.0&quot;
 
-iex&gt; NetAddr.ipv4_cidr(&quot;192.0.2.1/24&quot;) |&gt; NetAddr.address_length(22) |&gt; NetAddr.network
+iex&gt; NetAddr.ip(&quot;192.0.2.1/24&quot;) |&gt; NetAddr.address_length(22) |&gt; NetAddr.network
 &quot;192.0.0.0&quot;
 
 
@@ -111,7 +112,7 @@ iex&gt; NetAddr.length_to_mask(64, 16)
 &lt;&lt;255, 255, 255, 255, 255, 255, 255, 255, 0, 0, 0, 0, 0, 0, 0, 0&gt;&gt;
 
 
-iex&gt; NetAddr.ipv4_cidr(&quot;198.51.100.0/24&quot;) |&gt; NetAddr.netaddr_to_range
+iex&gt; NetAddr.ip(&quot;198.51.100.0/24&quot;) |&gt; NetAddr.netaddr_to_range
 3325256704..3325256959
 
 iex&gt; NetAddr.range_to_netaddr 3325256704..3325256959, 4
