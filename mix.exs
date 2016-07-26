@@ -3,7 +3,7 @@ defmodule NetAddr.Mixfile do
 
   def project do
     [ app: :netaddr_ex,
-      version: "0.0.5",
+      version: "0.0.6",
       name: "NetAddr",
       source_url: "https://github.com/jonnystorm/netaddr-elixir",
       elixir: "~> 1.1",

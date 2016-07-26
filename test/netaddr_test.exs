@@ -7,29 +7,8 @@ defmodule NetAddrTest do
   use ExUnit.Case, async: true
   doctest NetAddr
 
-  test "parses an IPv4 address" do
-    netaddr = %NetAddr.IPv4{address: <<192,0,2,1>>, length: 32}
-
-    assert netaddr == NetAddr.ipv4("192.0.2.1")
-  end
-  test "parses an IPv4 address with length" do
-    netaddr = %NetAddr.IPv4{address: <<192,0,2,1>>, length: 24}
-
-    assert netaddr == NetAddr.ipv4("192.0.2.1", 24)
-  end
-  test "parses IPv4 address and mask" do
-    result = %NetAddr.IPv4{address: <<192,0,2,1>>, length: 24}
-
-    assert result == NetAddr.ipv4("192.0.2.1", "255.255.255.0")
-  end
   test "fails to parse an empty string" do
-    assert_raise ArgumentError, fn -> NetAddr.ipv4("") end
-  end
-
-  test "parses IPv4 CIDR" do
-    netaddr = %NetAddr.IPv4{address: <<192,0,2,1>>, length: 24}
-
-    assert netaddr == NetAddr.ipv4_cidr("192.0.2.1/24")
+    assert NetAddr.ip("") == {:error, :einval}
   end
 
   test "converts a length to a mask" do
@@ -38,30 +17,6 @@ defmodule NetAddrTest do
 
   test "converts a mask to a length" do
     assert NetAddr.mask_to_length(<<255,255,192,0>>) == 18
-  end
-
-  test "parses an IPv6 address" do
-    netaddr = %NetAddr.IPv6{
-      address: <<0xfe,0x80, 0::12 * 8, 0xc1, 0x01>>,
-      length: 128
-    }
-
-    assert netaddr == NetAddr.ipv6("fe80:0:0:0:0:0:0:c101")
-  end
-
-  test "parses an IPv6 address with length" do
-    netaddr = %NetAddr.IPv6{
-      address: <<0xfe,0x80, 0::12 * 8, 0xc1, 0x01>>,
-      length: 64
-    }
-
-    assert netaddr == NetAddr.ipv6("fe80:0:0:0:0:0:0:c101", 64)
-  end
-
-  test "parses IPv6 CIDR" do
-    netaddr = %NetAddr.IPv6{address: <<0xfe,0x80, 0::13 * 8, 0x01>>, length: 64}
-
-    assert netaddr == NetAddr.ipv6_cidr("fe80::1/64")
   end
 
   test "converts an address to a decimal" do
@@ -155,87 +110,6 @@ defmodule NetAddrTest do
       } |> to_string
 
     assert result == "0x0102030405/40"
-  end
-
-  test "parses a hyphen-delimited MAC address" do
-    result = %NetAddr.MAC_48{
-      address: <<0x01,0x23,0x45,0x67,0x89,0xab>>,
-      length: 48
-    }
-
-    assert result == NetAddr.mac_48("01-23-45-67-89-AB")
-  end
-  test "parses a different hyphen-delimited MAC address" do
-    result = %NetAddr.MAC_48{
-      address: <<0xc0,0xff,0x33,0xc0,0xff,0x33>>,
-      length: 48
-    }
-
-    assert NetAddr.mac_48("C0-FF-33-C0-FF-33") == result
-  end
-  test "parses a colon-delimited MAC address" do
-    result = %NetAddr.MAC_48{
-      address: <<0x01,0x23,0x45,0x67,0x89,0xab>>,
-      length: 48
-    }
-
-    assert result == NetAddr.mac_48("01:23:45:67:89:AB")
-  end
-  test "parses a space-delimited MAC address" do
-    result = %NetAddr.MAC_48{
-      address: <<0x01,0x23,0x45,0x67,0x89,0xab>>,
-      length: 48
-    }
-
-    assert result == NetAddr.mac_48("01 23 45 67 89 AB")
-  end
-  test "parses a MAC address with lowercase letters" do
-    result = %NetAddr.MAC_48{
-      address: <<0x01,0x23,0x45,0x67,0x89,0xab>>,
-      length: 48
-    }
-
-    assert result == NetAddr.mac_48("01-23-45-67-89-ab")
-  end
-  test "parses a MAC address with single-digit parts" do
-    result = %NetAddr.MAC_48{
-      address: <<0x01,0x23,0x45,0x67,0x89,0xab>>,
-      length: 48
-    }
-
-    assert result == NetAddr.mac_48("1-23-45-67-89-ab")
-  end
-  test "parses a MAC address with no delimiting characters" do
-    result = %NetAddr.MAC_48{
-      address: <<0x01,0x23,0x45,0x67,0x89,0xab>>,
-      length: 48
-    }
-
-    assert NetAddr.mac_48("0123456789ab") == result
-  end
-  test "parses a MAC address with extraneous characters" do
-    result = %NetAddr.MAC_48{
-      address: <<0x01,0x23,0x45,0x67,0x89,0xab>>,
-      length: 48
-    }
-
-    assert NetAddr.mac_48("\"0123456789ab \"") == result
-  end
-  test "does not fail when parsing a MAC address with no delimiting characters and too few digits" do
-    result = %NetAddr.MAC_48{
-      address: <<0x12,0x34,0x56,0x78,0x9a,0xb>>,
-      length: 48
-    }
-
-    assert result == NetAddr.mac_48("123456789ab")
-  end
-  test "does not fail when parsing invalid MAC address" do
-    result = %NetAddr.MAC_48{
-      address: <<0x01,0x23,0x45,0x67,0x89,0xa>>,
-      length: 48
-    }
-
-    assert result == NetAddr.mac_48("01-23-45-67-89-ag")
   end
 
   test "determines that one netaddr contains another" do

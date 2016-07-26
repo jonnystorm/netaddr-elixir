@@ -62,7 +62,7 @@ defmodule NetAddr do
 
   ## Examples
       
-      iex> NetAddr.address_length NetAddr.ipv4_cidr("192.0.2.1/24")
+      iex> NetAddr.address_length NetAddr.ip("192.0.2.1/24")
       24
   """
   @spec address_length(NetAddr.t) :: non_neg_integer
@@ -77,7 +77,7 @@ defmodule NetAddr do
 
   ## Examples
       
-      iex> NetAddr.ipv4_cidr("192.0.2.1/24") |> NetAddr.address_length(22)
+      iex> NetAddr.ip("192.0.2.1/24") |> NetAddr.address_length(22)
       %NetAddr.IPv4{address: <<192, 0, 2, 1>>, length: 22}
   """
   @spec address_length(NetAddr.t, pos_integer) :: NetAddr.t
@@ -250,7 +250,7 @@ defmodule NetAddr do
 
   ## Examples
 
-      iex> NetAddr.ipv4_cidr("198.51.100.0/24") |> NetAddr.netaddr_to_range
+      iex> NetAddr.ip("198.51.100.0/24") |> NetAddr.netaddr_to_range
       3325256704..3325256959
   """
   @spec netaddr_to_range(NetAddr.t) :: Range.t
@@ -303,7 +303,7 @@ defmodule NetAddr do
 
   ## Examples
 
-      iex> NetAddr.address NetAddr.ipv4_cidr("192.0.2.1/24")
+      iex> NetAddr.address NetAddr.ip("192.0.2.1/24")
       "192.0.2.1"
       
       iex> NetAddr.address NetAddr.netaddr(<<1, 2, 3, 4, 5>>)
@@ -320,7 +320,7 @@ defmodule NetAddr do
 
   ## Examples
 
-      iex> NetAddr.first_address NetAddr.ipv4_cidr("192.0.2.1/24")
+      iex> NetAddr.first_address NetAddr.ip("192.0.2.1/24")
       %NetAddr.IPv4{address: <<192, 0, 2, 0>>, length: 24}
   """
   def first_address(netaddr) do
@@ -336,7 +336,7 @@ defmodule NetAddr do
 
   ## Examples
 
-      iex> NetAddr.last_address NetAddr.ipv4_cidr("192.0.2.1/24")
+      iex> NetAddr.last_address NetAddr.ip("192.0.2.1/24")
       %NetAddr.IPv4{address: <<192, 0, 2, 255>>, length: 24}
   """
   def last_address(netaddr) do
@@ -358,7 +358,7 @@ defmodule NetAddr do
 
   ## Examples
 
-      iex> NetAddr.broadcast NetAddr.ipv4_cidr("192.0.2.1/24")
+      iex> NetAddr.broadcast NetAddr.ip("192.0.2.1/24")
       "192.0.2.255"
   """
   @spec broadcast(NetAddr.IPv4.t) :: String.t
@@ -375,7 +375,7 @@ defmodule NetAddr do
 
   ## Examples
 
-      iex> NetAddr.network NetAddr.ipv4_cidr("192.0.2.1/24")
+      iex> NetAddr.network NetAddr.ip("192.0.2.1/24")
       "192.0.2.0"
   """
   @spec network(NetAddr.t) :: String.t
@@ -443,139 +443,100 @@ defmodule NetAddr do
 
   ################################# Parsing ####################################
 
-  defp ipv4_string_to_bytes(address_string) do
-    try do
-      {:ok, address_tuple} =
-        address_string
-          |> :binary.bin_to_list
-          |> :inet.parse_ipv4_address
+  defp ip_address_string_to_bytes(ip_address_string) do
+    ip_address_list = :binary.bin_to_list ip_address_string
 
-      Tuple.to_list address_tuple
+    with {:ok, tuple} <- :inet.parse_address(ip_address_list)
+    do
+      case Tuple.to_list tuple do
+        byte_list when length(byte_list) == 4 ->
+          {:ok, byte_list}
 
-    rescue
-      _ in MatchError ->
+        word_list when length(word_list) == 8 ->
+          byte_list = Enum.flat_map word_list, &split_decimal_into_bytes(&1, 2)
 
-        raise ArgumentError, message: "Cannot parse as IPv4: '#{address_string}'"
+          {:ok, byte_list}
+      end
+    end
+  end
+
+  defp count_bits_in_binary(binary) do
+    byte_size(binary) * 8
+  end
+
+  defp get_length_from_split_residue(split_residue) do
+    case split_residue do
+      [] ->
+        nil
+
+      [ip_length_string] ->
+        try do
+          String.to_integer ip_length_string
+
+        rescue
+          _ in ArgumentError ->
+            nil
+        end
     end
   end
 
   @doc """
-  Parses `address_string`, returning a `t:NetAddr.IPv4.t/0`.
+  Parses `ip_string` as an IPv4/IPv6 address or CIDR, returning a
+  `t:NetAddr.IPv4.t/0` or `t:NetAddr.IPv6.t/0` as appropriate.
 
   ## Examples
 
-      iex> NetAddr.ipv4 "192.0.2.1"
-      %NetAddr.IPv4{address: <<192, 0, 2, 1>>, length: 32}
+      iex> NetAddr.ip("192.0.2.1")
+      %NetAddr.IPv4{address: <<192,0,2,1>>, length: 32}
+      
+      iex> NetAddr.ip("192.0.2.1/24")
+      %NetAddr.IPv4{address: <<192,0,2,1>>, length: 24}
+      
+      iex> NetAddr.ip("fe80::c101")
+      %NetAddr.IPv6{address: <<0xfe,0x80,0::12*8,0xc1,0x01>>, length: 128}
+      
+      iex> NetAddr.ip("fe80::c101/64")
+      %NetAddr.IPv6{address: <<0xfe,0x80,0::12*8,0xc1,0x01>>, length: 64}
   """
-  @spec ipv4(String.t) :: NetAddr.IPv4.t
+  def ip(ip_string) do
+    [ip_address_string | split_residue] = String.split ip_string, "/", parts: 2
 
-  def ipv4(address_string) do
-    ipv4 address_string, 32
+    ip_address_length = get_length_from_split_residue split_residue
+
+    ip ip_address_string, ip_address_length
   end
 
   @doc """
-  Parses `address_string`, returning a `t:NetAddr.IPv4.t/0` with the given
-  address length.
+  Parses `ip_address_string` with the given address length or `ip_mask_string`.
 
   ## Examples
 
-      iex> NetAddr.ipv4 "192.0.2.1", 24
+      iex> NetAddr.ip "192.0.2.1", 24
       %NetAddr.IPv4{address: <<192, 0, 2, 1>>, length: 24}
       
-      iex> NetAddr.ipv4 "192.0.2.1", "255.255.255.0"
+      iex> NetAddr.ip "192.0.2.1", "255.255.255.0"
       %NetAddr.IPv4{address: <<192, 0, 2, 1>>, length: 24}
-  """
-  @spec ipv4(String.t, non_neg_integer) :: NetAddr.IPv4.t
-  @spec ipv4(String.t, String.t) :: NetAddr.IPv4.t
 
-  def ipv4(address_string, length) when is_integer length do
-    address_string
-      |> ipv4_string_to_bytes
-      |> :binary.list_to_bin
-      |> netaddr(length)
-  end
-  def ipv4(address_string, mask_string) when is_binary mask_string do
-    netaddr_length = mask_to_length ipv4(mask_string).address
-
-    ipv4 address_string, netaddr_length
-  end
-
-  @doc """
-  Parses `cidr_string`, returning a `t:NetAddr.IPv4.t/0`.
-
-  ## Examples
-
-      iex> NetAddr.ipv4_cidr "192.0.2.1/24"
-      %NetAddr.IPv4{address: <<192, 0, 2, 1>>, length: 24}
-  """
-  @spec ipv4_cidr(String.t) :: NetAddr.IPv4.t
-
-  def ipv4_cidr(cidr_string) do
-    [address_string, length_string] = String.split cidr_string, "/"
-
-    netaddr_length = String.to_integer length_string
-
-    ipv4 address_string, netaddr_length
-  end
-
-  defp ipv6_string_to_byte_words(address_string) do
-    {:ok, address_tuple} =
-      address_string
-        |> :binary.bin_to_list
-        |> :inet.parse_ipv6_address
-
-    Tuple.to_list address_tuple
-  end
-
-  @doc """
-  Parses `address_string` containing an IPv6 address, returning a `t:NetAddr.IPv6.t/0`.
-
-  ## Examples
-
-      iex> NetAddr.ipv6 "fe80:0:c100::c401"
-      %NetAddr.IPv6{address: <<254, 128, 0, 0, 193, 0, 0, 0, 0, 0, 0, 0, 0, 0, 196, 1>>, length: 128}
-  """
-  @spec ipv6(String.t) :: NetAddr.IPv6.t
-
-  def ipv6(address_string) do
-    ipv6 address_string, 128
-  end
-
-  @doc """
-  Parses `address_string`, returning a `t:NetAddr.IPv6.t/0` with the given
-  address length.
-
-  ## Examples
-
-      iex> NetAddr.ipv6 "fe80:0:c100::c401", 64
+      iex> NetAddr.ip "fe80:0:c100::c401", 64
       %NetAddr.IPv6{address: <<254, 128, 0, 0, 193, 0, 0, 0, 0, 0, 0, 0, 0, 0, 196, 1>>, length: 64}
   """
-  @spec ipv6(String.t, 0..128) :: NetAddr.IPv6.t
+  def ip(ip_address_string, ip_mask_string) when is_binary(ip_mask_string) do
+    %{address: ip_mask} = ip ip_mask_string, nil
 
-  def ipv6(address_string, address_length) do
-    address_string
-      |> ipv6_string_to_byte_words
-      |> Enum.flat_map(&split_decimal_into_bytes(&1, 2))
-      |> :binary.list_to_bin
-      |> netaddr(address_length)
+    ip ip_address_string, mask_to_length(ip_mask)
   end
+  def ip(ip_address_string, ip_address_length)
+      when is_integer(ip_address_length)
+       and ip_address_length > 0
+        or ip_address_length == nil
+  do
+    with {:ok, ip_bytes} <- ip_address_string_to_bytes(ip_address_string)
+    do
+      ip_binary = :binary.list_to_bin ip_bytes
+      ip_address_length = ip_address_length || count_bits_in_binary(ip_binary)
 
-  @doc """
-  Parses `cidr_string`, returning a `t:NetAddr.IPv6.t/0`.
-
-  ## Examples
-
-      iex> NetAddr.ipv6_cidr "fe80:0:c100::c401/64"
-      %NetAddr.IPv6{address: <<254, 128, 0, 0, 193, 0, 0, 0, 0, 0, 0, 0, 0, 0, 196, 1>>, length: 64}
-  """
-  @spec ipv6_cidr(String.t) :: NetAddr.IPv6.t
-
-  def ipv6_cidr(cidr_string) do
-    [address_string, length_string] = String.split cidr_string, "/"
-
-    netaddr_length = String.to_integer length_string
-
-    ipv6 address_string, netaddr_length
+      netaddr ip_binary, ip_address_length
+    end
   end
 
   defp _parse_mac_48(<<>>, {[], acc}) do
@@ -639,8 +600,29 @@ defmodule NetAddr do
 
   ## Examples
 
-      iex> NetAddr.mac_48 "\\"c0fF:33-C0.Ff   33\\""
-      %NetAddr.MAC_48{address: <<0xc0, 0xff, 0x33, 0xc0, 0xff, 0x33>>, length: 48}
+      iex> NetAddr.mac_48 "01:23:45:67:89:AB"
+      %NetAddr.MAC_48{address: <<0x01,0x23,0x45,0x67,0x89,0xab>>, length: 48}
+      
+      iex> NetAddr.mac_48 "01-23-45-67-89-AB"
+      %NetAddr.MAC_48{address: <<0x01,0x23,0x45,0x67,0x89,0xab>>, length: 48}
+      
+      iex> NetAddr.mac_48 "0123456789aB"
+      %NetAddr.MAC_48{address: <<0x01,0x23,0x45,0x67,0x89,0xab>>, length: 48}
+      
+      iex> NetAddr.mac_48 "01 23 45 67 89 AB"
+      %NetAddr.MAC_48{address: <<0x01,0x23,0x45,0x67,0x89,0xab>>, length: 48}
+      
+      iex> NetAddr.mac_48 "\\"0fF:33-C0.Ff   33 \\""
+      %NetAddr.MAC_48{address: <<0x0f, 0xf, 0x33, 0xc0, 0xff, 0x33>>, length: 48}
+      
+      iex> NetAddr.mac_48 "1:2:3:4:5:6"
+      %NetAddr.MAC_48{address: <<1,2,3,4,5,6>>, length: 48}
+      
+      iex> NetAddr.mac_48 "01-23-45-67-89-ag"
+      %NetAddr.MAC_48{address: <<0x01,0x23,0x45,0x67,0x89,0xa>>, length: 48}
+      
+      iex> NetAddr.mac_48 "123456789aB"
+      %NetAddr.MAC_48{address: <<0x12,0x34,0x56,0x78,0x9a,0xb>>, length: 48}
   """
   @spec mac_48(binary) :: NetAddr.MAC_48.t
 
@@ -674,16 +656,16 @@ defmodule NetAddr do
 
   ## Examples
 
-      iex> NetAddr.ipv4_cidr("192.0.2.0/24") |> NetAddr.contains?(NetAddr.ipv4_cidr("192.0.2.0/25"))
+      iex> NetAddr.ip("192.0.2.0/24") |> NetAddr.contains?(NetAddr.ip("192.0.2.0/25"))
       true
       
-      iex> NetAddr.ipv4_cidr("192.0.2.0/24") |> NetAddr.contains?(NetAddr.ipv4_cidr("192.0.2.0/24"))
+      iex> NetAddr.ip("192.0.2.0/24") |> NetAddr.contains?(NetAddr.ip("192.0.2.0/24"))
       true
       
-      iex> NetAddr.ipv4_cidr("192.0.2.0/25") |> NetAddr.contains?(NetAddr.ipv4_cidr("192.0.2.0/24"))
+      iex> NetAddr.ip("192.0.2.0/25") |> NetAddr.contains?(NetAddr.ip("192.0.2.0/24"))
       false
       
-      iex> NetAddr.ipv4_cidr("192.0.2.0/25") |> NetAddr.contains?(NetAddr.ipv4_cidr("192.0.2.128/25"))
+      iex> NetAddr.ip("192.0.2.0/25") |> NetAddr.contains?(NetAddr.ip("192.0.2.128/25"))
       false
   """
   @spec contains?(NetAddr.t, NetAddr.t) :: boolean
