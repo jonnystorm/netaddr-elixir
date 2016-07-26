@@ -1,5 +1,11 @@
+# Copyright © 2016 Jonathan Storm <the.jonathan.storm@gmail.com>
+# This work is free. You can redistribute it and/or modify it under the
+# terms of the Do What The Fuck You Want To Public License, Version 2,
+# as published by Sam Hocevar. See the COPYING.WTFPL file for more details.
+
 defmodule NetAddrTest do
   use ExUnit.Case, async: true
+  doctest NetAddr
 
   test "parses an IPv4 address" do
     netaddr = %NetAddr.IPv4{address: <<192,0,2,1>>, length: 32}

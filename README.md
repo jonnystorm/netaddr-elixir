@@ -2,23 +2,23 @@ netaddr-elixir
 =========
 [![Build Status](https://travis-ci.org/jonnystorm/netaddr-elixir.svg?branch=master)](https://travis-ci.org/jonnystorm/netaddr-elixir)
 
-General functions for network address parsing and manipulation with support for addresses of arbitrary size.
+General functions for network address parsing and manipulation, with support for addresses of arbitrary size.
 
 ### Parsing:
 
 ```
 iex> NetAddr.ipv4_cidr "192.0.2.1/24"
-%NetAddr.IPv4{length: 24, network: <<192, 0, 2, 1>>}
+%NetAddr.IPv4{address: <<192, 0, 2, 1>>, length: 24}
 
 iex> NetAddr.ipv4 "192.0.2.1"
-%NetAddr.IPv4{length: 32, network: <<192, 0, 2, 1>>}
+%NetAddr.IPv4{address: <<192, 0, 2, 1>>, length: 32}
 
 
 iex> NetAddr.ipv6_cidr "fe80:0:c100::c401/64"
-%NetAddr.IPv6{length: 64, network: <<254, 128, 0, 0, 193, 0, 0, 0, 0, 0, 0, 0, 0, 0, 196, 1>>}
+%NetAddr.IPv6{address: <<254, 128, 0, 0, 193, 0, 0, 0, 0, 0, 0, 0, 0, 0, 196, 1>>, length: 64}
 
 iex> NetAddr.ipv6 "fe80:0:c100::c401"
-%NetAddr.IPv6{length: 128, network: <<254, 128, 0, 0, 193, 0, 0, 0, 0, 0, 0, 0, 0, 0, 196, 1>>}
+%NetAddr.IPv6{address: <<254, 128, 0, 0, 193, 0, 0, 0, 0, 0, 0, 0, 0, 0, 196, 1>>, length: 128}
 ```
 
 ### Pretty-printing:
@@ -34,7 +34,7 @@ iex> "#{NetAddr.ipv6("fe80:0:c100::c401")}"
 ### Conversion:
 
 ```
-iex> NetAddr.ipv4_cidr("192.0.2.1/24") |> NetAddr.network
+iex> NetAddr.network NetAddr.ipv4_cidr("192.0.2.1/24")
 "192.0.2.0"
 
 iex> NetAddr.ipv4_cidr("192.0.2.1/24") |> NetAddr.address_length(22) |> NetAddr.network
@@ -73,13 +73,13 @@ iex> NetAddr.range_to_netaddr 3325256704..3325256959, 4
 
 ```
 iex> NetAddr.netaddr(<<1, 2, 3, 4, 5, 6>>)
-%NetAddr.MAC_48{length: 48, network: <<1, 2, 3, 4, 5, 6>>}
+%NetAddr.MAC_48{address: <<1, 2, 3, 4, 5, 6>>, length: 48}
 
 iex> NetAddr.netaddr(<<1, 2, 3, 4, 5>>, 48, 6)
-%NetAddr.Generic{length: 48, network: <<0, 1, 2, 3, 4, 5>>}
+%NetAddr.Generic{address: <<0, 1, 2, 3, 4, 5>>, length: 48}
 
 iex> NetAddr.netaddr(<<1, 2, 3, 4, 5>>)
-%NetAddr.Generic{length: 40, network: <<1, 2, 3, 4, 5>>}
+%NetAddr.Generic{address: <<1, 2, 3, 4, 5>>, length: 40}
 
 iex> "#{NetAddr.netaddr(<<1, 2, 3, 4, 5>>)}"
 "0x0102030405/40"
