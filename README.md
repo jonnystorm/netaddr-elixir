@@ -4,6 +4,8 @@ netaddr-elixir
 
 General functions for network address parsing and manipulation, with support for addresses of arbitrary size.
 
+See the [API documentation](http://jonnystorm.github.io/netaddr-elixir).
+
 ### Parsing:
 
 ```
