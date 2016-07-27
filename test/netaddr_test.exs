@@ -111,24 +111,4 @@ defmodule NetAddrTest do
 
     assert result == "0x0102030405/40"
   end
-
-  test "determines that one netaddr contains another" do
-    netaddr1 = %NetAddr.IPv4{address: <<192,0,2,0>>, length: 24}
-    netaddr2 = %NetAddr.IPv4{address: <<192,0,2,128>>, length: 25}
-
-    assert NetAddr.contains?(netaddr1, netaddr2) == true
-  end
-
-  test "determines that one netaddr does not contain another" do
-    netaddr1 = %NetAddr.IPv4{address: <<192,0,2,0>>, length: 24}
-    netaddr2 = %NetAddr.IPv4{address: <<192,0,2,128>>, length: 25}
-
-    assert NetAddr.contains?(netaddr2, netaddr1) == false
-  end
-
-  test "determines that a netaddr contains itself" do
-    netaddr = %NetAddr.IPv4{address: <<192,0,2,0>>, length: 24}
-
-    assert NetAddr.contains?(netaddr, netaddr) == true
-  end
 end
