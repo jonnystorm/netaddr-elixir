@@ -8,7 +8,7 @@ See the [API documentation](http://jonnystorm.github.io/netaddr-elixir).
 
 ### Parsing:
 
-```
+```elixir
 iex> NetAddr.ip "192.0.2.1/24"
 %NetAddr.IPv4{address: <<192, 0, 2, 1>>, length: 24}
 
@@ -25,7 +25,7 @@ iex> NetAddr.ip "fe80:0:c100::c401"
 
 ### Pretty-printing:
 
-```
+```elixir
 iex> "#{NetAddr.ip("192.0.2.1/24")}"
 "192.0.2.1/24"
 
@@ -35,7 +35,7 @@ iex> "#{NetAddr.ip("fe80:0:c100::c401")}"
 
 ### Conversion:
 
-```
+```elixir
 iex> NetAddr.network NetAddr.ipv4_cidr("192.0.2.1/24")
 "192.0.2.0"
 
@@ -73,7 +73,7 @@ iex> NetAddr.range_to_netaddr 3325256704..3325256959, 4
 
 ### Arbitrary length addresses:
 
-```
+```elixir
 iex> NetAddr.netaddr(<<1, 2, 3, 4, 5, 6>>)
 %NetAddr.MAC_48{address: <<1, 2, 3, 4, 5, 6>>, length: 48}
 
