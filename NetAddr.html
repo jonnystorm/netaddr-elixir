@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.13.0">
     <title>NetAddr – NetAddr v0.0.6</title>
-    <link rel="stylesheet" href="dist/app-9c1e3d5aa2.css" />
+    <link rel="stylesheet" href="dist/app-da94447278.css" />
     
     <script src="dist/sidebar_items.js"></script>
   </head>
@@ -72,7 +72,7 @@
       </h1>
 
       
-        <section id="moduledoc" class="docstring">
+        <section id="moduledoc">
           <p>General functions for network address parsing and manipulation, with support
 for addresses of arbitrary size.</p>
 
@@ -130,7 +130,7 @@ for addresses of arbitrary size.</p>
     <a href="#address_length/2">address_length(netaddr, new_length)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Returns a new <code class="inline">t:NetAddr.t/0</code> with the address part of <code class="inline">netaddr</code> and the given
+    <div class="summary-synopsis"><p>Returns a new <a href="NetAddr.html#t:t/0"><code class="inline">NetAddr.t/0</code></a> with the address part of <code class="inline">netaddr</code> and the given
 address length</p>
 </div>
   
@@ -177,7 +177,7 @@ returns <code class="inline">false</code></p>
     <a href="#first_address/1">first_address(netaddr)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Returns a new <code class="inline">t:NetAddr.t/0</code> with the first address in <code class="inline">netaddr</code></p>
+    <div class="summary-synopsis"><p>Returns a new <a href="NetAddr.html#t:t/0"><code class="inline">NetAddr.t/0</code></a> with the first address in <code class="inline">netaddr</code></p>
 </div>
   
 </div>
@@ -187,7 +187,7 @@ returns <code class="inline">false</code></p>
   </div>
   
     <div class="summary-synopsis"><p>Parses <code class="inline">ip_string</code> as an IPv4/IPv6 address or CIDR, returning a
-<code class="inline">t:NetAddr.IPv4.t/0</code> or <code class="inline">t:NetAddr.IPv6.t/0</code> as appropriate</p>
+<a href="NetAddr.IPv4.html#t:t/0"><code class="inline">NetAddr.IPv4.t/0</code></a> or <a href="NetAddr.IPv6.html#t:t/0"><code class="inline">NetAddr.IPv6.t/0</code></a> as appropriate</p>
 </div>
   
 </div>
@@ -205,7 +205,7 @@ returns <code class="inline">false</code></p>
     <a href="#last_address/1">last_address(netaddr)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Returns a new <code class="inline">t:NetAddr.t/0</code> with the last address in <code class="inline">netaddr</code></p>
+    <div class="summary-synopsis"><p>Returns a new <a href="NetAddr.html#t:t/0"><code class="inline">NetAddr.t/0</code></a> with the last address in <code class="inline">netaddr</code></p>
 </div>
   
 </div>
@@ -223,7 +223,7 @@ returns <code class="inline">false</code></p>
     <a href="#mac_48/1">mac_48(mac_string)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Parses <code class="inline">mac_string</code>, returning a <code class="inline">t:NetAddr.MAC_48.t/0</code></p>
+    <div class="summary-synopsis"><p>Parses <code class="inline">mac_string</code>, returning a <a href="NetAddr.MAC_48.html#t:t/0"><code class="inline">NetAddr.MAC_48.t/0</code></a></p>
 </div>
   
 </div>
@@ -241,7 +241,7 @@ returns <code class="inline">false</code></p>
     <a href="#netaddr/1">netaddr(address)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Constructs a <code class="inline">t:NetAddr.t/0</code> struct given a network address binary</p>
+    <div class="summary-synopsis"><p>Constructs a <a href="NetAddr.html#t:t/0"><code class="inline">NetAddr.t/0</code></a> struct given a network address binary</p>
 </div>
   
 </div>
@@ -250,7 +250,7 @@ returns <code class="inline">false</code></p>
     <a href="#netaddr/2">netaddr(address, address_length)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Constructs a <code class="inline">t:NetAddr.t/0</code> struct given a network address binary and an
+    <div class="summary-synopsis"><p>Constructs a <a href="NetAddr.html#t:t/0"><code class="inline">NetAddr.t/0</code></a> struct given a network address binary and an
 address length</p>
 </div>
   
@@ -260,7 +260,7 @@ address length</p>
     <a href="#netaddr/3">netaddr(address, address_length, size_in_bytes)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Explicitly constructs a <code class="inline">t:NetAddr.Generic.t/0</code> struct</p>
+    <div class="summary-synopsis"><p>Explicitly constructs a <a href="NetAddr.Generic.html#t:t/0"><code class="inline">NetAddr.Generic.t/0</code></a> struct</p>
 </div>
   
 </div>
@@ -269,7 +269,7 @@ address length</p>
     <a href="#netaddr_to_range/1">netaddr_to_range(netaddr)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Converts a <code class="inline">t:NetAddr.t/0</code> to a <code class="inline">t:Range.t/0</code></p>
+    <div class="summary-synopsis"><p>Converts a <a href="NetAddr.html#t:t/0"><code class="inline">NetAddr.t/0</code></a> to a <a href="http://elixir-lang.org/docs/stable/elixir/Range.html#t:t/0">Range.t/0</a></p>
 </div>
   
 </div>
@@ -314,7 +314,7 @@ address length</p>
     <a href="#range_to_netaddr/2">range_to_netaddr(range, size_in_bytes)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Converts <code class="inline">range</code> to a <code class="inline">t:NetAddr.t/0</code> given an address size hint</p>
+    <div class="summary-synopsis"><p>Converts <code class="inline">range</code> to a <a href="NetAddr.html#t:t/0"><code class="inline">NetAddr.t/0</code></a> given an address size hint</p>
 </div>
   
 </div>
@@ -457,7 +457,7 @@ iex&gt; NetAddr.address NetAddr.netaddr(&lt;&lt;1, 2, 3, 4, 5&gt;&gt;)
     </div>
   
   <section class="docstring">
-    <p>Returns a new <code class="inline">t:NetAddr.t/0</code> with the address part of <code class="inline">netaddr</code> and the given
+    <p>Returns a new <a href="NetAddr.html#t:t/0"><code class="inline">NetAddr.t/0</code></a> with the address part of <code class="inline">netaddr</code> and the given
 address length.</p>
 <h2>Examples</h2>
 <pre><code class="iex elixir">iex&gt; NetAddr.ip(&quot;192.0.2.1/24&quot;) |&gt; NetAddr.address_length(22)
@@ -620,7 +620,7 @@ false</code></pre>
   </div>
   
   <section class="docstring">
-    <p>Returns a new <code class="inline">t:NetAddr.t/0</code> with the first address in <code class="inline">netaddr</code>.</p>
+    <p>Returns a new <a href="NetAddr.html#t:t/0"><code class="inline">NetAddr.t/0</code></a> with the first address in <code class="inline">netaddr</code>.</p>
 <h2>Examples</h2>
 <pre><code class="iex elixir">iex&gt; NetAddr.first_address NetAddr.ip(&quot;192.0.2.1/24&quot;)
 %NetAddr.IPv4{address: &lt;&lt;192, 0, 2, 0&gt;&gt;, length: 24}</code></pre>
@@ -652,7 +652,7 @@ false</code></pre>
   
   <section class="docstring">
     <p>Parses <code class="inline">ip_string</code> as an IPv4/IPv6 address or CIDR, returning a
-<code class="inline">t:NetAddr.IPv4.t/0</code> or <code class="inline">t:NetAddr.IPv6.t/0</code> as appropriate.</p>
+<a href="NetAddr.IPv4.html#t:t/0"><code class="inline">NetAddr.IPv4.t/0</code></a> or <a href="NetAddr.IPv6.html#t:t/0"><code class="inline">NetAddr.IPv6.t/0</code></a> as appropriate.</p>
 <h2>Examples</h2>
 <pre><code class="iex elixir">iex&gt; NetAddr.ip(&quot;192.0.2.1&quot;)
 %NetAddr.IPv4{address: &lt;&lt;192,0,2,1&gt;&gt;, length: 32}
@@ -726,7 +726,7 @@ iex&gt; NetAddr.ip &quot;fe80:0:c100::c401&quot;, 64
   </div>
   
   <section class="docstring">
-    <p>Returns a new <code class="inline">t:NetAddr.t/0</code> with the last address in <code class="inline">netaddr</code>.</p>
+    <p>Returns a new <a href="NetAddr.html#t:t/0"><code class="inline">NetAddr.t/0</code></a> with the last address in <code class="inline">netaddr</code>.</p>
 <h2>Examples</h2>
 <pre><code class="iex elixir">iex&gt; NetAddr.last_address NetAddr.ip(&quot;192.0.2.1/24&quot;)
 %NetAddr.IPv4{address: &lt;&lt;192, 0, 2, 255&gt;&gt;, length: 24}</code></pre>
@@ -794,7 +794,7 @@ iex&gt; NetAddr.length_to_mask(37, 6)
     </div>
   
   <section class="docstring">
-    <p>Parses <code class="inline">mac_string</code>, returning a <code class="inline">t:NetAddr.MAC_48.t/0</code>.</p>
+    <p>Parses <code class="inline">mac_string</code>, returning a <a href="NetAddr.MAC_48.html#t:t/0"><code class="inline">NetAddr.MAC_48.t/0</code></a>.</p>
 <p>For manifest reasons, the corresponding parser may be robust to the point of
 returning incorrect results. <em>Caveat emptor</em>.</p>
 <h2>Examples</h2>
@@ -879,7 +879,7 @@ iex&gt; NetAddr.mac_48 &quot;123456789aB&quot;
     </div>
   
   <section class="docstring">
-    <p>Constructs a <code class="inline">t:NetAddr.t/0</code> struct given a network address binary.</p>
+    <p>Constructs a <a href="NetAddr.html#t:t/0"><code class="inline">NetAddr.t/0</code></a> struct given a network address binary.</p>
 <h2>Examples</h2>
 <pre><code class="iex elixir">iex&gt; NetAddr.netaddr(&lt;&lt;1, 2, 3, 4, 5, 6&gt;&gt;)
 %NetAddr.MAC_48{address: &lt;&lt;1, 2, 3, 4, 5, 6&gt;&gt;, length: 48}
@@ -913,7 +913,7 @@ iex&gt; NetAddr.netaddr(&lt;&lt;1, 2, 3, 4, 5&gt;&gt;)
     </div>
   
   <section class="docstring">
-    <p>Constructs a <code class="inline">t:NetAddr.t/0</code> struct given a network address binary and an
+    <p>Constructs a <a href="NetAddr.html#t:t/0"><code class="inline">NetAddr.t/0</code></a> struct given a network address binary and an
 address length.</p>
 
   </section>
@@ -942,7 +942,7 @@ address length.</p>
     </div>
   
   <section class="docstring">
-    <p>Explicitly constructs a <code class="inline">t:NetAddr.Generic.t/0</code> struct.</p>
+    <p>Explicitly constructs a <a href="NetAddr.Generic.html#t:t/0"><code class="inline">NetAddr.Generic.t/0</code></a> struct.</p>
 <h2>Examples</h2>
 <pre><code class="iex elixir">iex&gt; NetAddr.netaddr(&lt;&lt;1, 2, 3, 4, 5, 6&gt;&gt;, 48, 6)
 %NetAddr.Generic{address: &lt;&lt;1, 2, 3, 4, 5, 6&gt;&gt;, length: 48}
@@ -976,7 +976,7 @@ iex&gt; NetAddr.netaddr(&lt;&lt;1, 2, 3, 4, 5&gt;&gt;, 48, 6)
     </div>
   
   <section class="docstring">
-    <p>Converts a <code class="inline">t:NetAddr.t/0</code> to a <code class="inline">t:Range.t/0</code>.</p>
+    <p>Converts a <a href="NetAddr.html#t:t/0"><code class="inline">NetAddr.t/0</code></a> to a <a href="http://elixir-lang.org/docs/stable/elixir/Range.html#t:t/0">Range.t/0</a>.</p>
 <h2>Examples</h2>
 <pre><code class="iex elixir">iex&gt; NetAddr.ip(&quot;198.51.100.0/24&quot;) |&gt; NetAddr.netaddr_to_range
 3325256704..3325256959</code></pre>
@@ -1142,7 +1142,7 @@ iex&gt; NetAddr.prefix %NetAddr.Generic{address: &lt;&lt;1, 2, 3, 4, 5&gt;&gt;, 
     </div>
   
   <section class="docstring">
-    <p>Converts <code class="inline">range</code> to a <code class="inline">t:NetAddr.t/0</code> given an address size hint.</p>
+    <p>Converts <code class="inline">range</code> to a <a href="NetAddr.html#t:t/0"><code class="inline">NetAddr.t/0</code></a> given an address size hint.</p>
 <h2>Examples</h2>
 <pre><code class="iex elixir">iex&gt; NetAddr.range_to_netaddr 3325256704..3325256959, 4
 %NetAddr.IPv4{address: &lt;&lt;198, 51, 100, 0&gt;&gt;, length: 24}</code></pre>
@@ -1204,7 +1204,7 @@ iex&gt; NetAddr.prefix %NetAddr.Generic{address: &lt;&lt;1, 2, 3, 4, 5&gt;&gt;, 
   </div>
 </section>
 </div>
-  <script src="dist/app-21f1a20b9e.js"></script>
+  <script src="dist/app-95540a96e6.js"></script>
   </body>
 </html>
 
