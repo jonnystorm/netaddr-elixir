@@ -513,6 +513,9 @@ defmodule NetAddr do
 
   ## Examples
 
+      iex> NetAddr.ip "0.0.0.0", 0
+      %NetAddr.IPv4{address: <<0, 0, 0, 0>>, length: 0}
+      
       iex> NetAddr.ip "192.0.2.1", 24
       %NetAddr.IPv4{address: <<192, 0, 2, 1>>, length: 24}
       
@@ -533,7 +536,7 @@ defmodule NetAddr do
   end
   def ip(ip_address_string, ip_address_length)
       when is_integer(ip_address_length)
-       and ip_address_length > 0
+       and ip_address_length >= 0
         or ip_address_length == nil
   do
     with {:ok, ip_bytes} <- ip_address_string_to_bytes(ip_address_string)
