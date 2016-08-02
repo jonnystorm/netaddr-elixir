@@ -637,7 +637,8 @@ defmodule NetAddr do
 
   def mac_48(mac_string) do
     mac_string
-      |> String.strip
+      |> String.replace(~r/^\s*/, "")
+      |> String.replace(~r/\s*$/, "")
       |> parse_mac_48
       |> netaddr(48)
   end
@@ -714,9 +715,13 @@ end
 
 defimpl NetAddr.Representation, for: NetAddr.IPv6 do
   defp drop_leading_zeros(string) when is_binary string do
-    string
-      |> String.lstrip(?0)
-      |> String.rjust(1, ?0)
+    case String.replace string, ~r/^0*/, "" do
+      "" ->
+        "0"
+
+      other ->
+        other
+    end
   end
 
   defp compress_ipv6_string(string) do
