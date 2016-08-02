@@ -96,6 +96,9 @@ defmodule NetAddr do
       
       iex> NetAddr.netaddr(<<1, 2, 3, 4, 5>>)
       %NetAddr.Generic{address: <<1, 2, 3, 4, 5>>, length: 40}
+      
+      iex> NetAddr.netaddr(<<128>>, 48)
+      {:error, :einval}
   """
   @spec netaddr(binary) :: NetAddr.t
 
@@ -122,6 +125,9 @@ defmodule NetAddr do
       when address_length in 0..(byte_size(address) * 8)
   do
     %Generic{address: address, length: address_length}
+  end
+  def netaddr(_, _) do
+    {:error, :einval}
   end
 
   @doc """
@@ -486,19 +492,22 @@ defmodule NetAddr do
 
   ## Examples
 
-      iex> NetAddr.ip("192.0.2.1")
+      iex> NetAddr.ip "192.0.2.1"
       %NetAddr.IPv4{address: <<192,0,2,1>>, length: 32}
       
-      iex> NetAddr.ip("192.0.2.1/24")
+      iex> NetAddr.ip "192.0.2.1/24"
       %NetAddr.IPv4{address: <<192,0,2,1>>, length: 24}
       
-      iex> NetAddr.ip("fe80::c101")
+      iex> NetAddr.ip "fe80::c101"
       %NetAddr.IPv6{address: <<0xfe,0x80,0::12*8,0xc1,0x01>>, length: 128}
       
-      iex> NetAddr.ip("fe80::c101/64")
+      iex> NetAddr.ip "fe80::c101/64"
       %NetAddr.IPv6{address: <<0xfe,0x80,0::12*8,0xc1,0x01>>, length: 64}
+      
+      iex> NetAddr.ip "blarg"
+      {:error, :einval}
   """
-  @spec ip(String.t) :: NetAddr.IPv4.t | NetAddr.IPv6.t
+  @spec ip(String.t) :: NetAddr.IPv4.t | NetAddr.IPv6.t | {:error, :einval}
 
   def ip(ip_string) do
     [ip_address_string | split_residue] = String.split ip_string, "/", parts: 2
@@ -524,15 +533,19 @@ defmodule NetAddr do
 
       iex> NetAddr.ip "fe80:0:c100::c401", 64
       %NetAddr.IPv6{address: <<254, 128, 0, 0, 193, 0, 0, 0, 0, 0, 0, 0, 0, 0, 196, 1>>, length: 64}
+      
+      iex> NetAddr.ip "blarg", 32
+      {:error, :einval}
   """
-  @spec ip(String.t, String.t) :: NetAddr.IPv4.t | NetAddr.IPv6.t
-  @spec ip(String.t, non_neg_integer) :: NetAddr.IPv4.t | NetAddr.IPv6.t
+  @spec ip(String.t, String.t) :: NetAddr.IPv4.t | NetAddr.IPv6.t | {:error, :einval}
+  @spec ip(String.t, non_neg_integer) :: NetAddr.IPv4.t | NetAddr.IPv6.t | {:error, :einval}
 
   def ip(ip_address_string, ip_mask_string_or_length)
   def ip(ip_address_string, ip_mask_string) when is_binary(ip_mask_string) do
-    %{address: ip_mask} = ip ip_mask_string, nil
-
-    ip ip_address_string, mask_to_length(ip_mask)
+    with %{address: ip_mask} <- ip(ip_mask_string, nil)
+    do
+      ip ip_address_string, mask_to_length(ip_mask)
+    end
   end
   def ip(ip_address_string, ip_address_length)
       when is_integer(ip_address_length)
@@ -632,8 +645,11 @@ defmodule NetAddr do
       
       iex> NetAddr.mac_48 "123456789aB"
       %NetAddr.MAC_48{address: <<0x12,0x34,0x56,0x78,0x9a,0xb>>, length: 48}
+      
+      iex> NetAddr.mac_48 "blarg"
+      {:error, :einval}
   """
-  @spec mac_48(binary) :: NetAddr.MAC_48.t
+  @spec mac_48(binary) :: NetAddr.MAC_48.t | {:error, :inval}
 
   def mac_48(mac_string) do
     mac_string
