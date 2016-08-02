@@ -5,7 +5,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.13.0">
-    <title>NetAddr – NetAddr v0.0.8</title>
+    <title>NetAddr – NetAddr v0.0.9</title>
     <link rel="stylesheet" href="dist/app-da94447278.css" />
     
     <script src="dist/sidebar_items.js"></script>
@@ -26,7 +26,7 @@
         NetAddr
       </h1>
       <h2 class="sidebar-projectVersion">
-        v0.0.8
+        v0.0.9
       </h2>
     </div>
     
@@ -61,7 +61,7 @@
 
 
       <h1>
-        <small class="visible-xs">NetAddr v0.0.8</small>
+        <small class="visible-xs">NetAddr v0.0.9</small>
         NetAddr
         
         
@@ -375,7 +375,7 @@ address length</p>
     </a>
     <span class="signature">address(netaddr)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L314" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L320" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -472,7 +472,7 @@ address length.</p>
     </a>
     <span class="signature">apply_mask(address, mask)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L659" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L675" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -503,7 +503,7 @@ address length.</p>
     </a>
     <span class="signature">aton(address)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L220" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L226" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -540,7 +540,7 @@ iex&gt; NetAddr.aton(&lt;&lt;1,2,3,4,5&gt;&gt;)
     </a>
     <span class="signature">broadcast(ipv4_netaddr)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L366" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L372" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -571,7 +571,7 @@ iex&gt; NetAddr.aton(&lt;&lt;1,2,3,4,5&gt;&gt;)
     </a>
     <span class="signature">contains?(netaddr1, netaddr2)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L683" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L699" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -612,7 +612,7 @@ false</code></pre>
     </a>
     <span class="signature">first_address(netaddr)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L326" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L332" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -634,7 +634,7 @@ false</code></pre>
     </a>
     <span class="signature">ip(ip_string)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L503" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L512" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -645,7 +645,10 @@ false</code></pre>
       <h4 class="specs-title">Specs</h4>
       <div class="specs-list">
         
-          <pre><code class="elixir">ip(<a href="http://elixir-lang.org/docs/stable/elixir/String.html#t:t/0">String.t</a>) :: <a href="NetAddr.IPv4.html#t:t/0">NetAddr.IPv4.t</a> | <a href="NetAddr.IPv6.html#t:t/0">NetAddr.IPv6.t</a></code></pre>
+          <pre><code class="elixir">ip(<a href="http://elixir-lang.org/docs/stable/elixir/String.html#t:t/0">String.t</a>) ::
+  <a href="NetAddr.IPv4.html#t:t/0">NetAddr.IPv4.t</a> |
+  <a href="NetAddr.IPv6.html#t:t/0">NetAddr.IPv6.t</a> |
+  {:error, :einval}</code></pre>
         
       </div>
     </div>
@@ -654,17 +657,20 @@ false</code></pre>
     <p>Parses <code class="inline">ip_string</code> as an IPv4/IPv6 address or CIDR, returning a
 <a href="NetAddr.IPv4.html#t:t/0"><code class="inline">NetAddr.IPv4.t/0</code></a> or <a href="NetAddr.IPv6.html#t:t/0"><code class="inline">NetAddr.IPv6.t/0</code></a> as appropriate.</p>
 <h2>Examples</h2>
-<pre><code class="iex elixir">iex&gt; NetAddr.ip(&quot;192.0.2.1&quot;)
+<pre><code class="iex elixir">iex&gt; NetAddr.ip &quot;192.0.2.1&quot;
 %NetAddr.IPv4{address: &lt;&lt;192,0,2,1&gt;&gt;, length: 32}
 
-iex&gt; NetAddr.ip(&quot;192.0.2.1/24&quot;)
+iex&gt; NetAddr.ip &quot;192.0.2.1/24&quot;
 %NetAddr.IPv4{address: &lt;&lt;192,0,2,1&gt;&gt;, length: 24}
 
-iex&gt; NetAddr.ip(&quot;fe80::c101&quot;)
+iex&gt; NetAddr.ip &quot;fe80::c101&quot;
 %NetAddr.IPv6{address: &lt;&lt;0xfe,0x80,0::12*8,0xc1,0x01&gt;&gt;, length: 128}
 
-iex&gt; NetAddr.ip(&quot;fe80::c101/64&quot;)
-%NetAddr.IPv6{address: &lt;&lt;0xfe,0x80,0::12*8,0xc1,0x01&gt;&gt;, length: 64}</code></pre>
+iex&gt; NetAddr.ip &quot;fe80::c101/64&quot;
+%NetAddr.IPv6{address: &lt;&lt;0xfe,0x80,0::12*8,0xc1,0x01&gt;&gt;, length: 64}
+
+iex&gt; NetAddr.ip &quot;blarg&quot;
+{:error, :einval}</code></pre>
 
   </section>
 </div>
@@ -675,7 +681,7 @@ iex&gt; NetAddr.ip(&quot;fe80::c101/64&quot;)
     </a>
     <span class="signature">ip(ip_address_string, ip_mask_string_or_length)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L531" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L543" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -688,11 +694,13 @@ iex&gt; NetAddr.ip(&quot;fe80::c101/64&quot;)
         
           <pre><code class="elixir">ip(<a href="http://elixir-lang.org/docs/stable/elixir/String.html#t:t/0">String.t</a>, <a href="http://elixir-lang.org/docs/stable/elixir/String.html#t:t/0">String.t</a>) ::
   <a href="NetAddr.IPv4.html#t:t/0">NetAddr.IPv4.t</a> |
-  <a href="NetAddr.IPv6.html#t:t/0">NetAddr.IPv6.t</a></code></pre>
+  <a href="NetAddr.IPv6.html#t:t/0">NetAddr.IPv6.t</a> |
+  {:error, :einval}</code></pre>
         
           <pre><code class="elixir">ip(<a href="http://elixir-lang.org/docs/stable/elixir/String.html#t:t/0">String.t</a>, non_neg_integer) ::
   <a href="NetAddr.IPv4.html#t:t/0">NetAddr.IPv4.t</a> |
-  <a href="NetAddr.IPv6.html#t:t/0">NetAddr.IPv6.t</a></code></pre>
+  <a href="NetAddr.IPv6.html#t:t/0">NetAddr.IPv6.t</a> |
+  {:error, :einval}</code></pre>
         
       </div>
     </div>
@@ -710,7 +718,10 @@ iex&gt; NetAddr.ip &quot;192.0.2.1&quot;, &quot;255.255.255.0&quot;
 %NetAddr.IPv4{address: &lt;&lt;192, 0, 2, 1&gt;&gt;, length: 24}
 
 iex&gt; NetAddr.ip &quot;fe80:0:c100::c401&quot;, 64
-%NetAddr.IPv6{address: &lt;&lt;254, 128, 0, 0, 193, 0, 0, 0, 0, 0, 0, 0, 0, 0, 196, 1&gt;&gt;, length: 64}</code></pre>
+%NetAddr.IPv6{address: &lt;&lt;254, 128, 0, 0, 193, 0, 0, 0, 0, 0, 0, 0, 0, 0, 196, 1&gt;&gt;, length: 64}
+
+iex&gt; NetAddr.ip &quot;blarg&quot;, 32
+{:error, :einval}</code></pre>
 
   </section>
 </div>
@@ -721,7 +732,7 @@ iex&gt; NetAddr.ip &quot;fe80:0:c100::c401&quot;, 64
     </a>
     <span class="signature">last_address(netaddr)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L342" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L348" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -743,7 +754,7 @@ iex&gt; NetAddr.ip &quot;fe80:0:c100::c401&quot;, 64
     </a>
     <span class="signature">length_to_mask(address_length, mask_length_in_bytes)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L167" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L173" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -780,7 +791,7 @@ iex&gt; NetAddr.length_to_mask(37, 6)
     </a>
     <span class="signature">mac_48(mac_string)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L638" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L654" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -791,7 +802,7 @@ iex&gt; NetAddr.length_to_mask(37, 6)
       <h4 class="specs-title">Specs</h4>
       <div class="specs-list">
         
-          <pre><code class="elixir">mac_48(binary) :: <a href="NetAddr.MAC_48.html#t:t/0">NetAddr.MAC_48.t</a></code></pre>
+          <pre><code class="elixir">mac_48(binary) :: <a href="NetAddr.MAC_48.html#t:t/0">NetAddr.MAC_48.t</a> | {:error, :inval}</code></pre>
         
       </div>
     </div>
@@ -823,7 +834,10 @@ iex&gt; NetAddr.mac_48 &quot;01-23-45-67-89-ag&quot;
 %NetAddr.MAC_48{address: &lt;&lt;0x01,0x23,0x45,0x67,0x89,0xa&gt;&gt;, length: 48}
 
 iex&gt; NetAddr.mac_48 &quot;123456789aB&quot;
-%NetAddr.MAC_48{address: &lt;&lt;0x12,0x34,0x56,0x78,0x9a,0xb&gt;&gt;, length: 48}</code></pre>
+%NetAddr.MAC_48{address: &lt;&lt;0x12,0x34,0x56,0x78,0x9a,0xb&gt;&gt;, length: 48}
+
+iex&gt; NetAddr.mac_48 &quot;blarg&quot;
+{:error, :einval}</code></pre>
 
   </section>
 </div>
@@ -834,7 +848,7 @@ iex&gt; NetAddr.mac_48 &quot;123456789aB&quot;
     </a>
     <span class="signature">mask_to_length(address_mask)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L187" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L193" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -865,7 +879,7 @@ iex&gt; NetAddr.mac_48 &quot;123456789aB&quot;
     </a>
     <span class="signature">netaddr(address)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L102" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L105" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -888,7 +902,10 @@ iex&gt; NetAddr.mac_48 &quot;123456789aB&quot;
 %NetAddr.MAC_48{address: &lt;&lt;1, 2, 3, 4, 5, 6&gt;&gt;, length: 48}
 
 iex&gt; NetAddr.netaddr(&lt;&lt;1, 2, 3, 4, 5&gt;&gt;)
-%NetAddr.Generic{address: &lt;&lt;1, 2, 3, 4, 5&gt;&gt;, length: 40}</code></pre>
+%NetAddr.Generic{address: &lt;&lt;1, 2, 3, 4, 5&gt;&gt;, length: 40}
+
+iex&gt; NetAddr.netaddr(&lt;&lt;128&gt;&gt;, 48)
+{:error, :einval}</code></pre>
 
   </section>
 </div>
@@ -899,7 +916,7 @@ iex&gt; NetAddr.netaddr(&lt;&lt;1, 2, 3, 4, 5&gt;&gt;)
     </a>
     <span class="signature">netaddr(address, address_length)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L112" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L115" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -928,7 +945,7 @@ address length.</p>
     </a>
     <span class="signature">netaddr(address, address_length, size_in_bytes)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L140" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L146" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -962,7 +979,7 @@ iex&gt; NetAddr.netaddr(&lt;&lt;1, 2, 3, 4, 5&gt;&gt;, 48, 6)
     </a>
     <span class="signature">netaddr_to_range(netaddr)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L258" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L264" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -993,7 +1010,7 @@ iex&gt; NetAddr.netaddr(&lt;&lt;1, 2, 3, 4, 5&gt;&gt;, 48, 6)
     </a>
     <span class="signature">netaddr_to_string(netaddr)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L439" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L445" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -1026,7 +1043,7 @@ iex&gt; NetAddr.netaddr(&lt;&lt;1, 2, 3, 4, 5&gt;&gt;, 48, 6)
     </a>
     <span class="signature">network(netaddr)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L383" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L389" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -1057,7 +1074,7 @@ iex&gt; NetAddr.netaddr(&lt;&lt;1, 2, 3, 4, 5&gt;&gt;, 48, 6)
     </a>
     <span class="signature">ntoa(decimal, size_in_bytes)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L242" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L248" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -1094,7 +1111,7 @@ iex&gt; NetAddr.ntoa 4328719365, 5
     </a>
     <span class="signature">prefix(netaddr)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L402" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L408" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -1128,7 +1145,7 @@ iex&gt; NetAddr.prefix %NetAddr.Generic{address: &lt;&lt;1, 2, 3, 4, 5&gt;&gt;, 
     </a>
     <span class="signature">range_to_netaddr(range, size_in_bytes)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L285" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L291" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -1159,7 +1176,7 @@ iex&gt; NetAddr.prefix %NetAddr.Generic{address: &lt;&lt;1, 2, 3, 4, 5&gt;&gt;, 
     </a>
     <span class="signature">subnet_mask(ipv4_netaddr)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L418" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L424" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
