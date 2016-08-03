@@ -716,6 +716,9 @@ defmodule NetAddr do
       
       iex> NetAddr.ip("192.0.2.0/25") |> NetAddr.contains?(NetAddr.ip("192.0.2.128/25"))
       false
+
+      iex> NetAddr.ip("192.0.2.3/31") |> NetAddr.contains?(NetAddr.ip("192.0.2.2"))
+      true
   """
   @spec contains?(NetAddr.t, NetAddr.t) :: boolean
 
@@ -724,13 +727,7 @@ defmodule NetAddr do
       when byte_size(a1) == byte_size(a2)
        and l1 <= l2
   do
-    address_size = byte_size n1.address
-
-    mask = length_to_mask n1.length, address_size
-
-    masked_address = apply_mask n2.address, mask
-
-    masked_address == n1.address
+    first_address(n1) == first_address(address_length(n2, l1))
   end
   def contains?(_, _) do
     false
