@@ -87,6 +87,29 @@ defmodule NetAddr do
   end
 
   @doc """
+  Returns size of `netaddr` in bytes.
+
+  ## Examples
+
+      iex> NetAddr.address_size NetAddr.ip("192.0.2.1")
+      4
+
+      iex> NetAddr.address_size NetAddr.ip("::")
+      16
+
+      iex> NetAddr.address_size NetAddr.mac_48("c0:ff:33:c0:ff:33")
+      6
+
+      iex> NetAddr.address_size NetAddr.netaddr(<<1, 2, 3, 4, 5>>)
+      5
+  """
+  @spec address_size(NetAddr.t) :: NetAddr.t
+
+  def address_size(netaddr) do
+    byte_size netaddr.address
+  end
+
+  @doc """
   Constructs a `t:NetAddr.t/0` struct given a network address binary.
 
   ## Examples
