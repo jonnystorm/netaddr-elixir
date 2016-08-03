@@ -720,16 +720,17 @@ defmodule NetAddr do
   @spec contains?(NetAddr.t, NetAddr.t) :: boolean
 
   def contains?(netaddr1, netaddr2)
-  def contains?(%{length: len1} = netaddr1, %{length: len2} = netaddr2)
-      when len1 <= len2
+  def contains?(%{address: a1, length: l1} = n1, %{address: a2, length: l2} = n2)
+      when byte_size(a1) == byte_size(a2)
+       and l1 <= l2
   do
-    address_size = byte_size netaddr1.address
+    address_size = byte_size n1.address
 
-    mask = length_to_mask netaddr1.length, address_size
+    mask = length_to_mask n1.length, address_size
 
-    masked_address = apply_mask netaddr2.address, mask
+    masked_address = apply_mask n2.address, mask
 
-    masked_address == netaddr1.address
+    masked_address == n1.address
   end
   def contains?(_, _) do
     false
