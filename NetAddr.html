@@ -5,7 +5,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.13.0">
-    <title>NetAddr – NetAddr v0.0.12</title>
+    <title>NetAddr – NetAddr v0.0.13</title>
     <link rel="stylesheet" href="dist/app-da94447278.css" />
     
     <script src="dist/sidebar_items.js"></script>
@@ -26,7 +26,7 @@
         NetAddr
       </h1>
       <h2 class="sidebar-projectVersion">
-        v0.0.12
+        v0.0.13
       </h2>
     </div>
     
@@ -61,7 +61,7 @@
 
 
       <h1>
-        <small class="visible-xs">NetAddr v0.0.12</small>
+        <small class="visible-xs">NetAddr v0.0.13</small>
         NetAddr
         
         
@@ -176,8 +176,7 @@ address length</p>
     <a href="#contains?/2">contains?(netaddr1, netaddr2)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Returns <code class="inline">true</code> if <code class="inline">netaddr2</code> is a subset of <code class="inline">netaddr1</code>, up to equality. Otherwise,
-returns <code class="inline">false</code></p>
+    <div class="summary-synopsis"><p>Tests whether <code class="inline">netaddr</code> contains <code class="inline">netaddr2</code>, up to equality</p>
 </div>
   
 </div>
@@ -206,6 +205,15 @@ returns <code class="inline">false</code></p>
   </div>
   
     <div class="summary-synopsis"><p>Parses <code class="inline">ip_address_string</code> with the given address length or <code class="inline">ip_mask_string</code></p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#is_ip/1">is_ip(string)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Tests whether <code class="inline">string</code> can be parsed as an IP address</p>
 </div>
   
 </div>
@@ -620,7 +628,7 @@ iex&gt; NetAddr.aton(&lt;&lt;1,2,3,4,5&gt;&gt;)
     </a>
     <span class="signature">contains?(netaddr1, netaddr2)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L725" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L724" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -637,8 +645,7 @@ iex&gt; NetAddr.aton(&lt;&lt;1,2,3,4,5&gt;&gt;)
     </div>
   
   <section class="docstring">
-    <p>Returns <code class="inline">true</code> if <code class="inline">netaddr2</code> is a subset of <code class="inline">netaddr1</code>, up to equality. Otherwise,
-returns <code class="inline">false</code>.</p>
+    <p>Tests whether <code class="inline">netaddr</code> contains <code class="inline">netaddr2</code>, up to equality.</p>
 <h2>Examples</h2>
 <pre><code class="iex elixir">iex&gt; NetAddr.ip(&quot;192.0.2.0/24&quot;) |&gt; NetAddr.contains?(NetAddr.ip(&quot;192.0.2.0/25&quot;))
 true
@@ -774,6 +781,49 @@ iex&gt; NetAddr.ip &quot;fe80:0:c100::c401&quot;, 64
 
 iex&gt; NetAddr.ip &quot;blarg&quot;, 32
 {:error, :einval}</code></pre>
+
+  </section>
+</div>
+<div class="detail" id="is_ip/1">
+  <div class="detail-header">
+    <a href="#is_ip/1" class="detail-link" title="Link to this function">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">is_ip(string)</span>
+    
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L757" class="view-source" rel="help" title="View Source">
+       <i class="icon-code"></i>
+     </a>
+    
+    
+  </div>
+  
+    <div class="specs">
+      <h4 class="specs-title">Specs</h4>
+      <div class="specs-list">
+        
+          <pre><code class="elixir">is_ip(<a href="http://elixir-lang.org/docs/stable/elixir/String.html#t:t/0">String.t</a>) :: boolean</code></pre>
+        
+      </div>
+    </div>
+  
+  <section class="docstring">
+    <p>Tests whether <code class="inline">string</code> can be parsed as an IP address.</p>
+<h2>Examples</h2>
+<pre><code class="iex elixir">iex&gt; NetAddr.is_ip(&quot;not an IP address&quot;)
+false
+
+iex&gt; NetAddr.is_ip(&quot;0.0.0.0/0&quot;)
+true
+
+iex&gt; NetAddr.is_ip(&quot;192.0.2.1&quot;)
+true
+
+iex&gt; NetAddr.is_ip(&quot;fe80:0:c100::c401&quot;)
+true
+
+iex&gt; NetAddr.is_ip(&quot;::/0&quot;)
+true</code></pre>
 
   </section>
 </div>
