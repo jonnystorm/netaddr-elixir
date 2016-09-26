@@ -700,8 +700,7 @@ defmodule NetAddr do
   end
 
   @doc """
-  Returns `true` if `netaddr2` is a subset of `netaddr1`, up to equality. Otherwise,
-  returns `false`.
+  Tests whether `netaddr` contains `netaddr2`, up to equality.
 
   ## Examples
 
@@ -732,6 +731,30 @@ defmodule NetAddr do
   def contains?(_, _) do
     false
   end
+
+  @doc """
+  Tests whether `string` can be parsed as an IP address.
+
+  ## Examples
+
+      iex> NetAddr.is_ip("not an IP address")
+      false
+
+      iex> NetAddr.is_ip("0.0.0.0/0")
+      true
+
+      iex> NetAddr.is_ip("192.0.2.1")
+      true
+
+      iex> NetAddr.is_ip("fe80:0:c100::c401")
+      true
+
+      iex> NetAddr.is_ip("::/0")
+      true
+  """
+  @spec is_ip(String.t) :: boolean
+
+  def is_ip(string), do: NetAddr.ip(string) != {:error, :einval}
 end
 
 
