@@ -219,6 +219,24 @@ address length</p>
 </div>
 <div class="summary-row">
   <div class="summary-signature">
+    <a href="#is_ipv4/1">is_ipv4(string)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Tests whether <code class="inline">string</code> can be parsed as an IPv4 address</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#is_ipv6/1">is_ipv6(string)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Tests whether <code class="inline">string</code> can be parsed as an IPv6 address</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
     <a href="#last_address/1">last_address(netaddr)</a>
   </div>
   
@@ -823,6 +841,92 @@ iex&gt; NetAddr.is_ip(&quot;fe80:0:c100::c401&quot;)
 true
 
 iex&gt; NetAddr.is_ip(&quot;::/0&quot;)
+true</code></pre>
+
+  </section>
+</div>
+<div class="detail" id="is_ipv4/1">
+  <div class="detail-header">
+    <a href="#is_ipv4/1" class="detail-link" title="Link to this function">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">is_ipv4(string)</span>
+    
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L781" class="view-source" rel="help" title="View Source">
+       <i class="icon-code"></i>
+     </a>
+    
+    
+  </div>
+  
+    <div class="specs">
+      <h4 class="specs-title">Specs</h4>
+      <div class="specs-list">
+        
+          <pre><code class="elixir">is_ipv4(<a href="http://elixir-lang.org/docs/stable/elixir/String.html#t:t/0">String.t</a>) :: boolean</code></pre>
+        
+      </div>
+    </div>
+  
+  <section class="docstring">
+    <p>Tests whether <code class="inline">string</code> can be parsed as an IPv4 address.</p>
+<h2>Examples</h2>
+<pre><code class="iex elixir">iex&gt; NetAddr.is_ipv4(&quot;not an IP address&quot;)
+false
+
+iex&gt; NetAddr.is_ipv4(&quot;0.0.0.0/0&quot;)
+true
+
+iex&gt; NetAddr.is_ipv4(&quot;192.0.2.1&quot;)
+true
+
+iex&gt; NetAddr.is_ipv4(&quot;fe80:0:c100::c401&quot;)
+false
+
+iex&gt; NetAddr.is_ipv4(&quot;::/0&quot;)
+false</code></pre>
+
+  </section>
+</div>
+<div class="detail" id="is_ipv6/1">
+  <div class="detail-header">
+    <a href="#is_ipv6/1" class="detail-link" title="Link to this function">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">is_ipv6(string)</span>
+    
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L810" class="view-source" rel="help" title="View Source">
+       <i class="icon-code"></i>
+     </a>
+    
+    
+  </div>
+  
+    <div class="specs">
+      <h4 class="specs-title">Specs</h4>
+      <div class="specs-list">
+        
+          <pre><code class="elixir">is_ipv6(<a href="http://elixir-lang.org/docs/stable/elixir/String.html#t:t/0">String.t</a>) :: boolean</code></pre>
+        
+      </div>
+    </div>
+  
+  <section class="docstring">
+    <p>Tests whether <code class="inline">string</code> can be parsed as an IPv6 address.</p>
+<h2>Examples</h2>
+<pre><code class="iex elixir">iex&gt; NetAddr.is_ipv6(&quot;not an IP address&quot;)
+false
+
+iex&gt; NetAddr.is_ipv6(&quot;0.0.0.0/0&quot;)
+false
+
+iex&gt; NetAddr.is_ipv6(&quot;192.0.2.1&quot;)
+false
+
+iex&gt; NetAddr.is_ipv6(&quot;fe80:0:c100::c401&quot;)
+true
+
+iex&gt; NetAddr.is_ipv6(&quot;::/0&quot;)
 true</code></pre>
 
   </section>
