@@ -733,6 +733,29 @@ defmodule NetAddr do
   end
 
   @doc """
+  Tests whether `netaddr` has length equal to its size in bits.
+
+  ## Examples
+
+      iex> NetAddr.is_host_address(NetAddr.ip("0.0.0.0/0"))
+      false
+
+      iex> NetAddr.is_host_address(NetAddr.ip("192.0.2.1"))
+      true
+
+      iex> NetAddr.is_host_address(NetAddr.ip("fe80:0:c100::c401"))
+      true
+
+      iex> NetAddr.is_host_address(NetAddr.ip("::/0"))
+      false
+  """
+  @spec is_host_address(NetAddr.t) :: boolean
+
+  def is_host_address(netaddr) do
+    NetAddr.address_size(netaddr) * 8 == NetAddr.address_length(netaddr)
+  end
+
+  @doc """
   Tests whether `string` can be parsed as an IP address.
 
   ## Examples
