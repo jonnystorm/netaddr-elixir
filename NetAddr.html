@@ -5,7 +5,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.13.0">
-    <title>NetAddr – NetAddr v0.0.14</title>
+    <title>NetAddr – NetAddr v0.0.15</title>
     <link rel="stylesheet" href="dist/app-da94447278.css" />
     
     <script src="dist/sidebar_items.js"></script>
@@ -26,7 +26,7 @@
         NetAddr
       </h1>
       <h2 class="sidebar-projectVersion">
-        v0.0.14
+        v0.0.15
       </h2>
     </div>
     
@@ -61,7 +61,7 @@
 
 
       <h1>
-        <small class="visible-xs">NetAddr v0.0.14</small>
+        <small class="visible-xs">NetAddr v0.0.15</small>
         NetAddr
         
         
@@ -205,6 +205,15 @@ address length</p>
   </div>
   
     <div class="summary-synopsis"><p>Parses <code class="inline">ip_address_string</code> with the given address length or <code class="inline">ip_mask_string</code></p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#is_host_address/1">is_host_address(netaddr)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Tests whether <code class="inline">netaddr</code> has length equal to its size in bits</p>
 </div>
   
 </div>
@@ -802,6 +811,46 @@ iex&gt; NetAddr.ip &quot;blarg&quot;, 32
 
   </section>
 </div>
+<div class="detail" id="is_host_address/1">
+  <div class="detail-header">
+    <a href="#is_host_address/1" class="detail-link" title="Link to this function">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">is_host_address(netaddr)</span>
+    
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L754" class="view-source" rel="help" title="View Source">
+       <i class="icon-code"></i>
+     </a>
+    
+    
+  </div>
+  
+    <div class="specs">
+      <h4 class="specs-title">Specs</h4>
+      <div class="specs-list">
+        
+          <pre><code class="elixir">is_host_address(<a href="NetAddr.html#t:t/0">NetAddr.t</a>) :: boolean</code></pre>
+        
+      </div>
+    </div>
+  
+  <section class="docstring">
+    <p>Tests whether <code class="inline">netaddr</code> has length equal to its size in bits.</p>
+<h2>Examples</h2>
+<pre><code class="iex elixir">iex&gt; NetAddr.is_host_address(NetAddr.ip(&quot;0.0.0.0/0&quot;))
+false
+
+iex&gt; NetAddr.is_host_address(NetAddr.ip(&quot;192.0.2.1&quot;))
+true
+
+iex&gt; NetAddr.is_host_address(NetAddr.ip(&quot;fe80:0:c100::c401&quot;))
+true
+
+iex&gt; NetAddr.is_host_address(NetAddr.ip(&quot;::/0&quot;))
+false</code></pre>
+
+  </section>
+</div>
 <div class="detail" id="is_ip/1">
   <div class="detail-header">
     <a href="#is_ip/1" class="detail-link" title="Link to this function">
@@ -809,7 +858,7 @@ iex&gt; NetAddr.ip &quot;blarg&quot;, 32
     </a>
     <span class="signature">is_ip(string)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L757" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L780" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -852,7 +901,7 @@ true</code></pre>
     </a>
     <span class="signature">is_ipv4(string)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L781" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L804" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -895,7 +944,7 @@ false</code></pre>
     </a>
     <span class="signature">is_ipv6(string)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L810" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L833" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
