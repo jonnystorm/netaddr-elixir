@@ -3,13 +3,13 @@ defmodule NetAddr.Mixfile do
 
   def project do
     [ app: :netaddr_ex,
-      version: "0.0.15",
+      version: "0.0.16",
       name: "NetAddr",
       source_url: "https://github.com/jonnystorm/netaddr-elixir",
       elixir: "~> 1.2",
       build_embedded: Mix.env == :prod,
       start_permanent: Mix.env == :prod,
-      deps: deps,
+      deps: deps(),
       docs: [extras: ["README.md"]]
     ]
   end

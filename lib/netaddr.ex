@@ -231,6 +231,20 @@ defmodule NetAddr do
   end
 
   @doc """
+  Converts a `t:NetAddr.t/0` to a list of bytes.
+
+  ## Examples
+
+      iex> NetAddr.ip("192.0.2.3/24") |> NetAddr.netaddr_to_list
+      [192, 0, 2, 3]
+  """
+  @spec netaddr_to_list(NetAddr.t) :: [0..255]
+
+  def netaddr_to_list(netaddr) do
+    :binary.bin_to_list(netaddr.address)
+  end
+
+  @doc """
   Converts `address` to a decimal.
 
   ## Examples
