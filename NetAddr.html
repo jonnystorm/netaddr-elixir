@@ -4,14 +4,14 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="generator" content="ExDoc v0.13.0">
-    <title>NetAddr – NetAddr v0.0.16</title>
-    <link rel="stylesheet" href="dist/app-da94447278.css" />
+    <meta name="generator" content="ExDoc v0.15.0">
+    <title>NetAddr – NetAddr v1.0.0</title>
+    <link rel="stylesheet" href="dist/app-5f4a88fed9.css" />
     
-    <script src="dist/sidebar_items.js"></script>
+    <script src="dist/sidebar_items-b8b6f5a878.js"></script>
   </head>
   <body data-type="modules">
-    <script>if(localStorage.getItem('night-mode')) document.body.className += ' night-mode';</script>
+    <script>try { if(localStorage.getItem('night-mode')) document.body.className += ' night-mode'; } catch (e) { }</script>
 
     <div class="main">
 <button class="sidebar-toggle">
@@ -26,7 +26,7 @@
         NetAddr
       </h1>
       <h2 class="sidebar-projectVersion">
-        v0.0.16
+        v1.0.0
       </h2>
     </div>
     
@@ -50,9 +50,8 @@
       <li><a id="protocols-list" href="#full-list">Protocols</a></li>
     
   </ul>
-
+  <div class="gradient"></div>
   <ul id="full-list" class="sidebar-fullList"></ul>
-  <div class="sidebar-noResults"></div>
 </section>
 
 <section class="content">
@@ -61,7 +60,7 @@
 
 
       <h1>
-        <small class="visible-xs">NetAddr v0.0.16</small>
+        <small class="visible-xs">NetAddr v1.0.0</small>
         NetAddr
         
         
@@ -93,6 +92,12 @@ for addresses of arbitrary size.</p>
       <a href="#types">Types</a>
     </h2>
     <div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:generic_len/0">generic_len()</a>
+  </div>
+  
+</div>
+<div class="summary-row">
   <div class="summary-signature">
     <a href="#t:t/0">t()</a>
   </div>
@@ -195,7 +200,7 @@ address length</p>
   </div>
   
     <div class="summary-synopsis"><p>Parses <code class="inline">ip_string</code> as an IPv4/IPv6 address or CIDR, returning a
-<a href="NetAddr.IPv4.html#t:t/0"><code class="inline">NetAddr.IPv4.t/0</code></a> or <a href="NetAddr.IPv6.html#t:t/0"><code class="inline">NetAddr.IPv6.t/0</code></a> as appropriate</p>
+<code class="inline">t:IPv4.t/0</code> or <code class="inline">t:IPv6.t/0</code> as appropriate</p>
 </div>
   
 </div>
@@ -267,7 +272,7 @@ address length</p>
     <a href="#mac_48/1">mac_48(mac_string)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Parses <code class="inline">mac_string</code>, returning a <a href="NetAddr.MAC_48.html#t:t/0"><code class="inline">NetAddr.MAC_48.t/0</code></a></p>
+    <div class="summary-synopsis"><p>Parses <code class="inline">mac_string</code>, returning a <code class="inline">t:MAC_48.t/0</code></p>
 </div>
   
 </div>
@@ -304,7 +309,7 @@ address length</p>
     <a href="#netaddr/3">netaddr(address, address_length, size_in_bytes)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Explicitly constructs a <a href="NetAddr.Generic.html#t:t/0"><code class="inline">NetAddr.Generic.t/0</code></a> struct</p>
+    <div class="summary-synopsis"><p>Explicitly constructs a <code class="inline">t:Generic.t/0</code> struct</p>
 </div>
   
 </div>
@@ -386,13 +391,11 @@ address length</p>
 
           
 
-          
-
         </section>
       
 
       
-        <section id="types" class="types details-list">
+        <section id="types" class="details-list">
           <h1 class="section-heading">
             <a class="hover-link" href="#types">
               <i class="icon-link"></i>
@@ -400,13 +403,59 @@ address length</p>
             Types
           </h1>
           <div class="types-list">
-            <div id="t:t/0" class="type-detail">
-  <pre><code class="elixir"><a href="#t:t/0">t</a> ::
+            <div class="detail" id="t:generic_len/0">
+  
+  <div class="detail-header">
+    <a href="#t:generic_len/0" class="detail-link" title="Link to this type">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">generic_len()</span>
+    
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L134" class="view-source" rel="help" title="View Source">
+       <i class="icon-code"></i>
+     </a>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>generic_len() :: 0..31</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="t:t/0">
+  
+  <div class="detail-header">
+    <a href="#t:t/0" class="detail-link" title="Link to this type">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">t()</span>
+    
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L20" class="view-source" rel="help" title="View Source">
+       <i class="icon-code"></i>
+     </a>
+    
+    
+    
+      <div class="specs">
+        
+          <pre><a href="#t:t/0">t</a> ::
   <a href="NetAddr.Generic.html#t:t/0">NetAddr.Generic.t</a> |
   <a href="NetAddr.IPv4.html#t:t/0">NetAddr.IPv4.t</a> |
   <a href="NetAddr.IPv6.html#t:t/0">NetAddr.IPv6.t</a> |
-  <a href="NetAddr.MAC_48.html#t:t/0">NetAddr.MAC_48.t</a></code></pre>
-  
+  <a href="NetAddr.MAC_48.html#t:t/0">NetAddr.MAC_48.t</a></pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
 </div>
 
           </div>
@@ -422,31 +471,33 @@ address length</p>
             Functions
           </h1>
           <div class="detail" id="address/1">
+  
   <div class="detail-header">
     <a href="#address/1" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
     <span class="signature">address(netaddr)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L357" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L364" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
     
-  </div>
-  
-    <div class="specs">
-      <h4 class="specs-title">Specs</h4>
-      <div class="specs-list">
+    
+      <div class="specs">
         
-          <pre><code class="elixir">address(<a href="NetAddr.html#t:t/0">NetAddr.t</a>) :: <a href="http://elixir-lang.org/docs/stable/elixir/String.html#t:t/0">String.t</a></code></pre>
+          <pre>address(<a href="NetAddr.html#t:t/0">NetAddr.t</a>) :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a></pre>
         
       </div>
-    </div>
-  
+    
+  </div>
   <section class="docstring">
     <p>Returns a human-readable string for the address part of <code class="inline">netaddr</code>.</p>
-<h2>Examples</h2>
+<h2 id="address/1-examples" class="section-heading">
+  <a href="#address/1-examples" class="hover-link"><i class="icon-link"></i></a>
+  Examples
+</h2>
+
 <pre><code class="iex elixir">iex&gt; NetAddr.address NetAddr.ip(&quot;192.0.2.1/24&quot;)
 &quot;192.0.2.1&quot;
 
@@ -456,94 +507,100 @@ iex&gt; NetAddr.address NetAddr.netaddr(&lt;&lt;1, 2, 3, 4, 5&gt;&gt;)
   </section>
 </div>
 <div class="detail" id="address_length/1">
+  
   <div class="detail-header">
     <a href="#address_length/1" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
     <span class="signature">address_length(netaddr)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L70" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L72" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
     
-  </div>
-  
-    <div class="specs">
-      <h4 class="specs-title">Specs</h4>
-      <div class="specs-list">
+    
+      <div class="specs">
         
-          <pre><code class="elixir">address_length(<a href="NetAddr.html#t:t/0">NetAddr.t</a>) :: non_neg_integer</code></pre>
+          <pre>address_length(<a href="NetAddr.html#t:t/0">NetAddr.t</a>) :: non_neg_integer</pre>
         
       </div>
-    </div>
-  
+    
+  </div>
   <section class="docstring">
     <p>Return the address length of <code class="inline">netaddr</code>.</p>
-<h2>Examples</h2>
+<h2 id="address_length/1-examples" class="section-heading">
+  <a href="#address_length/1-examples" class="hover-link"><i class="icon-link"></i></a>
+  Examples
+</h2>
+
 <pre><code class="iex elixir">iex&gt; NetAddr.address_length NetAddr.ip(&quot;192.0.2.1/24&quot;)
 24</code></pre>
 
   </section>
 </div>
 <div class="detail" id="address_length/2">
+  
   <div class="detail-header">
     <a href="#address_length/2" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
     <span class="signature">address_length(netaddr, new_length)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L85" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L87" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
     
-  </div>
-  
-    <div class="specs">
-      <h4 class="specs-title">Specs</h4>
-      <div class="specs-list">
+    
+      <div class="specs">
         
-          <pre><code class="elixir">address_length(<a href="NetAddr.html#t:t/0">NetAddr.t</a>, pos_integer) :: <a href="NetAddr.html#t:t/0">NetAddr.t</a></code></pre>
+          <pre>address_length(<a href="NetAddr.html#t:t/0">NetAddr.t</a>, pos_integer) :: <a href="NetAddr.html#t:t/0">NetAddr.t</a></pre>
         
       </div>
-    </div>
-  
+    
+  </div>
   <section class="docstring">
     <p>Returns a new <a href="NetAddr.html#t:t/0"><code class="inline">NetAddr.t/0</code></a> with the address part of <code class="inline">netaddr</code> and the given
 address length.</p>
-<h2>Examples</h2>
+<h2 id="address_length/2-examples" class="section-heading">
+  <a href="#address_length/2-examples" class="hover-link"><i class="icon-link"></i></a>
+  Examples
+</h2>
+
 <pre><code class="iex elixir">iex&gt; NetAddr.ip(&quot;192.0.2.1/24&quot;) |&gt; NetAddr.address_length(22)
 %NetAddr.IPv4{address: &lt;&lt;192, 0, 2, 1&gt;&gt;, length: 22}</code></pre>
 
   </section>
 </div>
 <div class="detail" id="address_size/1">
+  
   <div class="detail-header">
     <a href="#address_size/1" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
     <span class="signature">address_size(netaddr)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L108" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L110" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
     
-  </div>
-  
-    <div class="specs">
-      <h4 class="specs-title">Specs</h4>
-      <div class="specs-list">
+    
+      <div class="specs">
         
-          <pre><code class="elixir">address_size(<a href="NetAddr.html#t:t/0">NetAddr.t</a>) :: <a href="NetAddr.html#t:t/0">NetAddr.t</a></code></pre>
+          <pre>address_size(<a href="NetAddr.html#t:t/0">NetAddr.t</a>) :: pos_integer</pre>
         
       </div>
-    </div>
-  
+    
+  </div>
   <section class="docstring">
     <p>Returns size of <code class="inline">netaddr</code> in bytes.</p>
-<h2>Examples</h2>
+<h2 id="address_size/1-examples" class="section-heading">
+  <a href="#address_size/1-examples" class="hover-link"><i class="icon-link"></i></a>
+  Examples
+</h2>
+
 <pre><code class="iex elixir">iex&gt; NetAddr.address_size NetAddr.ip(&quot;192.0.2.1&quot;)
 4
 
@@ -559,62 +616,66 @@ iex&gt; NetAddr.address_size NetAddr.netaddr(&lt;&lt;1, 2, 3, 4, 5&gt;&gt;)
   </section>
 </div>
 <div class="detail" id="apply_mask/2">
+  
   <div class="detail-header">
     <a href="#apply_mask/2" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
     <span class="signature">apply_mask(address, mask)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L712" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L724" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
     
-  </div>
-  
-    <div class="specs">
-      <h4 class="specs-title">Specs</h4>
-      <div class="specs-list">
+    
+      <div class="specs">
         
-          <pre><code class="elixir">apply_mask(binary, binary) :: binary</code></pre>
+          <pre>apply_mask(binary, binary) :: binary</pre>
         
       </div>
-    </div>
-  
+    
+  </div>
   <section class="docstring">
     <p>Bitwise ANDs two address binaries, returning the result.</p>
-<h2>Examples</h2>
+<h2 id="apply_mask/2-examples" class="section-heading">
+  <a href="#apply_mask/2-examples" class="hover-link"><i class="icon-link"></i></a>
+  Examples
+</h2>
+
 <pre><code class="iex elixir">iex&gt; NetAddr.apply_mask &lt;&lt;192, 0, 2, 1&gt;&gt;, &lt;&lt;255, 255, 255, 0&gt;&gt;
 &lt;&lt;192, 0, 2, 0&gt;&gt;</code></pre>
 
   </section>
 </div>
 <div class="detail" id="aton/1">
+  
   <div class="detail-header">
     <a href="#aton/1" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
     <span class="signature">aton(address)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L263" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L270" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
     
-  </div>
-  
-    <div class="specs">
-      <h4 class="specs-title">Specs</h4>
-      <div class="specs-list">
+    
+      <div class="specs">
         
-          <pre><code class="elixir">aton(binary) :: non_neg_integer</code></pre>
+          <pre>aton(binary) :: non_neg_integer</pre>
         
       </div>
-    </div>
-  
+    
+  </div>
   <section class="docstring">
     <p>Converts <code class="inline">address</code> to a decimal.</p>
-<h2>Examples</h2>
+<h2 id="aton/1-examples" class="section-heading">
+  <a href="#aton/1-examples" class="hover-link"><i class="icon-link"></i></a>
+  Examples
+</h2>
+
 <pre><code class="iex elixir">iex&gt; NetAddr.aton &lt;&lt;192,0,2,1&gt;&gt;
 3221225985
 
@@ -627,62 +688,66 @@ iex&gt; NetAddr.aton(&lt;&lt;1,2,3,4,5&gt;&gt;)
   </section>
 </div>
 <div class="detail" id="broadcast/1">
+  
   <div class="detail-header">
     <a href="#broadcast/1" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
     <span class="signature">broadcast(ipv4_netaddr)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L409" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L420" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
     
-  </div>
-  
-    <div class="specs">
-      <h4 class="specs-title">Specs</h4>
-      <div class="specs-list">
+    
+      <div class="specs">
         
-          <pre><code class="elixir">broadcast(<a href="NetAddr.IPv4.html#t:t/0">NetAddr.IPv4.t</a>) :: <a href="http://elixir-lang.org/docs/stable/elixir/String.html#t:t/0">String.t</a></code></pre>
+          <pre>broadcast(<a href="NetAddr.IPv4.html#t:t/0">NetAddr.IPv4.t</a>) :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a></pre>
         
       </div>
-    </div>
-  
+    
+  </div>
   <section class="docstring">
     <p>Returns a human-readable string for the last address in <code class="inline">ipv4_netaddr</code>.</p>
-<h2>Examples</h2>
+<h2 id="broadcast/1-examples" class="section-heading">
+  <a href="#broadcast/1-examples" class="hover-link"><i class="icon-link"></i></a>
+  Examples
+</h2>
+
 <pre><code class="iex elixir">iex&gt; NetAddr.broadcast NetAddr.ip(&quot;192.0.2.1/24&quot;)
 &quot;192.0.2.255&quot;</code></pre>
 
   </section>
 </div>
 <div class="detail" id="contains?/2">
+  
   <div class="detail-header">
     <a href="#contains?/2" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
     <span class="signature">contains?(netaddr1, netaddr2)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L738" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L750" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
     
-  </div>
-  
-    <div class="specs">
-      <h4 class="specs-title">Specs</h4>
-      <div class="specs-list">
+    
+      <div class="specs">
         
-          <pre><code class="elixir">contains?(<a href="NetAddr.html#t:t/0">NetAddr.t</a>, <a href="NetAddr.html#t:t/0">NetAddr.t</a>) :: boolean</code></pre>
+          <pre>contains?(<a href="NetAddr.html#t:t/0">NetAddr.t</a>, <a href="NetAddr.html#t:t/0">NetAddr.t</a>) :: boolean</pre>
         
       </div>
-    </div>
-  
+    
+  </div>
   <section class="docstring">
     <p>Tests whether <code class="inline">netaddr</code> contains <code class="inline">netaddr2</code>, up to equality.</p>
-<h2>Examples</h2>
+<h2 id="contains?/2-examples" class="section-heading">
+  <a href="#contains?/2-examples" class="hover-link"><i class="icon-link"></i></a>
+  Examples
+</h2>
+
 <pre><code class="iex elixir">iex&gt; NetAddr.ip(&quot;192.0.2.0/24&quot;) |&gt; NetAddr.contains?(NetAddr.ip(&quot;192.0.2.0/25&quot;))
 true
 
@@ -701,57 +766,70 @@ true</code></pre>
   </section>
 </div>
 <div class="detail" id="first_address/1">
+  
   <div class="detail-header">
     <a href="#first_address/1" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
     <span class="signature">first_address(netaddr)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L369" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L378" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
     
+    
+      <div class="specs">
+        
+          <pre>first_address(<a href="NetAddr.html#t:t/0">NetAddr.t</a>) :: <a href="NetAddr.html#t:t/0">NetAddr.t</a></pre>
+        
+      </div>
+    
   </div>
-  
   <section class="docstring">
     <p>Returns a new <a href="NetAddr.html#t:t/0"><code class="inline">NetAddr.t/0</code></a> with the first address in <code class="inline">netaddr</code>.</p>
-<h2>Examples</h2>
+<h2 id="first_address/1-examples" class="section-heading">
+  <a href="#first_address/1-examples" class="hover-link"><i class="icon-link"></i></a>
+  Examples
+</h2>
+
 <pre><code class="iex elixir">iex&gt; NetAddr.first_address NetAddr.ip(&quot;192.0.2.1/24&quot;)
 %NetAddr.IPv4{address: &lt;&lt;192, 0, 2, 0&gt;&gt;, length: 24}</code></pre>
 
   </section>
 </div>
 <div class="detail" id="ip/1">
+  
   <div class="detail-header">
     <a href="#ip/1" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
     <span class="signature">ip(ip_string)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L549" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L560" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
     
-  </div>
-  
-    <div class="specs">
-      <h4 class="specs-title">Specs</h4>
-      <div class="specs-list">
+    
+      <div class="specs">
         
-          <pre><code class="elixir">ip(<a href="http://elixir-lang.org/docs/stable/elixir/String.html#t:t/0">String.t</a>) ::
+          <pre>ip(<a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>) ::
   <a href="NetAddr.IPv4.html#t:t/0">NetAddr.IPv4.t</a> |
   <a href="NetAddr.IPv6.html#t:t/0">NetAddr.IPv6.t</a> |
-  {:error, :einval}</code></pre>
+  {:error, :einval}</pre>
         
       </div>
-    </div>
-  
+    
+  </div>
   <section class="docstring">
     <p>Parses <code class="inline">ip_string</code> as an IPv4/IPv6 address or CIDR, returning a
-<a href="NetAddr.IPv4.html#t:t/0"><code class="inline">NetAddr.IPv4.t/0</code></a> or <a href="NetAddr.IPv6.html#t:t/0"><code class="inline">NetAddr.IPv6.t/0</code></a> as appropriate.</p>
-<h2>Examples</h2>
+<code class="inline">t:IPv4.t/0</code> or <code class="inline">t:IPv6.t/0</code> as appropriate.</p>
+<h2 id="ip/1-examples" class="section-heading">
+  <a href="#ip/1-examples" class="hover-link"><i class="icon-link"></i></a>
+  Examples
+</h2>
+
 <pre><code class="iex elixir">iex&gt; NetAddr.ip &quot;192.0.2.1&quot;
 %NetAddr.IPv4{address: &lt;&lt;192,0,2,1&gt;&gt;, length: 32}
 
@@ -770,39 +848,46 @@ iex&gt; NetAddr.ip &quot;blarg&quot;
   </section>
 </div>
 <div class="detail" id="ip/2">
+  
   <div class="detail-header">
     <a href="#ip/2" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
     <span class="signature">ip(ip_address_string, ip_mask_string_or_length)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L580" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L592" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
     
-  </div>
-  
-    <div class="specs">
-      <h4 class="specs-title">Specs</h4>
-      <div class="specs-list">
+    
+      <div class="specs">
         
-          <pre><code class="elixir">ip(<a href="http://elixir-lang.org/docs/stable/elixir/String.html#t:t/0">String.t</a>, <a href="http://elixir-lang.org/docs/stable/elixir/String.html#t:t/0">String.t</a>) ::
+          <pre>ip(<a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>, nil) ::
   <a href="NetAddr.IPv4.html#t:t/0">NetAddr.IPv4.t</a> |
   <a href="NetAddr.IPv6.html#t:t/0">NetAddr.IPv6.t</a> |
-  {:error, :einval}</code></pre>
+  {:error, :einval}</pre>
         
-          <pre><code class="elixir">ip(<a href="http://elixir-lang.org/docs/stable/elixir/String.html#t:t/0">String.t</a>, non_neg_integer) ::
+          <pre>ip(<a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>, <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>) ::
   <a href="NetAddr.IPv4.html#t:t/0">NetAddr.IPv4.t</a> |
   <a href="NetAddr.IPv6.html#t:t/0">NetAddr.IPv6.t</a> |
-  {:error, :einval}</code></pre>
+  {:error, :einval}</pre>
+        
+          <pre>ip(<a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>, non_neg_integer) ::
+  <a href="NetAddr.IPv4.html#t:t/0">NetAddr.IPv4.t</a> |
+  <a href="NetAddr.IPv6.html#t:t/0">NetAddr.IPv6.t</a> |
+  {:error, :einval}</pre>
         
       </div>
-    </div>
-  
+    
+  </div>
   <section class="docstring">
     <p>Parses <code class="inline">ip_address_string</code> with the given address length or <code class="inline">ip_mask_string</code>.</p>
-<h2>Examples</h2>
+<h2 id="ip/2-examples" class="section-heading">
+  <a href="#ip/2-examples" class="hover-link"><i class="icon-link"></i></a>
+  Examples
+</h2>
+
 <pre><code class="iex elixir">iex&gt; NetAddr.ip &quot;0.0.0.0&quot;, 0
 %NetAddr.IPv4{address: &lt;&lt;0, 0, 0, 0&gt;&gt;, length: 0}
 
@@ -821,31 +906,33 @@ iex&gt; NetAddr.ip &quot;blarg&quot;, 32
   </section>
 </div>
 <div class="detail" id="is_host_address/1">
+  
   <div class="detail-header">
     <a href="#is_host_address/1" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
     <span class="signature">is_host_address(netaddr)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L768" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L780" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
     
-  </div>
-  
-    <div class="specs">
-      <h4 class="specs-title">Specs</h4>
-      <div class="specs-list">
+    
+      <div class="specs">
         
-          <pre><code class="elixir">is_host_address(<a href="NetAddr.html#t:t/0">NetAddr.t</a>) :: boolean</code></pre>
+          <pre>is_host_address(<a href="NetAddr.html#t:t/0">NetAddr.t</a>) :: boolean</pre>
         
       </div>
-    </div>
-  
+    
+  </div>
   <section class="docstring">
     <p>Tests whether <code class="inline">netaddr</code> has length equal to its size in bits.</p>
-<h2>Examples</h2>
+<h2 id="is_host_address/1-examples" class="section-heading">
+  <a href="#is_host_address/1-examples" class="hover-link"><i class="icon-link"></i></a>
+  Examples
+</h2>
+
 <pre><code class="iex elixir">iex&gt; NetAddr.is_host_address(NetAddr.ip(&quot;0.0.0.0/0&quot;))
 false
 
@@ -861,31 +948,33 @@ false</code></pre>
   </section>
 </div>
 <div class="detail" id="is_ip/1">
+  
   <div class="detail-header">
     <a href="#is_ip/1" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
     <span class="signature">is_ip(string)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L794" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L806" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
     
-  </div>
-  
-    <div class="specs">
-      <h4 class="specs-title">Specs</h4>
-      <div class="specs-list">
+    
+      <div class="specs">
         
-          <pre><code class="elixir">is_ip(<a href="http://elixir-lang.org/docs/stable/elixir/String.html#t:t/0">String.t</a>) :: boolean</code></pre>
+          <pre>is_ip(<a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>) :: boolean</pre>
         
       </div>
-    </div>
-  
+    
+  </div>
   <section class="docstring">
     <p>Tests whether <code class="inline">string</code> can be parsed as an IP address.</p>
-<h2>Examples</h2>
+<h2 id="is_ip/1-examples" class="section-heading">
+  <a href="#is_ip/1-examples" class="hover-link"><i class="icon-link"></i></a>
+  Examples
+</h2>
+
 <pre><code class="iex elixir">iex&gt; NetAddr.is_ip(&quot;not an IP address&quot;)
 false
 
@@ -904,31 +993,33 @@ true</code></pre>
   </section>
 </div>
 <div class="detail" id="is_ipv4/1">
+  
   <div class="detail-header">
     <a href="#is_ipv4/1" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
     <span class="signature">is_ipv4(string)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L818" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L830" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
     
-  </div>
-  
-    <div class="specs">
-      <h4 class="specs-title">Specs</h4>
-      <div class="specs-list">
+    
+      <div class="specs">
         
-          <pre><code class="elixir">is_ipv4(<a href="http://elixir-lang.org/docs/stable/elixir/String.html#t:t/0">String.t</a>) :: boolean</code></pre>
+          <pre>is_ipv4(<a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>) :: boolean</pre>
         
       </div>
-    </div>
-  
+    
+  </div>
   <section class="docstring">
     <p>Tests whether <code class="inline">string</code> can be parsed as an IPv4 address.</p>
-<h2>Examples</h2>
+<h2 id="is_ipv4/1-examples" class="section-heading">
+  <a href="#is_ipv4/1-examples" class="hover-link"><i class="icon-link"></i></a>
+  Examples
+</h2>
+
 <pre><code class="iex elixir">iex&gt; NetAddr.is_ipv4(&quot;not an IP address&quot;)
 false
 
@@ -947,31 +1038,33 @@ false</code></pre>
   </section>
 </div>
 <div class="detail" id="is_ipv6/1">
+  
   <div class="detail-header">
     <a href="#is_ipv6/1" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
     <span class="signature">is_ipv6(string)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L847" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L859" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
     
-  </div>
-  
-    <div class="specs">
-      <h4 class="specs-title">Specs</h4>
-      <div class="specs-list">
+    
+      <div class="specs">
         
-          <pre><code class="elixir">is_ipv6(<a href="http://elixir-lang.org/docs/stable/elixir/String.html#t:t/0">String.t</a>) :: boolean</code></pre>
+          <pre>is_ipv6(<a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>) :: boolean</pre>
         
       </div>
-    </div>
-  
+    
+  </div>
   <section class="docstring">
     <p>Tests whether <code class="inline">string</code> can be parsed as an IPv6 address.</p>
-<h2>Examples</h2>
+<h2 id="is_ipv6/1-examples" class="section-heading">
+  <a href="#is_ipv6/1-examples" class="hover-link"><i class="icon-link"></i></a>
+  Examples
+</h2>
+
 <pre><code class="iex elixir">iex&gt; NetAddr.is_ipv6(&quot;not an IP address&quot;)
 false
 
@@ -990,53 +1083,66 @@ true</code></pre>
   </section>
 </div>
 <div class="detail" id="last_address/1">
+  
   <div class="detail-header">
     <a href="#last_address/1" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
     <span class="signature">last_address(netaddr)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L385" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L396" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
     
+    
+      <div class="specs">
+        
+          <pre>last_address(<a href="NetAddr.html#t:t/0">NetAddr.t</a>) :: <a href="NetAddr.html#t:t/0">NetAddr.t</a></pre>
+        
+      </div>
+    
   </div>
-  
   <section class="docstring">
     <p>Returns a new <a href="NetAddr.html#t:t/0"><code class="inline">NetAddr.t/0</code></a> with the last address in <code class="inline">netaddr</code>.</p>
-<h2>Examples</h2>
+<h2 id="last_address/1-examples" class="section-heading">
+  <a href="#last_address/1-examples" class="hover-link"><i class="icon-link"></i></a>
+  Examples
+</h2>
+
 <pre><code class="iex elixir">iex&gt; NetAddr.last_address NetAddr.ip(&quot;192.0.2.1/24&quot;)
 %NetAddr.IPv4{address: &lt;&lt;192, 0, 2, 255&gt;&gt;, length: 24}</code></pre>
 
   </section>
 </div>
 <div class="detail" id="length_to_mask/2">
+  
   <div class="detail-header">
     <a href="#length_to_mask/2" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
     <span class="signature">length_to_mask(address_length, mask_length_in_bytes)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L196" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L203" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
     
-  </div>
-  
-    <div class="specs">
-      <h4 class="specs-title">Specs</h4>
-      <div class="specs-list">
+    
+      <div class="specs">
         
-          <pre><code class="elixir">length_to_mask(non_neg_integer, pos_integer) :: binary</code></pre>
+          <pre>length_to_mask(non_neg_integer, pos_integer) :: binary</pre>
         
       </div>
-    </div>
-  
+    
+  </div>
   <section class="docstring">
     <p>Converts <code class="inline">address_length</code> to an address mask binary.</p>
-<h2>Examples</h2>
+<h2 id="length_to_mask/2-examples" class="section-heading">
+  <a href="#length_to_mask/2-examples" class="hover-link"><i class="icon-link"></i></a>
+  Examples
+</h2>
+
 <pre><code class="iex elixir">iex&gt; NetAddr.length_to_mask(30, 4)
 &lt;&lt;255, 255, 255, 252&gt;&gt;
 
@@ -1049,33 +1155,35 @@ iex&gt; NetAddr.length_to_mask(37, 6)
   </section>
 </div>
 <div class="detail" id="mac_48/1">
+  
   <div class="detail-header">
     <a href="#mac_48/1" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
     <span class="signature">mac_48(mac_string)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L691" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L703" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
     
-  </div>
-  
-    <div class="specs">
-      <h4 class="specs-title">Specs</h4>
-      <div class="specs-list">
+    
+      <div class="specs">
         
-          <pre><code class="elixir">mac_48(binary) :: <a href="NetAddr.MAC_48.html#t:t/0">NetAddr.MAC_48.t</a> | {:error, :inval}</code></pre>
+          <pre>mac_48(binary) :: <a href="NetAddr.MAC_48.html#t:t/0">NetAddr.MAC_48.t</a> | {:error, :einval}</pre>
         
       </div>
-    </div>
-  
+    
+  </div>
   <section class="docstring">
-    <p>Parses <code class="inline">mac_string</code>, returning a <a href="NetAddr.MAC_48.html#t:t/0"><code class="inline">NetAddr.MAC_48.t/0</code></a>.</p>
+    <p>Parses <code class="inline">mac_string</code>, returning a <code class="inline">t:MAC_48.t/0</code>.</p>
 <p>For manifest reasons, the corresponding parser may be robust to the point of
 returning incorrect results. <em>Caveat emptor</em>.</p>
-<h2>Examples</h2>
+<h2 id="mac_48/1-examples" class="section-heading">
+  <a href="#mac_48/1-examples" class="hover-link"><i class="icon-link"></i></a>
+  Examples
+</h2>
+
 <pre><code class="iex elixir">iex&gt; NetAddr.mac_48 &quot;01:23:45:67:89:AB&quot;
 %NetAddr.MAC_48{address: &lt;&lt;0x01,0x23,0x45,0x67,0x89,0xab&gt;&gt;, length: 48}
 
@@ -1106,62 +1214,66 @@ iex&gt; NetAddr.mac_48 &quot;blarg&quot;
   </section>
 </div>
 <div class="detail" id="mask_to_length/1">
+  
   <div class="detail-header">
     <a href="#mask_to_length/1" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
     <span class="signature">mask_to_length(address_mask)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L216" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L223" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
     
-  </div>
-  
-    <div class="specs">
-      <h4 class="specs-title">Specs</h4>
-      <div class="specs-list">
+    
+      <div class="specs">
         
-          <pre><code class="elixir">mask_to_length(binary) :: non_neg_integer</code></pre>
+          <pre>mask_to_length(binary) :: non_neg_integer</pre>
         
       </div>
-    </div>
-  
+    
+  </div>
   <section class="docstring">
     <p>Converts <code class="inline">address_mask</code> to an address length.</p>
-<h2>Examples</h2>
+<h2 id="mask_to_length/1-examples" class="section-heading">
+  <a href="#mask_to_length/1-examples" class="hover-link"><i class="icon-link"></i></a>
+  Examples
+</h2>
+
 <pre><code class="iex elixir">iex&gt; NetAddr.mask_to_length(&lt;&lt;255,255,248,0&gt;&gt;)
 21</code></pre>
 
   </section>
 </div>
 <div class="detail" id="netaddr/1">
+  
   <div class="detail-header">
     <a href="#netaddr/1" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
     <span class="signature">netaddr(address)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L128" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L130" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
     
-  </div>
-  
-    <div class="specs">
-      <h4 class="specs-title">Specs</h4>
-      <div class="specs-list">
+    
+      <div class="specs">
         
-          <pre><code class="elixir">netaddr(binary) :: <a href="NetAddr.html#t:t/0">NetAddr.t</a></code></pre>
+          <pre>netaddr(binary) :: <a href="NetAddr.html#t:t/0">NetAddr.t</a> | {:error, :einval}</pre>
         
       </div>
-    </div>
-  
+    
+  </div>
   <section class="docstring">
     <p>Constructs a <a href="NetAddr.html#t:t/0"><code class="inline">NetAddr.t/0</code></a> struct given a network address binary.</p>
-<h2>Examples</h2>
+<h2 id="netaddr/1-examples" class="section-heading">
+  <a href="#netaddr/1-examples" class="hover-link"><i class="icon-link"></i></a>
+  Examples
+</h2>
+
 <pre><code class="iex elixir">iex&gt; NetAddr.netaddr(&lt;&lt;1, 2, 3, 4, 5, 6&gt;&gt;)
 %NetAddr.MAC_48{address: &lt;&lt;1, 2, 3, 4, 5, 6&gt;&gt;, length: 48}
 
@@ -1174,28 +1286,32 @@ iex&gt; NetAddr.netaddr(&lt;&lt;128&gt;&gt;, 48)
   </section>
 </div>
 <div class="detail" id="netaddr/2">
+  
   <div class="detail-header">
     <a href="#netaddr/2" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
     <span class="signature">netaddr(address, address_length)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L138" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L145" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
     
-  </div>
-  
-    <div class="specs">
-      <h4 class="specs-title">Specs</h4>
-      <div class="specs-list">
+    
+      <div class="specs">
         
-          <pre><code class="elixir">netaddr(binary, non_neg_integer) :: <a href="NetAddr.html#t:t/0">NetAddr.t</a></code></pre>
+          <pre>netaddr(binary, 8) :: <a href="NetAddr.Generic.html#t:t/0">NetAddr.Generic.t</a></pre>
+        
+          <pre>netaddr(binary, 32) :: <a href="NetAddr.IPv4.html#t:t/0">NetAddr.IPv4.t</a> | {:error, :einval}</pre>
+        
+          <pre>netaddr(binary, 48) :: <a href="NetAddr.MAC_48.html#t:t/0">NetAddr.MAC_48.t</a> | {:error, :einval}</pre>
+        
+          <pre>netaddr(binary, 128) :: <a href="NetAddr.IPv6.html#t:t/0">NetAddr.IPv6.t</a> | {:error, :einval}</pre>
         
       </div>
-    </div>
-  
+    
+  </div>
   <section class="docstring">
     <p>Constructs a <a href="NetAddr.html#t:t/0"><code class="inline">NetAddr.t/0</code></a> struct given a network address binary and an
 address length.</p>
@@ -1203,31 +1319,33 @@ address length.</p>
   </section>
 </div>
 <div class="detail" id="netaddr/3">
+  
   <div class="detail-header">
     <a href="#netaddr/3" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
     <span class="signature">netaddr(address, address_length, size_in_bytes)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L169" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L176" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
     
-  </div>
-  
-    <div class="specs">
-      <h4 class="specs-title">Specs</h4>
-      <div class="specs-list">
+    
+      <div class="specs">
         
-          <pre><code class="elixir">netaddr(binary, non_neg_integer, pos_integer) :: <a href="NetAddr.Generic.html#t:t/0">NetAddr.Generic.t</a></code></pre>
+          <pre>netaddr(binary, non_neg_integer, pos_integer) :: <a href="NetAddr.Generic.html#t:t/0">NetAddr.Generic.t</a></pre>
         
       </div>
-    </div>
-  
+    
+  </div>
   <section class="docstring">
-    <p>Explicitly constructs a <a href="NetAddr.Generic.html#t:t/0"><code class="inline">NetAddr.Generic.t/0</code></a> struct.</p>
-<h2>Examples</h2>
+    <p>Explicitly constructs a <code class="inline">t:Generic.t/0</code> struct.</p>
+<h2 id="netaddr/3-examples" class="section-heading">
+  <a href="#netaddr/3-examples" class="hover-link"><i class="icon-link"></i></a>
+  Examples
+</h2>
+
 <pre><code class="iex elixir">iex&gt; NetAddr.netaddr(&lt;&lt;1, 2, 3, 4, 5, 6&gt;&gt;, 48, 6)
 %NetAddr.Generic{address: &lt;&lt;1, 2, 3, 4, 5, 6&gt;&gt;, length: 48}
 
@@ -1237,157 +1355,167 @@ iex&gt; NetAddr.netaddr(&lt;&lt;1, 2, 3, 4, 5&gt;&gt;, 48, 6)
   </section>
 </div>
 <div class="detail" id="netaddr_to_list/1">
+  
   <div class="detail-header">
     <a href="#netaddr_to_list/1" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
     <span class="signature">netaddr_to_list(netaddr)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L243" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L250" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
     
-  </div>
-  
-    <div class="specs">
-      <h4 class="specs-title">Specs</h4>
-      <div class="specs-list">
+    
+      <div class="specs">
         
-          <pre><code class="elixir">netaddr_to_list(<a href="NetAddr.html#t:t/0">NetAddr.t</a>) :: [0..255]</code></pre>
+          <pre>netaddr_to_list(<a href="NetAddr.html#t:t/0">NetAddr.t</a>) :: [0..255]</pre>
         
       </div>
-    </div>
-  
+    
+  </div>
   <section class="docstring">
     <p>Converts a <a href="NetAddr.html#t:t/0"><code class="inline">NetAddr.t/0</code></a> to a list of bytes.</p>
-<h2>Examples</h2>
+<h2 id="netaddr_to_list/1-examples" class="section-heading">
+  <a href="#netaddr_to_list/1-examples" class="hover-link"><i class="icon-link"></i></a>
+  Examples
+</h2>
+
 <pre><code class="iex elixir">iex&gt; NetAddr.ip(&quot;192.0.2.3/24&quot;) |&gt; NetAddr.netaddr_to_list
 [192, 0, 2, 3]</code></pre>
 
   </section>
 </div>
 <div class="detail" id="netaddr_to_range/1">
+  
   <div class="detail-header">
     <a href="#netaddr_to_range/1" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
     <span class="signature">netaddr_to_range(netaddr)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L301" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L308" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
     
-  </div>
-  
-    <div class="specs">
-      <h4 class="specs-title">Specs</h4>
-      <div class="specs-list">
+    
+      <div class="specs">
         
-          <pre><code class="elixir">netaddr_to_range(<a href="NetAddr.html#t:t/0">NetAddr.t</a>) :: <a href="http://elixir-lang.org/docs/stable/elixir/Range.html#t:t/0">Range.t</a></code></pre>
+          <pre>netaddr_to_range(<a href="NetAddr.html#t:t/0">NetAddr.t</a>) :: <a href="https://hexdocs.pm/elixir/Range.html#t:t/0">Range.t</a></pre>
         
       </div>
-    </div>
-  
+    
+  </div>
   <section class="docstring">
     <p>Converts a <a href="NetAddr.html#t:t/0"><code class="inline">NetAddr.t/0</code></a> to a <a href="http://elixir-lang.org/docs/stable/elixir/Range.html#t:t/0">Range.t/0</a>.</p>
-<h2>Examples</h2>
+<h2 id="netaddr_to_range/1-examples" class="section-heading">
+  <a href="#netaddr_to_range/1-examples" class="hover-link"><i class="icon-link"></i></a>
+  Examples
+</h2>
+
 <pre><code class="iex elixir">iex&gt; NetAddr.ip(&quot;198.51.100.0/24&quot;) |&gt; NetAddr.netaddr_to_range
 3325256704..3325256959</code></pre>
 
   </section>
 </div>
 <div class="detail" id="netaddr_to_string/1">
+  
   <div class="detail-header">
     <a href="#netaddr_to_string/1" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
     <span class="signature">netaddr_to_string(netaddr)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L482" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L493" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
     
-  </div>
-  
-    <div class="specs">
-      <h4 class="specs-title">Specs</h4>
-      <div class="specs-list">
+    
+      <div class="specs">
         
-          <pre><code class="elixir">netaddr_to_string(<a href="NetAddr.html#t:t/0">NetAddr.t</a>) :: <a href="http://elixir-lang.org/docs/stable/elixir/String.html#t:t/0">String.t</a></code></pre>
+          <pre>netaddr_to_string(<a href="NetAddr.html#t:t/0">NetAddr.t</a>) :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a></pre>
         
       </div>
-    </div>
-  
+    
+  </div>
   <section class="docstring">
     <p>Returns a human-readable CIDR or pseudo-CIDR for <code class="inline">netaddr</code>.</p>
 <p>This is like <a href="NetAddr.html#prefix/1"><code class="inline">NetAddr.prefix/1</code></a> except host bits are not set to zero. All
-<code class="inline">String.Chars</code> implementations call this function.</p>
-<h2>Examples</h2>
+<a href="https://hexdocs.pm/elixir/String.Chars.html"><code class="inline">String.Chars</code></a> implementations call this function.</p>
+<h2 id="netaddr_to_string/1-examples" class="section-heading">
+  <a href="#netaddr_to_string/1-examples" class="hover-link"><i class="icon-link"></i></a>
+  Examples
+</h2>
+
 <pre><code class="iex elixir">iex&gt; NetAddr.netaddr_to_string %NetAddr.Generic{address: &lt;&lt;1, 2, 3, 4, 5&gt;&gt;, length: 32}
 &quot;0x0102030405/32&quot;</code></pre>
 
   </section>
 </div>
 <div class="detail" id="network/1">
+  
   <div class="detail-header">
     <a href="#network/1" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
     <span class="signature">network(netaddr)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L426" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L437" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
     
-  </div>
-  
-    <div class="specs">
-      <h4 class="specs-title">Specs</h4>
-      <div class="specs-list">
+    
+      <div class="specs">
         
-          <pre><code class="elixir">network(<a href="NetAddr.html#t:t/0">NetAddr.t</a>) :: <a href="http://elixir-lang.org/docs/stable/elixir/String.html#t:t/0">String.t</a></code></pre>
+          <pre>network(<a href="NetAddr.html#t:t/0">NetAddr.t</a>) :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a></pre>
         
       </div>
-    </div>
-  
+    
+  </div>
   <section class="docstring">
     <p>Returns a human-readable string for the first address in <code class="inline">netaddr</code>.</p>
-<h2>Examples</h2>
+<h2 id="network/1-examples" class="section-heading">
+  <a href="#network/1-examples" class="hover-link"><i class="icon-link"></i></a>
+  Examples
+</h2>
+
 <pre><code class="iex elixir">iex&gt; NetAddr.network NetAddr.ip(&quot;192.0.2.1/24&quot;)
 &quot;192.0.2.0&quot;</code></pre>
 
   </section>
 </div>
 <div class="detail" id="ntoa/2">
+  
   <div class="detail-header">
     <a href="#ntoa/2" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
     <span class="signature">ntoa(decimal, size_in_bytes)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L285" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L292" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
     
-  </div>
-  
-    <div class="specs">
-      <h4 class="specs-title">Specs</h4>
-      <div class="specs-list">
+    
+      <div class="specs">
         
-          <pre><code class="elixir">ntoa(non_neg_integer, pos_integer) :: binary</code></pre>
+          <pre>ntoa(non_neg_integer, pos_integer) :: binary</pre>
         
       </div>
-    </div>
-  
+    
+  </div>
   <section class="docstring">
     <p>Converts <code class="inline">decimal</code> to an address.</p>
-<h2>Examples</h2>
+<h2 id="ntoa/2-examples" class="section-heading">
+  <a href="#ntoa/2-examples" class="hover-link"><i class="icon-link"></i></a>
+  Examples
+</h2>
+
 <pre><code class="iex elixir">iex&gt; NetAddr.ntoa 3221225985, 4
 &lt;&lt;192, 0, 2, 1&gt;&gt;
 
@@ -1400,31 +1528,33 @@ iex&gt; NetAddr.ntoa 4328719365, 5
   </section>
 </div>
 <div class="detail" id="prefix/1">
+  
   <div class="detail-header">
     <a href="#prefix/1" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
     <span class="signature">prefix(netaddr)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L445" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L456" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
     
-  </div>
-  
-    <div class="specs">
-      <h4 class="specs-title">Specs</h4>
-      <div class="specs-list">
+    
+      <div class="specs">
         
-          <pre><code class="elixir">prefix(<a href="NetAddr.html#t:t/0">NetAddr.t</a>) :: <a href="http://elixir-lang.org/docs/stable/elixir/String.html#t:t/0">String.t</a></code></pre>
+          <pre>prefix(<a href="NetAddr.html#t:t/0">NetAddr.t</a>) :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a></pre>
         
       </div>
-    </div>
-  
+    
+  </div>
   <section class="docstring">
     <p>Returns a human-readable CIDR for the first address in <code class="inline">netaddr</code>.</p>
-<h2>Examples</h2>
+<h2 id="prefix/1-examples" class="section-heading">
+  <a href="#prefix/1-examples" class="hover-link"><i class="icon-link"></i></a>
+  Examples
+</h2>
+
 <pre><code class="iex elixir">iex&gt; NetAddr.prefix %NetAddr.IPv4{address: &lt;&lt;192, 0, 2, 1&gt;&gt;, length: 24}
 &quot;192.0.2.0/24&quot;
 
@@ -1434,62 +1564,66 @@ iex&gt; NetAddr.prefix %NetAddr.Generic{address: &lt;&lt;1, 2, 3, 4, 5&gt;&gt;, 
   </section>
 </div>
 <div class="detail" id="range_to_netaddr/2">
+  
   <div class="detail-header">
     <a href="#range_to_netaddr/2" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
     <span class="signature">range_to_netaddr(range, size_in_bytes)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L328" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L335" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
     
-  </div>
-  
-    <div class="specs">
-      <h4 class="specs-title">Specs</h4>
-      <div class="specs-list">
+    
+      <div class="specs">
         
-          <pre><code class="elixir">range_to_netaddr(<a href="http://elixir-lang.org/docs/stable/elixir/Range.html#t:t/0">Range.t</a>, pos_integer) :: <a href="NetAddr.html#t:t/0">NetAddr.t</a></code></pre>
+          <pre>range_to_netaddr(<a href="https://hexdocs.pm/elixir/Range.html#t:t/0">Range.t</a>, pos_integer) :: <a href="NetAddr.html#t:t/0">NetAddr.t</a></pre>
         
       </div>
-    </div>
-  
+    
+  </div>
   <section class="docstring">
     <p>Converts <code class="inline">range</code> to a <a href="NetAddr.html#t:t/0"><code class="inline">NetAddr.t/0</code></a> given an address size hint.</p>
-<h2>Examples</h2>
+<h2 id="range_to_netaddr/2-examples" class="section-heading">
+  <a href="#range_to_netaddr/2-examples" class="hover-link"><i class="icon-link"></i></a>
+  Examples
+</h2>
+
 <pre><code class="iex elixir">iex&gt; NetAddr.range_to_netaddr 3325256704..3325256959, 4
 %NetAddr.IPv4{address: &lt;&lt;198, 51, 100, 0&gt;&gt;, length: 24}</code></pre>
 
   </section>
 </div>
 <div class="detail" id="subnet_mask/1">
+  
   <div class="detail-header">
     <a href="#subnet_mask/1" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
     <span class="signature">subnet_mask(ipv4_netaddr)</span>
     
-      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L461" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/jonnystorm/netaddr-elixir/blob/master/lib/netaddr.ex#L472" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
     
-  </div>
-  
-    <div class="specs">
-      <h4 class="specs-title">Specs</h4>
-      <div class="specs-list">
+    
+      <div class="specs">
         
-          <pre><code class="elixir">subnet_mask(<a href="NetAddr.IPv4.html#t:t/0">NetAddr.IPv4.t</a>) :: <a href="http://elixir-lang.org/docs/stable/elixir/String.html#t:t/0">String.t</a></code></pre>
+          <pre>subnet_mask(<a href="NetAddr.IPv4.html#t:t/0">NetAddr.IPv4.t</a>) :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a></pre>
         
       </div>
-    </div>
-  
+    
+  </div>
   <section class="docstring">
     <p>Returns a human-readable address mask for <code class="inline">ipv4_netaddr</code>.</p>
-<h2>Examples</h2>
+<h2 id="subnet_mask/1-examples" class="section-heading">
+  <a href="#subnet_mask/1-examples" class="hover-link"><i class="icon-link"></i></a>
+  Examples
+</h2>
+
 <pre><code class="iex elixir">iex&gt; NetAddr.subnet_mask %NetAddr.IPv4{address: &lt;&lt;192, 0, 2, 1&gt;&gt;, length: 24}
 &quot;255.255.255.0&quot;</code></pre>
 
@@ -1500,13 +1634,11 @@ iex&gt; NetAddr.prefix %NetAddr.Generic{address: &lt;&lt;1, 2, 3, 4, 5&gt;&gt;, 
       
 
       
-
-      
           <footer class="footer">
         <p>
           <span class="line">
             Built using
-            <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" rel="help" target="_blank">ExDoc</a> (v0.13.0),
+            <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" rel="help" target="_blank">ExDoc</a> (v0.15.0),
           </span>
           <span class="line">
             designed by
@@ -1519,7 +1651,7 @@ iex&gt; NetAddr.prefix %NetAddr.Generic{address: &lt;&lt;1, 2, 3, 4, 5&gt;&gt;, 
   </div>
 </section>
 </div>
-  <script src="dist/app-95540a96e6.js"></script>
+  <script src="dist/app-22a6d4638c.js"></script>
   </body>
 </html>
 
