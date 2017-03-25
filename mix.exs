@@ -3,7 +3,7 @@ defmodule NetAddr.Mixfile do
 
   def project do
     [ app: :netaddr_ex,
-      version: "0.0.16",
+      version: "1.0.0",
       name: "NetAddr",
       source_url: "https://github.com/jonnystorm/netaddr-elixir",
       elixir: "~> 1.2",
@@ -26,7 +26,7 @@ defmodule NetAddr.Mixfile do
   defp deps do
     [ {:jds_math_ex, git: "https://github.com/jonnystorm/jds-math-elixir"},
       {:linear_ex, git: "https://github.com/jonnystorm/linear-elixir"},
-      {:ex_doc, git: "https://github.com/elixir-lang/ex_doc", ref: "d5618937670708359437729d253ab56f4933bc9c", only: :dev}
+      {:ex_doc, git: "https://github.com/elixir-lang/ex_doc"}
     ]
   end
 end
