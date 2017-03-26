@@ -1,0 +1,7 @@
+# Unneeded protocol implementations
+Unknown function 'Elixir.NetAddr.Representation
+Type specification 'Elixir.NetAddr.Representation':'impl_for!'(term()) -> atom() | no_return() is a supertype of the success typing
+# Elixir 1.4.2, OTP 18.1
+The call _@1:'address'() requires that _@1 is of type atom() | tuple() not \#{}
+The call _@2:'address'() requires that _@2 is of type atom() | tuple() not \#{}
+The call _@3:'address'() requires that _@3 is of type atom() | tuple() not \#{}

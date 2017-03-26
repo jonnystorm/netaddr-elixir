@@ -10,7 +10,16 @@ defmodule NetAddr.Mixfile do
       build_embedded: Mix.env == :prod,
       start_permanent: Mix.env == :prod,
       deps: deps(),
-      docs: [extras: ["README.md"]]
+      docs: [extras: ["README.md"]],
+      dialyzer: [
+        ignore_warnings: "dialyzer.ignore",
+        flags: [
+          :unmatched_returns,
+          :error_handling,
+          :race_conditions,
+          :underspecs,
+        ],
+      ],
     ]
   end
 
@@ -18,7 +27,7 @@ defmodule NetAddr.Mixfile do
     [ applications: [
         :logger,
         :jds_math_ex,
-        :linear_ex
+        :linear_ex,
       ]
     ]
   end
@@ -26,7 +35,7 @@ defmodule NetAddr.Mixfile do
   defp deps do
     [ {:jds_math_ex, git: "https://github.com/jonnystorm/jds-math-elixir"},
       {:linear_ex, git: "https://github.com/jonnystorm/linear-elixir"},
-      {:ex_doc, git: "https://github.com/elixir-lang/ex_doc"}
+      {:ex_doc, git: "https://github.com/elixir-lang/ex_doc"},
     ]
   end
 end
