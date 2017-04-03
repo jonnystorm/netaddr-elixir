@@ -3,7 +3,7 @@ defmodule NetAddr.Mixfile do
 
   def project do
     [ app: :netaddr_ex,
-      version: "1.0.0",
+      version: "1.0.1",
       name: "NetAddr",
       source_url: "https://github.com/jonnystorm/netaddr-elixir",
       elixir: "~> 1.2",
@@ -12,6 +12,11 @@ defmodule NetAddr.Mixfile do
       deps: deps(),
       docs: [extras: ["README.md"]],
       dialyzer: [
+        add_plt_apps: [
+          :logger,
+          :jds_math_ex,
+          :linear_ex,
+        ],
         ignore_warnings: "dialyzer.ignore",
         flags: [
           :unmatched_returns,
@@ -35,7 +40,7 @@ defmodule NetAddr.Mixfile do
   defp deps do
     [ {:jds_math_ex, git: "https://github.com/jonnystorm/jds-math-elixir"},
       {:linear_ex, git: "https://github.com/jonnystorm/linear-elixir"},
-      {:ex_doc, git: "https://github.com/elixir-lang/ex_doc"},
+      {:ex_doc, git: "https://github.com/elixir-lang/ex_doc", only: :dev},
     ]
   end
 end
