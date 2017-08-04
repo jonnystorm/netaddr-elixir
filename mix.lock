@@ -1,4 +1,4 @@
-%{"earmark": {:hex, :earmark, "1.2.0", "bf1ce17aea43ab62f6943b97bd6e3dc032ce45d4f787504e3adf738e54b42f3a", [:mix], []},
-  "ex_doc": {:git, "https://github.com/elixir-lang/ex_doc", "d294125a87b966ec221500af2a78e48626d81398", []},
-  "jds_math_ex": {:git, "https://github.com/jonnystorm/jds-math-elixir", "10d5cdf175b6a12b5ca9d97e4cb998e3324d6561", []},
-  "linear_ex": {:git, "https://github.com/jonnystorm/linear-elixir", "a6a3dd8889d921878e8c01268fbad7714c599bd0", []}}
+%{"earmark": {:hex, :earmark, "1.2.3", "206eb2e2ac1a794aa5256f3982de7a76bf4579ff91cb28d0e17ea2c9491e46a4", [:mix], [], "hexpm"},
+  "ex_doc": {:git, "https://github.com/elixir-lang/ex_doc", "993aed10b5a33082998e8e9f87719e7be982346a", []},
+  "jds_math_ex": {:git, "https://github.com/jonnystorm/jds-math-elixir", "144e35409a234b05be29ed4eb2000df9f2a9b804", []},
+  "linear_ex": {:git, "https://github.com/jonnystorm/linear-elixir", "c7132141cc060a22a38d89bea1c272145b07d206", []}}
