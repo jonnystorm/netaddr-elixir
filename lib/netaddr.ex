@@ -4,8 +4,8 @@
 
 defmodule NetAddr do
   @moduledoc """
-  General functions for network address parsing and manipulation, with support
-  for addresses of arbitrary size.
+  General functions for network address parsing and
+  manipulation, with support for addresses of arbitrary size.
   """
 
   alias NetAddr.{IPv4, IPv6, MAC_48, Generic}
@@ -16,16 +16,22 @@ defmodule NetAddr do
   @ipv6_size 16
   @mac_48_size 6
 
-  @type t :: Generic.t | IPv4.t | IPv6.t | MAC_48.t
+  @type t
+    :: Generic.t
+     | IPv4.t
+     | IPv6.t
+     | MAC_48.t
 
   defmodule Generic do
     @moduledoc """
-    Defines a struct to represent network addresses of arbitrary size.
+    Defines a struct to represent network addresses of
+    arbitrary size.
     """
 
     defstruct [:address, :length]
 
-    @type t :: %Generic{address: binary, length: non_neg_integer}
+    @type t
+      :: %Generic{address: binary, length: non_neg_integer}
   end
 
   defmodule IPv4 do
@@ -35,7 +41,8 @@ defmodule NetAddr do
 
     defstruct [:address, :length]
 
-    @type t :: %IPv4{address: binary, length: non_neg_integer}
+    @type t
+      :: %IPv4{address: binary, length: non_neg_integer}
   end
 
   defmodule IPv6 do
@@ -45,7 +52,8 @@ defmodule NetAddr do
 
     defstruct [:address, :length]
 
-    @type t :: %IPv6{address: binary, length: non_neg_integer}
+    @type t
+      :: %IPv6{address: binary, length: non_neg_integer}
   end
 
   defmodule MAC_48 do
@@ -55,7 +63,8 @@ defmodule NetAddr do
 
     defstruct [:address, :length]
 
-    @type t :: %MAC_48{address: binary, length: non_neg_integer}
+    @type t
+      :: %MAC_48{address: binary, length: non_neg_integer}
   end
 
   @doc """
@@ -71,8 +80,8 @@ defmodule NetAddr do
     do: netaddr.length
 
   @doc """
-  Returns a new `t:NetAddr.t/0` with the address part of `netaddr` and the given
-  address length.
+  Returns a new `t:NetAddr.t/0` with the address part of
+  `netaddr` and the given address length.
 
   ## Examples
 
@@ -105,7 +114,8 @@ defmodule NetAddr do
     do: byte_size netaddr.address
 
   @doc """
-  Constructs a `t:NetAddr.t/0` struct given a network address binary.
+  Constructs a `t:NetAddr.t/0` struct given a network address
+  binary.
 
   ## Examples
 
@@ -125,8 +135,8 @@ defmodule NetAddr do
   @type generic_len :: 0..31
 
   @doc """
-  Constructs a `t:NetAddr.t/0` struct given a network address binary and an
-  address length.
+  Constructs a `t:NetAddr.t/0` struct given a network address
+  binary and an address length.
   """
   @spec netaddr(binary,   8) :: Generic.t
   @spec netaddr(binary,  32) ::    IPv4.t | {:error, :einval}
@@ -162,7 +172,8 @@ defmodule NetAddr do
       iex> NetAddr.netaddr(<<1, 2, 3, 4, 5>>, 48, 6)
       %NetAddr.Generic{address: <<0, 1, 2, 3, 4, 5>>, length: 48}
   """
-  @spec netaddr(binary, non_neg_integer, pos_integer) :: Generic.t
+  @spec netaddr(binary, non_neg_integer, pos_integer)
+    :: Generic.t
   def netaddr(address, address_length, size_in_bytes)
       when address_length in 0..(size_in_bytes * 8)
   do
@@ -172,7 +183,7 @@ defmodule NetAddr do
   end
 
 
-  ############################### Conversion ###################################
+  ####################### Conversion ##########################
 
   @doc """
   Converts `address_length` to an address mask binary.
@@ -194,7 +205,9 @@ defmodule NetAddr do
   do
     ones = bsl(1, address_length) - 1
     mask_length_in_bits = mask_length_in_bytes * 8
-    mask_number = bsl ones, mask_length_in_bits - address_length
+    mask_number =
+      ones
+      |> bsl(mask_length_in_bits - address_length)
 
     <<mask_number :: size(mask_length_in_bits)>>
   end
@@ -279,7 +292,8 @@ defmodule NetAddr do
   end
 
   @doc """
-  Converts a `t:NetAddr.t/0` to a [Range.t/0](http://elixir-lang.org/docs/stable/elixir/Range.html#t:t/0).
+  Converts a `t:NetAddr.t/0` to a
+  [Range.t/0](http://elixir-lang.org/docs/stable/elixir/Range.html#t:t/0).
 
   ## Examples
 
@@ -294,17 +308,24 @@ defmodule NetAddr do
     a..b
   end
 
-  defp _range_to_netaddr(a.._ = range, size_in_bytes, struct) do
+  defp _range_to_netaddr(
+    a.._ = range,
+    size_in_bytes,
+    struct
+  ) do
     count = Enum.count range
+    new_length =
+      trunc (size_in_bytes * 8) - Math.Information.log_2(count)
 
     %{struct |
       address: ntoa(a, size_in_bytes),
-      length: trunc((size_in_bytes * 8) - Math.Information.log_2(count)),
+      length: new_length
     }
   end
 
   @doc """
-  Converts `range` to a `t:NetAddr.t/0` given an address size hint.
+  Converts `range` to a `t:NetAddr.t/0` given an address size
+  hint.
 
   ## Examples
 
@@ -325,10 +346,11 @@ defmodule NetAddr do
     do: _range_to_netaddr(range, size_in_bytes, %Generic{})
 
 
-  ############################## Pretty Printing ###############################
+  ###################### Pretty Printing ######################
 
   @doc """
-  Returns a human-readable string for the address part of `netaddr`.
+  Returns a human-readable string for the address part of
+  `netaddr`.
 
   ## Examples
 
@@ -343,7 +365,8 @@ defmodule NetAddr do
     do: NetAddr.Representation.address netaddr
 
   @doc """
-  Returns a new `t:NetAddr.t/0` with the first address in `netaddr`.
+  Returns a new `t:NetAddr.t/0` with the first address in
+  `netaddr`.
 
   ## Examples
 
@@ -360,7 +383,8 @@ defmodule NetAddr do
   end
 
   @doc """
-  Returns a new `t:NetAddr.t/0` with the last address in `netaddr`.
+  Returns a new `t:NetAddr.t/0` with the last address in
+  `netaddr`.
 
   ## Examples
 
@@ -377,13 +401,16 @@ defmodule NetAddr do
 
     inverse_mask = Vector.bit_xor(mask, all_ones)
 
-    last = Vector.bit_or(first_address(netaddr).address, inverse_mask)
+    last =
+      first_address(netaddr).address
+      |> Vector.bit_or(inverse_mask)
 
     %{netaddr | address: last}
   end
 
   @doc """
-  Returns a human-readable string for the last address in `ipv4_netaddr`.
+  Returns a human-readable string for the last address in
+  `ipv4_netaddr`.
 
   ## Examples
 
@@ -399,7 +426,8 @@ defmodule NetAddr do
   end
 
   @doc """
-  Returns a human-readable string for the first address in `netaddr`.
+  Returns a human-readable string for the first address in
+  `netaddr`.
 
   ## Examples
 
@@ -414,7 +442,8 @@ defmodule NetAddr do
   end
 
   @doc """
-  Returns a human-readable CIDR for the first address in `netaddr`.
+  Returns a human-readable CIDR for the first address in
+  `netaddr`.
 
   ## Examples
 
@@ -452,8 +481,9 @@ defmodule NetAddr do
   @doc """
   Returns a human-readable CIDR or pseudo-CIDR for `netaddr`.
 
-  This is like `NetAddr.prefix/1` except host bits are not set to zero. All
-  `String.Chars` implementations call this function.
+  This is like `NetAddr.prefix/1` except host bits are not set
+  to zero. All `String.Chars` implementations call this
+  function.
 
   ## Examples
 
@@ -465,7 +495,7 @@ defmodule NetAddr do
     do: "#{address(netaddr)}/#{address_length(netaddr)}"
 
 
-  ################################# Parsing ####################################
+  ######################### Parsing ###########################
 
   defp ip_address_string_to_bytes(ip_address_string) do
     ip_address_list = :binary.bin_to_list ip_address_string
@@ -477,7 +507,9 @@ defmodule NetAddr do
           {:ok, byte_list}
 
         word_list when length(word_list) == 8 ->
-          byte_list = Enum.flat_map word_list, &split_decimal_into_bytes(&1, 2)
+          byte_list =
+            Enum.flat_map word_list,
+              &split_decimal_into_bytes(&1, 2)
 
           {:ok, byte_list}
       end
@@ -504,8 +536,8 @@ defmodule NetAddr do
   end
 
   @doc """
-  Parses `ip_string` as an IPv4/IPv6 address or CIDR, returning a
-  `t:IPv4.t/0` or `t:IPv6.t/0` as appropriate.
+  Parses `ip_string` as an IPv4/IPv6 address or CIDR, returning
+  a `t:IPv4.t/0` or `t:IPv6.t/0` as appropriate.
 
   ## Examples
 
@@ -526,15 +558,18 @@ defmodule NetAddr do
   """
   @spec ip(String.t) :: IPv4.t | IPv6.t | {:error, :einval}
   def ip(ip_string) do
-    [ip_address_string | split_residue] = String.split(ip_string, "/", parts: 2)
+    [ip_address_string | split_residue] =
+      String.split(ip_string, "/", parts: 2)
 
-    ip_address_length = get_length_from_split_residue split_residue
+    ip_address_length =
+      get_length_from_split_residue split_residue
 
     ip(ip_address_string, ip_address_length)
   end
 
   @doc """
-  Parses `ip_address_string` with the given address length or `ip_mask_string`.
+  Parses `ip_address_string` with the given address length or
+  `ip_mask_string`.
 
   ## Examples
 
@@ -553,12 +588,17 @@ defmodule NetAddr do
       iex> NetAddr.ip "blarg", 32
       {:error, :einval}
   """
-  @spec ip(String.t,             nil) :: IPv4.t | IPv6.t | {:error, :einval}
-  @spec ip(String.t,        String.t) :: IPv4.t | IPv6.t | {:error, :einval}
-  @spec ip(String.t, non_neg_integer) :: IPv4.t | IPv6.t | {:error, :einval}
+  @spec ip(String.t, nil)
+    :: IPv4.t | IPv6.t | {:error, :einval}
+  @spec ip(String.t, String.t)
+    :: IPv4.t | IPv6.t | {:error, :einval}
+  @spec ip(String.t, non_neg_integer)
+    :: IPv4.t | IPv6.t | {:error, :einval}
   def ip(ip_address_string, ip_mask_string_or_length)
 
-  def ip(ip_address_string, ip_mask_string) when is_binary(ip_mask_string) do
+  def ip(ip_address_string, ip_mask_string)
+      when is_binary(ip_mask_string)
+  do
     with %{address: ip_mask} <- ip(ip_mask_string, nil),
       do: ip(ip_address_string, mask_to_length(ip_mask))
   end
@@ -568,10 +608,12 @@ defmodule NetAddr do
        and ip_address_length >= 0
         or ip_address_length == nil
   do
-    with {:ok, ip_bytes} <- ip_address_string_to_bytes(ip_address_string)
+    with {:ok, ip_bytes} <-
+           ip_address_string_to_bytes(ip_address_string)
     do
       ip_binary = :binary.list_to_bin ip_bytes
-      ip_address_length = ip_address_length || count_bits_in_binary(ip_binary)
+      ip_address_length =
+        ip_address_length || count_bits_in_binary(ip_binary)
 
       netaddr(ip_binary, ip_address_length)
     end
@@ -583,14 +625,15 @@ defmodule NetAddr do
     :binary.list_to_bin acc
   end
   defp _parse_mac_48(<<>>, {byte_acc, acc}) do
-    # If the string is consumed and the current byte is not empty,
-    #   append the current byte and return the accumulator
+    # If the string is consumed and the current byte is not
+    # empty, append the current byte and return the accumulator
     byte = Math.collapse(byte_acc, 16)
 
     :binary.list_to_bin acc ++ [byte]
   end
   defp _parse_mac_48(string, {byte_acc, acc}) when length(byte_acc) == 2 do
-    # When the current byte contains two characters, combine and append them
+    # When the current byte contains two characters, combine
+    # and append them
     byte = Math.collapse(byte_acc, 16)
 
     _parse_mac_48(string, {[], acc ++ [byte]})
@@ -598,13 +641,15 @@ defmodule NetAddr do
   defp _parse_mac_48(<<head, tail::binary>>, {[], acc})
       when head in ':-. '
   do
-    # When a new delimiter is found and the current byte is empty, consume tail
+    # When a new delimiter is found and the current byte is
+    # empty, consume tail
     _parse_mac_48(tail, {[], acc})
   end
   defp _parse_mac_48(<<head, tail::binary>>, {byte_acc, acc})
       when head in ':-. '
   do
-    # When a new delimiter is found, append the current byte to the accumulator
+    # When a new delimiter is found, append the current byte to
+    # the accumulator
     byte = Math.collapse(byte_acc, 16)
 
     _parse_mac_48(tail, {[], acc ++ [byte]})
@@ -612,7 +657,8 @@ defmodule NetAddr do
   defp _parse_mac_48(<<head, tail::binary>>, {byte_acc, acc})
       when head in ?0..?9 or head in ?a..?f or head in ?A..?F
   do
-    # Convert hexadecimal character to decimal and append it to the current byte
+    # Convert hexadecimal character to decimal and append it to
+    # the current byte
     {nibble, _} = Integer.parse(<<head>>, 16)
 
     _parse_mac_48(tail, {byte_acc ++ [nibble], acc})
@@ -628,8 +674,8 @@ defmodule NetAddr do
   @doc """
   Parses `mac_string`, returning a `t:MAC_48.t/0`.
 
-  For manifest reasons, the corresponding parser may be robust to the point of
-  returning incorrect results. *Caveat emptor*.
+  For manifest reasons, the corresponding parser may be robust
+  to the point of returning incorrect results. *Caveat emptor*.
 
   ## Examples
 
@@ -670,7 +716,7 @@ defmodule NetAddr do
   end
 
 
-  ################################ Utilities ###################################
+  ######################## Utilities ##########################
 
   @doc """
   Bitwise ANDs two address binaries, returning the result.
@@ -684,7 +730,7 @@ defmodule NetAddr do
   def apply_mask(address, mask)
       when is_binary(address)
        and is_binary(mask),
-  do: Vector.bit_and address, mask
+  do: Vector.bit_and(address, mask)
 
   @doc """
   Tests whether `netaddr` contains `netaddr2`, up to equality.
@@ -709,10 +755,14 @@ defmodule NetAddr do
   @spec contains?(NetAddr.t, NetAddr.t) :: boolean
   def contains?(netaddr1, netaddr2)
 
-  def contains?(%{address: a1, length: l1} = n1, %{address: a2, length: l2} = n2)
-      when byte_size(a1) == byte_size(a2)
-       and l1 <= l2,
-  do: first_address(n1) == first_address(address_length(n2, l1))
+  def contains?(
+    %{address: a1, length: l1} = n1,
+    %{address: a2, length: l2} = n2
+  )   when byte_size(a1) == byte_size(a2)
+       and l1 <= l2
+  do
+    first_address(n1) == first_address(address_length(n2, l1))
+  end
 
   def contains?(_, _),
     do: false
@@ -735,8 +785,10 @@ defmodule NetAddr do
       false
   """
   @spec is_host_address(NetAddr.t) :: boolean
-  def is_host_address(netaddr),
-    do: NetAddr.address_size(netaddr) * 8 == NetAddr.address_length(netaddr)
+  def is_host_address(netaddr) do
+    (NetAddr.address_size(netaddr) * 8)
+    == NetAddr.address_length(netaddr)
+  end
 
   @doc """
   Tests whether `string` can be parsed as an IP address.
