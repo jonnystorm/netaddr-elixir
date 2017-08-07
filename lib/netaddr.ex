@@ -962,7 +962,7 @@ defimpl String.Chars, for: NetAddr.MAC_48 do
   import Kernel, except: [to_string: 1]
 
   def to_string(netaddr),
-    do: NetAddr.netaddr_to_string netaddr
+    do: NetAddr.address netaddr
 end
 
 
