@@ -5,7 +5,7 @@ defmodule NetAddr.Mixfile do
     [ app: :netaddr_ex,
       version: "1.0.1",
       name: "NetAddr",
-      source_url: "https://github.com/jonnystorm/netaddr-elixir",
+      source_url: "https://gitlab.com/jonnystorm/netaddr-elixir",
       elixir: "~> 1.3",
       build_embedded: Mix.env == :prod,
       start_permanent: Mix.env == :prod,
@@ -38,8 +38,8 @@ defmodule NetAddr.Mixfile do
   end
 
   defp deps do
-    [ {:jds_math_ex, git: "https://github.com/jonnystorm/jds-math-elixir"},
-      {:linear_ex, git: "https://github.com/jonnystorm/linear-elixir"},
+    [ {:jds_math_ex, git: "https://gitlab.com/jonnystorm/jds-math-elixir"},
+      {:linear_ex, git: "https://gitlab.com/jonnystorm/linear-elixir"},
       {:ex_doc, git: "https://github.com/elixir-lang/ex_doc", only: :dev},
     ]
   end
