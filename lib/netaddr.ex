@@ -802,7 +802,7 @@ defmodule NetAddr do
     :binary.list_to_bin acc ++ [byte]
   end
 
-  defp _parse_mac_48(string, {byte_acc, acc})
+  defp _parse_mac_48(<<string::bytes>>, {byte_acc, acc})
       when length(byte_acc) == 2
   do
     # When the current byte contains two characters, combine
