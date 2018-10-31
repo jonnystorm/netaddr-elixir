@@ -433,6 +433,76 @@ defmodule NetAddr do
     do: _range_to_netaddr(range, size_in_bytes, %Generic{})
 
 
+  @type octet     :: 0..255
+  @type sexdectet :: 0..65535
+
+  @type ipv4_tuple
+    :: {octet, octet, octet, octet}
+
+  @type ipv6_tuple
+    :: { sexdectet,
+         sexdectet,
+         sexdectet,
+         sexdectet,
+         sexdectet,
+         sexdectet,
+         sexdectet,
+         sexdectet
+       }
+
+  @type erl_ip
+    :: ipv4_tuple
+     | ipv6_tuple
+
+  @doc """
+  Constructs a `t:NetAddr.t/0` struct given an Erlang/OTP
+  IP address tuple.
+
+  ## Examples
+
+      iex> NetAddr.erl_ip_to_netaddr({192, 0, 2, 1})
+      {:ok, %NetAddr.IPv4{address: <<192, 0, 2, 1>>, length: 32}}
+
+      iex> NetAddr.erl_ip_to_netaddr({0x2001, 0xdb8, 0, 0, 0, 0, 0, 1})
+      {:ok, %NetAddr.IPv6{address: <<0x2001::16, 0xdb8::16, 0::5*16, 1::16>>, length: 128}}
+  """
+  @spec erl_ip_to_netaddr(erl_ip)
+    :: NetAddr.t
+     | {:error, :einval}
+  def erl_ip_to_netaddr(erl_ip)
+
+  def erl_ip_to_netaddr(
+    {o1, o2, o3, o4} = erl_ip
+  )   when o1 in 0..255
+       and o2 in 0..255
+       and o3 in 0..255
+       and o4 in 0..255
+  do
+    erl_ip
+    |> Tuple.to_list
+    |> :binary.list_to_bin
+    |> NetAddr.netaddr_2
+  end
+
+  def erl_ip_to_netaddr(
+    {s1, s2, s3, s4, s5, s6, s7, s8} = erl_ip
+  )   when s1 in 0..65535
+       and s2 in 0..65535
+       and s3 in 0..65535
+       and s4 in 0..65535
+       and s5 in 0..65535
+       and s6 in 0..65535
+       and s7 in 0..65535
+       and s8 in 0..65535
+  do
+    erl_ip
+    |> Tuple.to_list
+    |> Enum.flat_map(&Math.expand(&1, 256, 2))
+    |> :binary.list_to_bin
+    |> NetAddr.netaddr_2
+  end
+
+
   #################### Pretty Printing #####################
 
   @doc """
