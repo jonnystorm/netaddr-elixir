@@ -39,7 +39,8 @@ defmodule NetAddr.Mixfile do
 
   defp deps do
     [ { :ex_doc,
-        git: "https://github.com/elixir-lang/ex_doc", only: :dev
+        git: "https://github.com/elixir-lang/ex_doc",
+        only: :dev
       },
       { :jds_math_ex,
         git: "https://gitlab.com/jonnystorm/jds-math-elixir"

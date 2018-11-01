@@ -467,7 +467,7 @@ defmodule NetAddr do
       {:ok, %NetAddr.IPv6{address: <<0x2001::16, 0xdb8::16, 0::5*16, 1::16>>, length: 128}}
   """
   @spec erl_ip_to_netaddr(erl_ip)
-    :: NetAddr.t
+    :: {:ok, NetAddr.t}
      | {:error, :einval}
   def erl_ip_to_netaddr(erl_ip)
 
