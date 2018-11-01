@@ -502,6 +502,42 @@ defmodule NetAddr do
     |> NetAddr.netaddr_2
   end
 
+  @doc """
+  Constructs an Erlang/OTP IP address tuple given a
+  `t:NetAddr.t/0`.
+
+  ## Examples
+
+  iex> NetAddr.netaddr_to_erl_ip NetAddr.ip("192.0.2.1")
+  {192, 0, 2, 1}
+
+  iex> NetAddr.netaddr_to_erl_ip NetAddr.ip("2001:db8::1")
+  {0x2001, 0xdb8, 0, 0, 0, 0, 0, 1}
+  """
+  @spec netaddr_to_erl_ip(NetAddr.t)
+    :: {:ok, erl_ip}
+     | {:error, :einval}
+  def netaddr_to_erl_ip(
+    %NetAddr.IPv4{address: address, length: 32}
+  ) do
+    address
+    |> :binary.bin_to_list
+    |> List.to_tuple
+  end
+
+  def netaddr_to_erl_ip(
+    %NetAddr.IPv6{address: address, length: 128}
+  ) do
+    address
+    |> :binary.bin_to_list
+    |> Math.collapse(256)
+    |> Math.expand(65536)
+    |> List.to_tuple
+  end
+
+  def netaddr_to_erl_ip(_),
+    do: {:error, :einval}
+
 
   #################### Pretty Printing #####################
 
