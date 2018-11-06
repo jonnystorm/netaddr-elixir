@@ -517,6 +517,8 @@ defmodule NetAddr do
   @spec netaddr_to_erl_ip(NetAddr.t)
     :: {:ok, erl_ip}
      | {:error, :einval}
+  def netaddr_to_erl_ip(netaddr)
+
   def netaddr_to_erl_ip(
     %NetAddr.IPv4{address: address, length: 32}
   ) do
@@ -538,6 +540,43 @@ defmodule NetAddr do
   def netaddr_to_erl_ip(_),
     do: {:error, :einval}
 
+  @doc """
+  Converts a `t:NetAddr.t/0` to a format suitable for DNS
+  PTR records.
+
+  ## Examples
+  
+  iex> NetAddr.netaddr_to_ptr NetAddr.ip("192.0.2.1")
+  "1.2.0.192.in-addr.arpa"
+
+  iex> NetAddr.netaddr_to_ptr NetAddr.ip("2001:db8::1")
+  "1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa"
+  """
+  @spec netaddr_to_ptr(NetAddr.t)
+    :: {:ok, String.t}
+     | {:error, :einval}
+  def netaddr_to_ptr(netaddr)
+
+  def netaddr_to_ptr(%NetAddr.IPv4{} = address) do
+    address
+    |> netaddr_to_list
+    |> Enum.reverse
+    |> Enum.join(".")
+    |> String.replace_suffix("", ".in-addr.arpa")
+  end
+
+  def netaddr_to_ptr(%NetAddr.IPv6{address: address}) do
+    address
+    |> Base.encode16
+    |> String.reverse
+    |> String.downcase
+    |> String.split("", trim: true)
+    |> Enum.join(".")
+    |> String.replace_suffix("", ".ip6.arpa")
+  end
+
+  def netaddr_to_ptr(_),
+    do: {:error, :einval}
 
   #################### Pretty Printing #####################
 
