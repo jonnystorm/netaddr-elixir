@@ -325,7 +325,7 @@ defmodule NetAddr do
       [192, 0, 2, 3]
   """
   @spec netaddr_to_list(NetAddr.t)
-    :: [0..255]
+    :: [byte]
   def netaddr_to_list(netaddr),
     do: :binary.bin_to_list netaddr.address
 
@@ -433,11 +433,10 @@ defmodule NetAddr do
     do: _range_to_netaddr(range, size_in_bytes, %Generic{})
 
 
-  @type octet     :: 0..255
   @type sexdectet :: 0..65535
 
   @type ipv4_tuple
-    :: {octet, octet, octet, octet}
+    :: {byte, byte, byte, byte}
 
   @type ipv6_tuple
     :: { sexdectet,
@@ -545,12 +544,12 @@ defmodule NetAddr do
   PTR records.
 
   ## Examples
-  
+
   iex> NetAddr.netaddr_to_ptr NetAddr.ip("192.0.2.1")
-  "1.2.0.192.in-addr.arpa"
+  {:ok, "1.2.0.192.in-addr.arpa"}
 
   iex> NetAddr.netaddr_to_ptr NetAddr.ip("2001:db8::1")
-  "1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa"
+  {:ok, "1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa"}
   """
   @spec netaddr_to_ptr(NetAddr.t)
     :: {:ok, String.t}
@@ -563,6 +562,7 @@ defmodule NetAddr do
     |> Enum.reverse
     |> Enum.join(".")
     |> String.replace_suffix("", ".in-addr.arpa")
+    |> wrap_result
   end
 
   def netaddr_to_ptr(%NetAddr.IPv6{address: address}) do
@@ -573,10 +573,53 @@ defmodule NetAddr do
     |> String.split("", trim: true)
     |> Enum.join(".")
     |> String.replace_suffix("", ".ip6.arpa")
+    |> wrap_result
   end
 
   def netaddr_to_ptr(_),
     do: {:error, :einval}
+
+  @doc """
+  Convert a DNS PTR record name to a `t:NetAddr.t/0`.
+
+  ## Examples
+
+  iex> NetAddr.ptr_to_netaddr "1.2.0.192.in-addr.arpa"
+  {:ok, %NetAddr.IPv4{address: <<192,0,2,1>>, length: 32}}
+
+  iex> NetAddr.ptr_to_netaddr "1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa"
+  {:ok, %NetAddr.IPv6{address: <<0x2001::2*8,0xdb8::2*8,0::11*8,1>>, length: 128}}
+  """
+  @spec ptr_to_netaddr(String.t)
+    :: {:ok, NetAddr.t}
+     | {:error, :einval}
+  def ptr_to_netaddr(ptr_name)
+
+  def ptr_to_netaddr(ptr_name) do
+    cond do
+      ptr_name =~ ~r/\.in-addr\.arpa$/ ->
+        ptr_name
+        |> String.trim
+        |> String.replace_suffix(".in-addr.arpa", "")
+        |> String.split(".", parts: 4)
+        |> Enum.reverse
+        |> Enum.join(".")
+        |> NetAddr.ip_2
+
+      ptr_name =~ ~r/\.ip6\.arpa$/ ->
+        with {:ok, bin} <-
+               ptr_name
+               |> String.trim
+               |> String.replace_suffix(".ip6.arpa", "")
+               |> String.split(".", parts: 32)
+               |> Enum.reverse
+               |> Enum.join
+               |> String.upcase
+               |> Base.decode16,
+
+          do: NetAddr.netaddr_2(bin)
+    end
+  end
 
   #################### Pretty Printing #####################
 
