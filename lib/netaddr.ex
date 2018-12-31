@@ -1216,6 +1216,9 @@ defmodule NetAddr do
       iex> NetAddr.is_ip "not an IP address"
       false
 
+      iex> NetAddr.is_ip %{}
+      false
+
       iex> NetAddr.is_ip "0.0.0.0/0"
       true
 
@@ -1230,8 +1233,12 @@ defmodule NetAddr do
   """
   @spec is_ip(String.t)
     :: boolean
-  def is_ip(string),
+  def is_ip(string)
+      when is_binary(string),
     do: NetAddr.ip(string) != {:error, :einval}
+
+  def is_ip(_),
+    do: false
 
   @doc """
   Tests whether `string` can be parsed as an IPv4 address.
@@ -1239,6 +1246,9 @@ defmodule NetAddr do
   ## Examples
 
       iex> NetAddr.is_ipv4 "not an IP address"
+      false
+
+      iex> NetAddr.is_ip %{}
       false
 
       iex> NetAddr.is_ipv4 "0.0.0.0/0"
@@ -1255,12 +1265,17 @@ defmodule NetAddr do
   """
   @spec is_ipv4(String.t)
     :: boolean
-  def is_ipv4(string) do
+  def is_ipv4(string)
+      when is_binary(string)
+  do
     case NetAddr.ip(string) do
       %NetAddr.IPv4{} -> true
                     _ -> false
     end
   end
+
+  def is_ipv4(_),
+    do: false
 
   @doc """
   Tests whether `string` can be parsed as an IPv6 address.
@@ -1268,6 +1283,9 @@ defmodule NetAddr do
   ## Examples
 
       iex> NetAddr.is_ipv6 "not an IP address"
+      false
+
+      iex> NetAddr.is_ip %{}
       false
 
       iex> NetAddr.is_ipv6 "0.0.0.0/0"
@@ -1284,12 +1302,17 @@ defmodule NetAddr do
   """
   @spec is_ipv6(String.t)
     :: boolean
-  def is_ipv6(string) do
+  def is_ipv6(string)
+      when is_binary(string)
+  do
     case NetAddr.ip(string) do
       %NetAddr.IPv6{} -> true
                     _ -> false
     end
   end
+
+  def is_ipv6(_),
+    do: false
 end
 
 
