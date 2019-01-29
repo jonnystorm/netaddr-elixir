@@ -14,6 +14,78 @@ defmodule NetAddr do
 
   use Bitwise
 
+  defmacro __using__(_opts) do
+    quote do
+      import NetAddr, only: [sigil_p: 2]
+    end
+  end
+
+  @doc """
+  Succinctly describe IP NetAddrs at compile time.
+
+  ## Examples
+
+      iex> use NetAddr
+      iex> ~p"192.0.2.1/24"
+      %NetAddr.IPv4{address: <<192,0,2,1>>, length: 24}
+
+      iex> use NetAddr
+      iex> ~p"2001:db8::1"
+      %NetAddr.IPv6{
+        address: <<0x2001::16,0xdb8::16,0::5*16,1::16>>,
+        length: 128,
+      }
+
+      iex> use NetAddr
+      iex> ~p(192.0.2.1/24 2001:db8::1)
+      [ %NetAddr.IPv4{address: <<192,0,2,1>>, length: 24},
+        %NetAddr.IPv6{
+          address: <<0x2001::16,0xdb8::16,0::5*16,1::16>>,
+          length: 128,
+        },
+      ]
+  """
+  defmacro sigil_p(term, modifiers)
+
+  defmacro sigil_p({:<<>>, _meta, [string]}, _options)
+      when is_binary(string)
+  do
+    list =
+      string
+      |> String.split
+      |> Enum.map(fn str ->
+        {:ok, netaddr} =
+          str
+          |> :elixir_interpolation.unescape_chars
+          |> NetAddr.ip_2
+          |> Macro.escape
+
+        netaddr
+      end)
+
+    with [netaddr] <- list, do: netaddr
+  end
+
+  defmacro sigil_p({:<<>>, meta, pieces}, _options) do
+    unescaped =
+      :elixir_interpolation.unescape_tokens(pieces)
+
+    binary = {:<<>>, meta, unescaped}
+
+    quote do
+      list =
+        unquote(binary)
+        |> String.split
+        |> Enum.map(fn str ->
+          {:ok, netaddr} = NetAddr.ip_2(unquote(binary))
+
+          netaddr
+        end)
+
+      with [netaddr] <- list, do: netaddr
+    end
+  end
+
   @ipv4_size 4
   @ipv6_size 16
   @mac_48_size 6
@@ -33,7 +105,10 @@ defmodule NetAddr do
     defstruct [:address, :length]
 
     @type t
-      :: %Generic{address: binary, length: non_neg_integer}
+      :: %__MODULE__{
+           address: binary,
+           length: non_neg_integer,
+         }
   end
 
   defmodule IPv4 do
@@ -44,7 +119,7 @@ defmodule NetAddr do
     defstruct [:address, :length]
 
     @type t
-      :: %IPv4{address: binary, length: non_neg_integer}
+      :: %__MODULE__{address: <<_::32>>, length: 0..32}
   end
 
   defmodule IPv6 do
@@ -55,7 +130,7 @@ defmodule NetAddr do
     defstruct [:address, :length]
 
     @type t
-      :: %IPv6{address: binary, length: non_neg_integer}
+      :: %__MODULE__{address: <<_::128>>, length: 0..128}
   end
 
   defmodule MAC_48 do
@@ -66,7 +141,7 @@ defmodule NetAddr do
     defstruct [:address, :length]
 
     @type t
-      :: %MAC_48{address: binary, length: non_neg_integer}
+      :: %__MODULE__{address: <<_::48>>, length: 0..48}
   end
 
   defp wrap_result(result) do
@@ -177,15 +252,18 @@ defmodule NetAddr do
   @spec netaddr(binary,  48) ::  MAC_48.t | {:error, :einval}
   @spec netaddr(binary, 128) ::    IPv6.t | {:error, :einval}
   def netaddr(address, address_length)
-      when byte_size(address) == @ipv4_size,
+      when byte_size(address) == @ipv4_size
+       and address_length in 0..(@ipv4_size * 8),
     do: %IPv4{address: address, length: address_length}
 
   def netaddr(address, address_length)
-      when byte_size(address) == @mac_48_size,
+      when byte_size(address) == @mac_48_size
+       and address_length in 0..(@mac_48_size * 8),
     do: %MAC_48{address: address, length: address_length}
 
   def netaddr(address, address_length)
-      when byte_size(address) == @ipv6_size,
+      when byte_size(address) == @ipv6_size
+       and address_length in 0..(@ipv6_size * 8),
     do: %IPv6{address: address, length: address_length}
 
   def netaddr(address, address_length)
@@ -782,9 +860,18 @@ defmodule NetAddr do
   ######################## Parsing #########################
 
   defp ip_address_string_to_bytes(ip_address_string) do
-    ip_address_list = :binary.bin_to_list ip_address_string
+    # We replace leading zeroes at word boundaries here
+    # because `:inet.parse_address/1` processes integers
+    # with leading zeroes as octal, and we want decimal,
+    # instead.
+    #
+    ip_address_list =
+      ip_address_string
+      |> String.replace(~r/\b0*(\d+)/, "\\1")
+      |> :binary.bin_to_list
 
-    with {:ok, tuple} <- :inet.parse_address(ip_address_list)
+    with {:ok, tuple} <-
+           :inet.parse_address(ip_address_list)
     do
       case Tuple.to_list tuple do
         byte_list when length(byte_list) == 4 ->
@@ -849,7 +936,7 @@ defmodule NetAddr do
       String.split(ip_string, "/", parts: 2)
 
     ip_address_length =
-      get_length_from_split_residue split_residue
+      get_length_from_split_residue(split_residue)
 
     ip(ip_address_string, ip_address_length)
   end
@@ -901,6 +988,12 @@ defmodule NetAddr do
 
       iex> NetAddr.ip "blarg", 32
       {:error, :einval}
+
+      iex> NetAddr.ip "192.0.2.010"
+      %NetAddr.IPv4{address: <<192, 0, 2, 10>>, length: 32}
+
+      iex> NetAddr.ip "192.0.2.1/33"
+      {:error, :einval}
   """
   @spec ip(String.t, nil)
     :: IPv4.t
@@ -925,13 +1018,14 @@ defmodule NetAddr do
 
   def ip(ip_address_string, ip_address_length)
       when is_integer(ip_address_length)
-       and ip_address_length >= 0
+       and ip_address_length in 0..(@ipv4_size * 8)
+        or ip_address_length in 0..(@ipv6_size * 8)
         or ip_address_length == nil
   do
     with {:ok, ip_bytes} <-
            ip_address_string_to_bytes(ip_address_string)
     do
-      ip_binary = :binary.list_to_bin ip_bytes
+      ip_binary = :binary.list_to_bin(ip_bytes)
       ip_address_length =
         ip_address_length || count_bits_in_binary(ip_binary)
 
@@ -1168,20 +1262,17 @@ defmodule NetAddr do
   """
   @spec contains?(NetAddr.t, NetAddr.t)
     :: boolean
+     | none
   def contains?(netaddr1, netaddr2)
 
   def contains?(
-    %{address: a1, length: l1} = n1,
-    %{address: a2, length: l2} = n2
-  )   when byte_size(a1) == byte_size(a2)
-       and l1 <= l2
-  do
-    first_address(n1) ==
-      first_address(address_length(n2, l1))
+    %{address: _, length: l1} = n1,
+    %{address: _, length: l2} = n2
+  ) do
+    l1 <= l2
+    and first_address(n1) ==
+          first_address(address_length(n2, l1))
   end
-
-  def contains?(_, _),
-    do: false
 
   @doc """
   Tests whether `netaddr` has length equal to its size in
@@ -1203,7 +1294,11 @@ defmodule NetAddr do
   """
   @spec is_host_address(NetAddr.t)
     :: boolean
-  def is_host_address(netaddr) do
+  def is_host_address(netaddr)
+
+  def is_host_address(
+    %{address: _, length: _} = netaddr
+  ) do
     (NetAddr.address_size(netaddr) * 8) ==
       NetAddr.address_length(netaddr)
   end
