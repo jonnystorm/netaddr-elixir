@@ -10,7 +10,13 @@ defmodule NetAddr do
   size.
   """
 
-  alias NetAddr.{IPv4, IPv6, MAC_48, Generic}
+  alias NetAddr.{
+    IPv4,
+    IPv6,
+    MAC_48,
+    Generic,
+    Utility,
+  }
 
   use Bitwise
 
@@ -216,8 +222,11 @@ defmodule NetAddr do
       iex> NetAddr.netaddr <<1, 2, 3, 4, 5>>
       %NetAddr.Generic{address: <<1, 2, 3, 4, 5>>, length: 40}
   """
-  @spec netaddr(binary)
-    :: NetAddr.t
+  @spec netaddr(<<_::8, _::_*8>>)
+    :: Generic.t
+     | IPv4.t
+     | IPv6.t
+     | MAC_48.t
      | {:error, :einval}
   def netaddr(address),
     do: netaddr(address, byte_size(address) * 8)
@@ -234,8 +243,13 @@ defmodule NetAddr do
       iex> NetAddr.netaddr_2(<<1, 2, 3, 4, 5>>)
       {:ok, %NetAddr.Generic{address: <<1, 2, 3, 4, 5>>, length: 40}}
   """
-  @spec netaddr_2(binary)
-    :: {:ok, NetAddr.t}
+  @spec netaddr_2(<<_::8, _::_*8>>)
+    :: { :ok,
+         Generic.t
+       | IPv4.t
+       | IPv6.t
+       | MAC_48.t
+       }
      | {:error, :einval}
   def netaddr_2(address) do
     address
@@ -247,10 +261,12 @@ defmodule NetAddr do
   Constructs a `t:NetAddr.t/0` struct given a network
   address binary and an address length.
   """
-  @spec netaddr(binary,   8) :: Generic.t
-  @spec netaddr(binary,  32) ::    IPv4.t | {:error, :einval}
-  @spec netaddr(binary,  48) ::  MAC_48.t | {:error, :einval}
-  @spec netaddr(binary, 128) ::    IPv6.t | {:error, :einval}
+  @spec netaddr(<<_::8, _::_*8>>, pos_integer)
+    :: Generic.t
+     | IPv4.t
+     | IPv6.t
+     | MAC_48.t
+     | {:error, :einval}
   def netaddr(address, address_length)
       when byte_size(address) == @ipv4_size
        and address_length in 0..(@ipv4_size * 8),
@@ -276,17 +292,22 @@ defmodule NetAddr do
   @doc """
   Identical to `netaddr/2`, but returns `{:ok, value}` on
   success instead of just `value`.
+
+  ## Examples
+
+  iex> NetAddr.netaddr_2(<<1,2,3,4>>, 16)
+  {:ok, %NetAddr.IPv4{address: <<1,2,3,4>>, length: 16}}
+
+  iex> NetAddr.netaddr_2(<<1,2,3,4>>, 33)
+  {:error, :einval}
   """
-  @spec netaddr_2(binary, 8)
-    :: {:ok, Generic.t}
-  @spec netaddr_2(binary, 32)
-    :: {:ok, IPv4.t}
-     | {:error, :einval}
-  @spec netaddr_2(binary, 48)
-    :: {:ok, MAC_48.t}
-     | {:error, :einval}
-  @spec netaddr_2(binary, 128)
-    :: {:ok, IPv6.t}
+  @spec netaddr_2(<<_::8, _::_*8>>, pos_integer)
+    :: { :ok,
+         Generic.t
+       | IPv4.t
+       | IPv6.t
+       | MAC_48.t
+       }
      | {:error, :einval}
   def netaddr_2(address, address_length),
     do: wrap_result netaddr(address, address_length)
@@ -383,6 +404,47 @@ defmodule NetAddr do
     |> Enum.map(&Math.Binary.ones/1)
     |> Enum.sum
   end
+
+  @doc """
+  Convert `address_mask` to an address length.
+
+  Unlike `mask_to_length/1`, this function returns
+  `{:ok, length}`, on success, and `{:error, :einval}`,
+  otherwise. In particular, this function rejects a mask
+  that contains non-consecutive ones bits.
+
+  ## Examples
+
+      iex> NetAddr.mask_to_length_2(<<255,255,248,0>>)
+      {:ok, 21}
+
+      iex> NetAddr.mask_to_length_2(<<14,249,150,22>>)
+      {:error, :einval}
+  """
+  @spec mask_to_length_2(binary)
+    :: {:ok, non_neg_integer}
+     | {:error, :einval}
+  def mask_to_length_2(address_mask)
+      when is_binary(address_mask)
+  do
+    octets = :binary.bin_to_list(address_mask)
+
+    subnet_part =
+      Enum.filter(octets, & &1 not in [0, 255])
+
+    if length(subnet_part) > 1 do
+      {:error, :einval}
+    else
+      { :ok,
+        octets
+        |> Enum.map(&Math.Binary.ones/1)
+        |> Enum.sum
+      }
+    end
+  end
+
+  def mask_to_length_2(_),
+    do: {:error, :einval}
 
   defp combine_bytes_into_decimal(bytes),
     do: Math.collapse(bytes, 256)
@@ -697,6 +759,42 @@ defmodule NetAddr do
 
           do: NetAddr.netaddr_2(bin)
     end
+  end
+
+  @doc ~S"""
+  Convert IPv4 `netaddr` to a regular expression.
+
+  ## Examples
+
+      iex> NetAddr.netaddr_to_regex NetAddr.ip("192.0.2.0/23")
+      ~r/(192\.0\.([2-3])\.([0-9]|[1-9][0-9]|[1-1][0-9][0-9]|2[0-4][0-9]|25[0-5]))/
+
+      iex> NetAddr.netaddr_to_regex NetAddr.ip("192.0.64.0/17")
+      ~r/(192\.0\.([0-9]|[1-9][0-9]|1[0-1][0-9]|12[0-7])\.([0-9]|[1-9][0-9]|[1-1][0-9][0-9]|2[0-4][0-9]|25[0-5]))/
+  """
+  @spec netaddr_to_regex(NetAddr.IPv4.t)
+    :: Regex.t
+  def netaddr_to_regex(netaddr)
+
+  def netaddr_to_regex(%NetAddr.IPv4{} = netaddr) do
+    first =
+      netaddr
+      |> first_address
+      |> netaddr_to_list
+
+    last =
+      netaddr
+      |> last_address
+      |> netaddr_to_list
+
+    first
+    |> Enum.zip(last)
+    |> Enum.map(fn {a, b} -> a..b end)
+    |> Enum.map(&Utility.range_to_regex/1)
+    |> Enum.join("\\.")
+    |> String.replace_prefix("", "(")
+    |> String.replace_suffix("", ")")
+    |> Regex.compile!
   end
 
   #################### Pretty Printing #####################
@@ -1016,18 +1114,20 @@ defmodule NetAddr do
       do: ip(ip_address_string, mask_to_length(ip_mask))
   end
 
-  def ip(ip_address_string, ip_address_length)
-      when is_integer(ip_address_length)
-       and ip_address_length in 0..(@ipv4_size * 8)
-        or ip_address_length in 0..(@ipv6_size * 8)
-        or ip_address_length == nil
+  def ip(ip_address_string, ip_address_length0)
+      when is_integer(ip_address_length0)
+       and ip_address_length0 in 0..(@ipv4_size * 8)
+        or ip_address_length0 in 0..(@ipv6_size * 8)
+        or ip_address_length0 == nil
   do
     with {:ok, ip_bytes} <-
            ip_address_string_to_bytes(ip_address_string)
     do
       ip_binary = :binary.list_to_bin(ip_bytes)
+
       ip_address_length =
-        ip_address_length || count_bits_in_binary(ip_binary)
+        ip_address_length0 ||
+          count_bits_in_binary(ip_binary)
 
       netaddr(ip_binary, ip_address_length)
     end
@@ -1048,6 +1148,9 @@ defmodule NetAddr do
       iex> NetAddr.ip_2 "192.0.2.1", "255.255.255.0"
       {:ok, %NetAddr.IPv4{address: <<192, 0, 2, 1>>, length: 24}}
 
+      iex> NetAddr.ip_2 "192.0.2.1", "14.249.150.22"
+      {:error, :einval}
+
       iex> NetAddr.ip_2 "fe80:0:c100::c401", 64
       {:ok, %NetAddr.IPv6{address: <<254, 128, 0, 0, 193, 0, 0, 0, 0, 0, 0, 0, 0, 0, 196, 1>>, length: 64}}
 
@@ -1063,9 +1166,22 @@ defmodule NetAddr do
   @spec ip_2(String.t, non_neg_integer)
     :: {:ok, IPv4.t|IPv6.t}
      | {:error, :einval}
-  def ip_2(ip_address_string, ip_mask_string_or_length) do
+  def ip_2(ip_address_string, ip_mask_string)
+      when is_binary(ip_mask_string)
+  do
+    with %{address: ip_mask} <- ip(ip_mask_string),
+
+         {:ok, length} <- mask_to_length_2(ip_mask),
+
+      do: ip_2(ip_address_string, length)
+  end
+
+  def ip_2(ip_address_string, length)
+      when is_integer(length)
+       and length >= 0
+  do
     ip_address_string
-    |> ip(ip_mask_string_or_length)
+    |> ip(length)
     |> wrap_result
   end
 
@@ -1224,15 +1340,18 @@ defmodule NetAddr do
 
   ## Examples
 
-      iex> NetAddr.apply_mask <<192, 0, 2, 1>>, <<255, 255, 255, 0>>
+      iex> NetAddr.apply_mask <<192,0,2,1>>, <<255,255,255,0>>
       <<192, 0, 2, 0>>
+
+      iex> NetAddr.apply_mask <<192,0,2,1>>, <<14,249,150,22>>
+      <<0,0,2,0>>
   """
   @spec apply_mask(binary, binary)
     :: binary
   def apply_mask(address, mask)
       when is_binary(address)
        and is_binary(mask),
-  do: Vector.bit_and(address, mask)
+    do: Vector.bit_and(address, mask)
 
   @doc """
   Tests whether `netaddr` contains `netaddr2`, up to
