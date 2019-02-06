@@ -767,10 +767,10 @@ defmodule NetAddr do
   ## Examples
 
       iex> NetAddr.netaddr_to_regex NetAddr.ip("192.0.2.0/23")
-      ~r/(192\.0\.([2-3])\.([0-9]|[1-9][0-9]|[1-1][0-9][0-9]|2[0-4][0-9]|25[0-5]))/
+      ~r/\b192\.0\.[2-3]\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\b/
 
       iex> NetAddr.netaddr_to_regex NetAddr.ip("192.0.64.0/17")
-      ~r/(192\.0\.([0-9]|[1-9][0-9]|1[0-1][0-9]|12[0-7])\.([0-9]|[1-9][0-9]|[1-1][0-9][0-9]|2[0-4][0-9]|25[0-5]))/
+      ~r/\b192\.0\.([0-9]|[1-9][0-9]|1[0-1][0-9]|12[0-7])\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\b/
   """
   @spec netaddr_to_regex(NetAddr.IPv4.t)
     :: Regex.t
@@ -792,8 +792,8 @@ defmodule NetAddr do
     |> Enum.map(fn {a, b} -> a..b end)
     |> Enum.map(&Utility.range_to_regex/1)
     |> Enum.join("\\.")
-    |> String.replace_prefix("", "(")
-    |> String.replace_suffix("", ")")
+    |> String.replace_prefix("", "\\b")
+    |> String.replace_suffix("", "\\b")
     |> Regex.compile!
   end
 

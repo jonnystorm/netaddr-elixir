@@ -110,4 +110,28 @@ defmodule NetAddrTest do
 
     assert result == "0x0102030405/40"
   end
+
+  test "generates regex matching all of 192.0.2.0/23" do
+    cidr   = NetAddr.ip("192.0.2.0/23")
+    regex  = NetAddr.netaddr_to_regex(cidr)
+    result =
+      cidr
+      |> NetAddr.netaddr_to_range
+      |> Enum.map(&NetAddr.ntoa(&1, 4))
+      |> Enum.map(&NetAddr.netaddr(&1, 23))
+
+    assert Enum.all?(result, & "#{&1}" =~ regex)
+  end
+
+  test "generates regex matching all of 192.0.2.128/25" do
+    cidr   = NetAddr.ip("192.0.2.128/25")
+    regex  = NetAddr.netaddr_to_regex(cidr)
+    result =
+      cidr
+      |> NetAddr.netaddr_to_range
+      |> Enum.map(&NetAddr.ntoa(&1, 4))
+      |> Enum.map(&NetAddr.netaddr(&1, 25))
+
+    assert Enum.all?(result, & "#{&1}" =~ regex)
+  end
 end
