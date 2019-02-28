@@ -295,11 +295,11 @@ defmodule NetAddr do
 
   ## Examples
 
-  iex> NetAddr.netaddr_2(<<1,2,3,4>>, 16)
-  {:ok, %NetAddr.IPv4{address: <<1,2,3,4>>, length: 16}}
+      iex> NetAddr.netaddr_2(<<1,2,3,4>>, 16)
+      {:ok, %NetAddr.IPv4{address: <<1,2,3,4>>, length: 16}}
 
-  iex> NetAddr.netaddr_2(<<1,2,3,4>>, 33)
-  {:error, :einval}
+      iex> NetAddr.netaddr_2(<<1,2,3,4>>, 33)
+      {:error, :einval}
   """
   @spec netaddr_2(<<_::8, _::_*8>>, pos_integer)
     :: { :ok,
@@ -647,11 +647,11 @@ defmodule NetAddr do
 
   ## Examples
 
-  iex> NetAddr.netaddr_to_erl_ip NetAddr.ip("192.0.2.1")
-  {192, 0, 2, 1}
+      iex> NetAddr.netaddr_to_erl_ip NetAddr.ip("192.0.2.1")
+      {192, 0, 2, 1}
 
-  iex> NetAddr.netaddr_to_erl_ip NetAddr.ip("2001:db8::1")
-  {0x2001, 0xdb8, 0, 0, 0, 0, 0, 1}
+      iex> NetAddr.netaddr_to_erl_ip NetAddr.ip("2001:db8::1")
+      {0x2001, 0xdb8, 0, 0, 0, 0, 0, 1}
   """
   @spec netaddr_to_erl_ip(NetAddr.t)
     :: {:ok, erl_ip}
@@ -685,11 +685,11 @@ defmodule NetAddr do
 
   ## Examples
 
-  iex> NetAddr.netaddr_to_ptr NetAddr.ip("192.0.2.1")
-  {:ok, "1.2.0.192.in-addr.arpa"}
+      iex> NetAddr.netaddr_to_ptr NetAddr.ip("192.0.2.1")
+      {:ok, "1.2.0.192.in-addr.arpa"}
 
-  iex> NetAddr.netaddr_to_ptr NetAddr.ip("2001:db8::1")
-  {:ok, "1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa"}
+      iex> NetAddr.netaddr_to_ptr NetAddr.ip("2001:db8::1")
+      {:ok, "1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa"}
   """
   @spec netaddr_to_ptr(NetAddr.t)
     :: {:ok, String.t}
@@ -724,11 +724,11 @@ defmodule NetAddr do
 
   ## Examples
 
-  iex> NetAddr.ptr_to_netaddr "1.2.0.192.in-addr.arpa"
-  {:ok, %NetAddr.IPv4{address: <<192,0,2,1>>, length: 32}}
+      iex> NetAddr.ptr_to_netaddr "1.2.0.192.in-addr.arpa"
+      {:ok, %NetAddr.IPv4{address: <<192,0,2,1>>, length: 32}}
 
-  iex> NetAddr.ptr_to_netaddr "1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa"
-  {:ok, %NetAddr.IPv6{address: <<0x2001::2*8,0xdb8::2*8,0::11*8,1>>, length: 128}}
+      iex> NetAddr.ptr_to_netaddr "1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa"
+      {:ok, %NetAddr.IPv6{address: <<0x2001::2*8,0xdb8::2*8,0::11*8,1>>, length: 128}}
   """
   @spec ptr_to_netaddr(String.t)
     :: {:ok, NetAddr.t}
