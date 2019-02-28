@@ -10,6 +10,14 @@ See the [API documentation](http://jonnystorm.gitlab.io/netaddr-elixir).
 ### Parsing:
 
 ```elixir
+iex> use NetAddr
+NetAddr
+iex> ~p(192.0.2.1 198.51.100.0/24 ::/0)
+[ %NetAddr.IPv4{address: <<192,0,2,1>>, length: 32},
+  %NetAddr.IPv4{address: <<198,51,100,0>>, length: 24},
+  %NetAddr.IPv6{address: <<0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0>>, length: 0}
+]
+
 iex> NetAddr.ip "192.0.2.1/24"
 %NetAddr.IPv4{address: <<192, 0, 2, 1>>, length: 24}
 
