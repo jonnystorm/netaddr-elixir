@@ -1,4 +1,8 @@
 defmodule NetAddr.Utility do
+  @moduledoc """
+  Every project needs a junk drawer.
+  """
+
   defp range(ctxt, range) do
     ctxt
     |> Enum.reverse
@@ -95,6 +99,13 @@ defmodule NetAddr.Utility do
         _range_to_regex(a, next_b, ctxt, next_stack, acc)
     end
   end
+
+  @type range :: Range.t
+  @type regex :: String.t
+
+  @spec range_to_regex(range)
+    :: regex
+  def range_to_regex(range)
 
   def range_to_regex(a..a),
     do: "#{a}"

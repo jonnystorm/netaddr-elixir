@@ -515,7 +515,7 @@ defmodule NetAddr do
 
   @doc """
   Converts a `t:NetAddr.t/0` to a
-  [Range.t/0](http://elixir-lang.org/docs/stable/elixir/Range.html#t:t/0).
+  [t:Range.t/0](http://elixir-lang.org/docs/stable/elixir/Range.html#t:t/0).
 
   ## Examples
 
