@@ -313,7 +313,7 @@ defmodule NetAddr do
     do: wrap_result netaddr(address, address_length)
 
   @doc """
-  Explicitly constructs a `t:Generic.t/0` struct.
+  Explicitly constructs a `t:NetAddr.Generic.t/0` struct.
 
   ## Examples
 
@@ -515,7 +515,7 @@ defmodule NetAddr do
 
   @doc """
   Converts a `t:NetAddr.t/0` to a
-  [t:Range.t/0](http://elixir-lang.org/docs/stable/elixir/Range.html#t:t/0).
+  [`t:Range.t/0`](http://elixir-lang.org/docs/stable/elixir/Range.html#t:t/0).
 
   ## Examples
 
@@ -1006,7 +1006,7 @@ defmodule NetAddr do
 
   @doc """
   Parses `ip_string` as an IPv4/IPv6 address or CIDR,
-  returning a `t:IPv4.t/0` or `t:IPv6.t/0` as appropriate.
+  returning a `t:NetAddr.IPv4.t/0` or `t:NetAddr.IPv6.t/0` as appropriate.
 
   ## Examples
 
@@ -1247,7 +1247,7 @@ defmodule NetAddr do
     do: _parse_mac_48(string, {[], []})
 
   @doc """
-  Parses `mac_string`, returning a `t:MAC_48.t/0`.
+  Parses `mac_string`, returning a `t:NetAddr.MAC_48.t/0`.
 
   For manifest reasons, the corresponding parser may be
   robust to the point of returning incorrect results.
