@@ -1,7 +1,7 @@
 netaddr-elixir
 =========
 
-[![Build Status](https://travis-ci.org/jonnystorm/netaddr-elixir.svg?branch=master)](https://travis-ci.org/jonnystorm/netaddr-elixir)
+[![Build Status](https://gitlab.com/jonnystorm/netaddr-elixir/badges/master/pipeline.svg)](https://gitlab.com/jonnystorm/netaddr-elixir/commits/master)
 
 General functions for network address parsing and manipulation, with support for addresses of arbitrary size.
 
