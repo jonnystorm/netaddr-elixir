@@ -3,10 +3,10 @@ image: elixir:latest
 mix:
   variables:
     MIX_ENV: test
-    PLT_FILENAME: elixir-${ELIXIR_VERSION/v/}_${OTP_VERSION}.plt
-    PLT_TESTNAME: dialyxir_erlang-${OTP_VERSION}_elixir-${ELIXIR_VERSION/v/}_deps-${MIX_ENV}.plt
-    PLT_LOCATION: _build/$MIX_ENV/$PLT_TESTNAME
   script:
+    - export PLT_FILENAME=elixir-${ELIXIR_VERSION/v/}_${OTP_VERSION}.plt
+    - export PLT_TESTNAME=dialyxir_erlang-${OTP_VERSION}_elixir-${ELIXIR_VERSION/v/}_deps-${MIX_ENV}.plt
+    - export PLT_LOCATION=_build/$MIX_ENV/$PLT_TESTNAME
     - echo "Elixir v${ELIXIR_VERSION/v/} (compiled with OTP $OTP_VERSION)"
     - mix local.hex --force
     - mix local.rebar --force
