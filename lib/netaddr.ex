@@ -18,7 +18,7 @@ defmodule NetAddr do
     Utility,
   }
 
-  use Bitwise
+  require Bitwise
 
   defmacro __using__(_opts) do
     quote do
@@ -158,6 +158,105 @@ defmodule NetAddr do
       value ->
         {:ok, value}
     end
+  end
+
+  defp _ones({0, acc}),
+    do: acc
+
+  defp _ones({number, acc}),
+    do: _ones({div(number, 2), rem(number, 2) + acc})
+
+  defp ones(number),
+    do: _ones({number, 0})
+
+  defp pad_list_head_with_zeros(list, size)
+      when length(list) < size
+  do
+    0
+    |> List.duplicate(size - length(list))
+    |> Enum.concat(list)
+  end
+
+  defp pad_list_head_with_zeros(list, size)
+      when length(list) == size,
+    do: list
+
+  defp expand(decimal, base),
+    do: Integer.digits(decimal, base)
+
+  defp expand(decimal, base, dimension) do
+    try do
+      decimal
+      |> Integer.digits(base)
+      |> pad_list_head_with_zeros(dimension)
+
+    rescue
+      _ in FunctionClauseError ->
+        raise ArgumentError,
+          message: "Decimal expansion exceeds given dimension"
+    end
+  end
+
+  defp collapse(elements, base),
+    do: Integer.undigits(elements, base)
+
+  defp bitstrings_to_lists(bitstrings),
+    do: Enum.map(bitstrings, &:binary.bin_to_list(&1))
+
+  defp vector_op(bitstring1, bitstring2, fun)
+      when byte_size(bitstring1) == byte_size(bitstring2)
+  do
+    [u, v] =
+      bitstrings_to_lists([bitstring1, bitstring2])
+
+    u
+    |> Enum.zip(v)
+    |> Enum.map(fun)
+    |> :binary.list_to_bin
+  end
+
+  defp vector_op(_, _, _) do
+    raise ArgumentError,
+      message: "Vectors must be of same dimension"
+  end
+
+  def embed(v, dimension)
+      when byte_size(v) == dimension,
+    do: v
+
+  def embed(v, dimension)
+      when byte_size(v) < dimension,
+    do: String.pad_leading(v, dimension, <<0>>)
+
+  def embed(v, dimension)
+      when byte_size(v) > dimension
+  do
+    raise ArgumentError,
+      message: "Cannot embed vector in space of lower dimension"
+  end
+
+  defp bit_and(u, v)
+      when is_binary(v)
+  do
+    vector_op(u, v, fn {ui, vi} ->
+      Bitwise.band(ui, vi)
+    end)
+  end
+
+  defp bit_or(u, v)
+      when is_binary(v)
+  do
+    vector_op(u, v, fn {ui, vi} ->
+      Bitwise.bor(ui, vi)
+    end)
+  end
+
+  defp bit_xor(u, v)
+      when is_binary(v)
+  do
+    vector_op(u, v, fn {ui, vi} ->
+      Bitwise.bxor(ui, vi)
+    end)
   end
 
   @doc """
@@ -329,7 +428,7 @@ defmodule NetAddr do
       when address_length in 0..(size_in_bytes * 8)
   do
     embedded_address =
-      Vector.embed(address, size_in_bytes)
+      embed(address, size_in_bytes)
 
     %Generic{
       address: embedded_address,
@@ -379,11 +478,11 @@ defmodule NetAddr do
   def length_to_mask(address_length, mask_length_in_bytes)
       when address_length <= (mask_length_in_bytes * 8)
   do
-    ones = bsl(1, address_length) - 1
+    ones = Bitwise.bsl(1, address_length) - 1
     mask_length_in_bits = mask_length_in_bytes * 8
     mask_number =
       ones
-      |> bsl(mask_length_in_bits - address_length)
+      |> Bitwise.bsl(mask_length_in_bits - address_length)
 
     <<mask_number :: size(mask_length_in_bits)>>
   end
@@ -401,7 +500,7 @@ defmodule NetAddr do
   def mask_to_length(address_mask) do
     address_mask
     |> :binary.bin_to_list
-    |> Enum.map(&Math.Binary.ones/1)
+    |> Enum.map(&ones/1)
     |> Enum.sum
   end
 
@@ -437,7 +536,7 @@ defmodule NetAddr do
     else
       { :ok,
         octets
-        |> Enum.map(&Math.Binary.ones/1)
+        |> Enum.map(&ones/1)
         |> Enum.sum
       }
     end
@@ -447,12 +546,14 @@ defmodule NetAddr do
     do: {:error, :einval}
 
   defp combine_bytes_into_decimal(bytes),
-    do: Math.collapse(bytes, 256)
+    do: collapse(bytes, 256)
 
   defp split_decimal_into_bytes(decimal, byte_count) do
     decimal
-    |> Math.expand(256)
-    |> Vector.embed(byte_count)
+    |> expand(256)
+    |> :binary.list_to_bin
+    |> String.pad_leading(byte_count, <<0>>)
+    |> :binary.bin_to_list
   end
 
   @doc """
@@ -540,7 +641,7 @@ defmodule NetAddr do
     count = Enum.count range
     new_length =
       (size_in_bytes * 8)
-      |> subtract.(Math.Information.log_2(count))
+      |> subtract.(:math.log2(count))
       |> trunc
 
     %{struct |
@@ -636,7 +737,7 @@ defmodule NetAddr do
   do
     erl_ip
     |> Tuple.to_list
-    |> Enum.flat_map(&Math.expand(&1, 256, 2))
+    |> Enum.flat_map(&expand(&1, 256, 2))
     |> :binary.list_to_bin
     |> NetAddr.netaddr_2
   end
@@ -671,8 +772,8 @@ defmodule NetAddr do
   ) do
     address
     |> :binary.bin_to_list
-    |> Math.collapse(256)
-    |> Math.expand(65536)
+    |> collapse(256)
+    |> expand(65536)
     |> List.to_tuple
   end
 
@@ -853,11 +954,11 @@ defmodule NetAddr do
     decimal  = trunc :math.pow(2, size*8) - 1
     all_ones = ntoa(decimal, size)
 
-    inverse_mask = Vector.bit_xor(mask, all_ones)
+    inverse_mask = bit_xor(mask, all_ones)
 
     last =
       first_address(netaddr).address
-      |> Vector.bit_or(inverse_mask)
+      |> bit_or(inverse_mask)
 
     %{netaddr | address: last}
   end
@@ -977,8 +1078,9 @@ defmodule NetAddr do
 
         word_list when length(word_list) == 8 ->
           byte_list =
-            Enum.flat_map word_list,
+            Enum.flat_map(word_list,
               &split_decimal_into_bytes(&1, 2)
+            )
 
           {:ok, byte_list}
       end
@@ -1195,7 +1297,7 @@ defmodule NetAddr do
     # If the string is consumed and the current byte is not
     # empty, append the current byte and return the
     # accumulator
-    byte = Math.collapse(byte_acc, 16)
+    byte = collapse(byte_acc, 16)
 
     :binary.list_to_bin acc ++ [byte]
   end
@@ -1205,7 +1307,7 @@ defmodule NetAddr do
   do
     # When the current byte contains two characters, combine
     # and append them
-    byte = Math.collapse(byte_acc, 16)
+    byte = collapse(byte_acc, 16)
 
     _parse_mac_48(string, {[], acc ++ [byte]})
   end
@@ -1222,7 +1324,7 @@ defmodule NetAddr do
   do
     # When a new delimiter is found, append the current byte
     # to the accumulator
-    byte = Math.collapse(byte_acc, 16)
+    byte = collapse(byte_acc, 16)
 
     _parse_mac_48(tail, {[], acc ++ [byte]})
   end
@@ -1351,7 +1453,7 @@ defmodule NetAddr do
   def apply_mask(address, mask)
       when is_binary(address)
        and is_binary(mask),
-    do: Vector.bit_and(address, mask)
+    do: bit_and(address, mask)
 
   @doc """
   Tests whether `netaddr` contains `netaddr2`, up to

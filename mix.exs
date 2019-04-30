@@ -3,9 +3,15 @@ defmodule NetAddr.Mixfile do
 
   def project do
     [ app: :netaddr_ex,
-      version: "1.0.4",
+      version: "1.0.5",
       name: "NetAddr",
-      source_url: "https://gitlab.com/jonnystorm/netaddr-elixir",
+      source_url: "https://gitlab.com/jonnystorm/netaddr-elixir.git",
+      description: """
+      General functions for network address parsing and
+      manipulation, with support for addresses of arbitrary
+      size.
+      """,
+      package: package(),
       elixir: "~> 1.7",
       build_embedded: Mix.env == :prod,
       start_permanent: Mix.env == :prod,
@@ -18,8 +24,6 @@ defmodule NetAddr.Mixfile do
       dialyzer: [
         add_plt_apps: [
           :logger,
-          :jds_math_ex,
-          :linear_ex,
         ],
         ignore_warnings: "dialyzer.ignore",
         flags: [
@@ -35,21 +39,22 @@ defmodule NetAddr.Mixfile do
   def application do
     [ applications: [
         :logger,
-        :jds_math_ex,
-        :linear_ex,
       ]
     ]
   end
 
   defp deps do
-    [ { :jds_math_ex,
-        git: "https://gitlab.com/jonnystorm/jds-math-elixir.git"
-      },
-      { :linear_ex,
-        git: "https://gitlab.com/jonnystorm/linear-elixir.git"
-      },
-      {:ex_doc, "~> 0.19", only: :dev, runtime: false},
+    [ {:ex_doc, "~> 0.19", only: :dev, runtime: false},
       {:cmark, "~> 0.6", only: :dev},
+    ]
+  end
+
+  defp package do
+    [ licenses: ["Mozilla Public License 2.0"],
+      links: %{
+        "GitLab" => "https://gitlab.com/jonnystorm/netaddr-elixir",
+        "GitHub" => "https://github.com/jonnystorm/netaddr-elixir",
+      },
     ]
   end
 end
