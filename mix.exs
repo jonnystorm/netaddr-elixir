@@ -6,11 +6,7 @@ defmodule NetAddr.Mixfile do
       version: "1.0.5",
       name: "NetAddr",
       source_url: "https://gitlab.com/jonnystorm/netaddr-elixir.git",
-      description: """
-      General functions for network address parsing and
-      manipulation, with support for addresses of arbitrary
-      size.
-      """,
+      description: description(),
       package: package(),
       elixir: "~> 1.7",
       build_embedded: Mix.env == :prod,
@@ -47,6 +43,10 @@ defmodule NetAddr.Mixfile do
     [ {:ex_doc, "~> 0.19", only: :dev, runtime: false},
       {:cmark, "~> 0.6", only: :dev},
     ]
+  end
+
+  defp description do
+    "General functions for network address parsing and manipulation, with support for addresses of arbitrary size."
   end
 
   defp package do
