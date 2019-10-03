@@ -19,6 +19,7 @@ defmodule NetAddr do
   }
 
   require Bitwise
+  require Logger
 
   defmacro __using__(_opts) do
     quote do
@@ -148,6 +149,355 @@ defmodule NetAddr do
 
     @type t
       :: %__MODULE__{address: <<_::48>>, length: 0..48}
+  end
+
+  defmodule PrefixSet do
+    defstruct prefixes: []
+
+    @type t :: %__MODULE__{prefixes: [NetAddr.t]}
+
+    defp _put([], new, :forward, acc),
+      do: Enum.reverse([new|acc])
+
+    defp _put(rest, new, :backward, []),
+      do: _put(rest, new, :forward, [])
+
+    defp _put(rest, new, :backward, [last|acc0] = acc) do
+      if NetAddr.contiguous?(new, last) do
+        next_new =
+          last
+          |> NetAddr.address_length(last.length - 1)
+          |> NetAddr.first_address
+
+        _put(rest, next_new, :backward, acc0)
+      else
+        _put(rest, new, :forward, acc)
+      end
+    end
+
+    defp _put([h|t], new, _dir, acc) do
+      cond do
+        NetAddr.contiguous?(new, h) ->
+          next_new =
+            h
+            |> NetAddr.address_length(h.length - 1)
+            |> NetAddr.first_address
+
+          _put(t, next_new, :backward, acc)
+
+        NetAddr.contains?(new, h) ->
+          [new|acc]
+          |> Enum.reverse
+          |> Enum.concat(t)
+
+        NetAddr.contains?(h, new) ->
+          [h|acc]
+          |> Enum.reverse
+          |> Enum.concat(t)
+
+        NetAddr.compare(new, h) == :lt ->
+          [h, new|acc]
+          |> Enum.reverse
+          |> Enum.concat(t)
+
+        true ->
+          _put(t, new, :forward, [h|acc])
+      end
+    end
+
+    @doc """
+    Insert `netaddr` into `prefix_set`.
+
+    ## Examples
+
+        iex> use NetAddr
+        iex> require NetAddr.PrefixSet, as: PrefixSet
+        iex>
+        iex> p = PrefixSet.new([~p"192.0.2.0/26"])
+        ...> |> PrefixSet.put(~p"192.0.2.0/26")
+        %NetAddr.PrefixSet{prefixes: [
+            %NetAddr.IPv4{address: <<192,0,2,0>>, length: 26}
+          ]
+        }
+        iex> p = p
+        ...> |> PrefixSet.put(~p"192.0.2.96/27")
+        %NetAddr.PrefixSet{prefixes: [
+            %NetAddr.IPv4{address: <<192,0,2,0>>, length: 26},
+            %NetAddr.IPv4{address: <<192,0,2,96>>, length: 27}
+          ]
+        }
+        iex> p = p
+        ...> |> PrefixSet.put(~p"192.0.2.64/27")
+        %NetAddr.PrefixSet{prefixes: [
+           %NetAddr.IPv4{address: <<192,0,2,0>>, length: 25}
+          ]
+        }
+        iex> p = p
+        ...> |> PrefixSet.put(~p"192.0.2.0/24")
+        %NetAddr.PrefixSet{prefixes: [
+            %NetAddr.IPv4{address: <<192,0,2,0>>, length: 24}
+          ]
+        }
+        iex> p
+        ...> |> PrefixSet.put(~p"192.0.2.0/28")
+        %NetAddr.PrefixSet{prefixes: [
+            %NetAddr.IPv4{address: <<192,0,2,0>>, length: 24}
+          ]
+        }
+    """
+    @spec put(PrefixSet.t, NetAddr.t)
+      :: PrefixSet.t
+    def put(prefix_set, netaddr)
+    def put(%PrefixSet{prefixes: p} = s, netaddr),
+      do: %{s|prefixes: _put(p, netaddr, :forward, [])}
+
+    defp flip(
+      %NetAddr.IPv4{address: <<a::32>>, length: l} = n
+    ) do
+      next_a =
+        2
+        |> :math.pow(32 - l)
+        |> trunc
+        |> (&Bitwise.bxor(a, &1)).()
+
+      %{n|address: <<next_a::32>>}
+    end
+
+    defp flip(
+      %NetAddr.IPv6{address: <<a::128>>, length: l} = n
+    ) do
+      next_a =
+        2
+        |> :math.pow(128 - l)
+        |> trunc
+        |> (&Bitwise.bxor(a, &1)).()
+
+      %{n|address: <<next_a::128>>}
+    end
+
+    defp _excise(target, target, acc),
+      do: Enum.sort([flip(target)|acc])
+
+    defp _excise(from, target, acc) do
+      flipped = flip(from)
+
+      cond do
+        NetAddr.contains?(from, target) ->
+          from
+          |> NetAddr.address_length(from.length + 1)
+          |> _excise(target, [flipped|acc])
+
+        NetAddr.contains?(flipped, target) ->
+          _excise(flipped, target, acc)
+      end
+    end
+
+    defp excise(from, target) do
+      # If this were public, we would need to ensure that
+      # `from` contains `target`, but `_delete` already does
+      # this for us.
+      #
+      from
+      |> NetAddr.address_length(from.length + 1)
+      |> _excise(target, [])
+    end
+
+    defp _delete([], _netaddr, acc),
+      do: Enum.reverse(acc)
+
+    defp _delete([h|t], netaddr, acc) do
+      cond do
+        h == netaddr ->
+          acc
+          |> Enum.reverse
+          |> Enum.concat(t)
+
+        NetAddr.contains?(h, netaddr) ->
+          acc
+          |> Enum.reverse
+          |> Enum.concat(excise(h, netaddr))
+          |> Enum.concat(t)
+
+        NetAddr.contains?(netaddr, h) ->
+          _delete(t, netaddr, acc)
+
+        true ->
+          _delete(t, netaddr, [h|acc])
+      end
+    end
+
+    @doc """
+    Delete `netaddr` from `prefix_set`.
+
+    ## Examples
+
+        iex> use NetAddr
+        iex> require NetAddr.PrefixSet, as: PrefixSet
+        iex> p = PrefixSet.new([~p"192.0.2.0/24"])
+        ...> |> PrefixSet.delete(~p"192.0.2.96/28")
+        %NetAddr.PrefixSet{prefixes: [
+            %NetAddr.IPv4{address: <<192,0,2,0>>, length: 26},
+            %NetAddr.IPv4{address: <<192,0,2,64>>, length: 27},
+            %NetAddr.IPv4{address: <<192,0,2,112>>, length: 28},
+            %NetAddr.IPv4{address: <<192,0,2,128>>, length: 25}
+          ]
+        }
+        iex> p = p
+        ...> |> PrefixSet.delete(~p"192.0.2.64/26")
+        %NetAddr.PrefixSet{prefixes: [
+            %NetAddr.IPv4{address: <<192,0,2,0>>, length: 26},
+            %NetAddr.IPv4{address: <<192,0,2,128>>, length: 25}
+          ]
+        }
+        iex> p
+        ...> |> PrefixSet.delete(~p"192.0.2.128/25")
+        %NetAddr.PrefixSet{prefixes: [
+            %NetAddr.IPv4{address: <<192,0,2,0>>, length: 26},
+          ]
+        }
+    """
+    @spec delete(PrefixSet.t, NetAddr.t)
+      :: PrefixSet.t
+    def delete(prefix_set, netaddr)
+    def delete(%PrefixSet{prefixes: p} = s, netaddr),
+      do: %{s|prefixes: _delete(p, netaddr, [])}
+
+    @doc """
+    Create an empty prefix set.
+
+    ## Examples
+
+        iex> NetAddr.PrefixSet.new
+        %NetAddr.PrefixSet{prefixes: []}
+    """
+    @spec new
+      :: PrefixSet.t
+    def new,
+      do: %__MODULE__{}
+
+    @doc """
+    Create a prefix set containing the NetAddrs in `list`.
+
+    ## Examples
+
+        iex> use NetAddr
+        iex> require NetAddr.PrefixSet, as: PrefixSet
+        iex> PrefixSet.new([~p"192.0.2.0/24", ~p"198.51.100.0/24"])
+        %NetAddr.PrefixSet{prefixes: [
+            %NetAddr.IPv4{address: <<192,0,2,0>>, length: 24},
+            %NetAddr.IPv4{address: <<198,51,100,0>>, length: 24}
+          ]
+        }
+    """
+    @spec new([NetAddr.t])
+      :: PrefixSet.t
+    def new(list) do
+      prefixes =
+        list
+        |> Enum.reduce([], fn
+          (%{address: a, length: l} = n, acc)
+              when is_binary(a)
+               and is_integer(l)
+               and 0 <= l and l <= bit_size(a) ->
+            [NetAddr.first_address(n)|acc]
+
+          (_, acc) ->
+            acc
+        end)
+        |> Enum.sort
+        |> Enum.dedup
+
+      %__MODULE__{prefixes: prefixes}
+    end
+  end
+
+  @doc """
+  Test whether two NetAddrs are *strictly* contiguous (i.e.
+  can be more succinctly represented as a single, shorter
+  prefix that is not equal to either of the given prefixes).
+
+  ## Examples
+
+      iex> use NetAddr
+      iex> NetAddr.contiguous?(~p"192.0.2.0/24", ~p"192.0.2.0/24")
+      false
+      iex> NetAddr.contiguous?(~p"192.0.2.0/24", ~p"192.0.2.0/25")
+      false
+      iex> NetAddr.contiguous?(~p"192.0.2.0/24", ~p"198.51.100.0/24")
+      false
+      iex> NetAddr.contiguous?(~p"192.0.2.64/26", ~p"192.0.2.128/25")
+      false
+      iex> NetAddr.contiguous?(~p"192.0.2.0/25", ~p"192.0.2.128/25")
+      true
+  """
+  @spec contiguous?(NetAddr.t, NetAddr.t)
+    :: boolean
+     | no_return
+  def contiguous?(netaddr1, netaddr2)
+  def contiguous?(
+    %{address: a, length: l},
+    %{address: a, length: l}
+  ),
+    do: false
+
+  def contiguous?(
+    %{address: a1, length: l} = n1,
+    %{address: a2, length: l} = n2
+  )   when is_binary(a1) and is_binary(a2)
+       and byte_size(a1) == byte_size(a2)
+  do
+    first_address(%{n1|length: l-1}) ==
+      first_address(%{n2|length: l-1})
+  end
+
+  def contiguous?(
+    %{address: _, length: _},
+    %{address: _, length: _}
+  ), do: false
+
+  def contiguous?(t1, t2),
+    do: raise("Expected NetAddrs but got #{inspect(t1)} and #{inspect(t2)}")
+
+  @doc """
+  Compare two NetAddrs.
+
+  Prefixes with lower addresses are less than prefixes with
+  higher addresses. Shorter prefixes are less than longer
+  prefixes having the same address.
+
+  ## Examples
+
+      iex> use NetAddr
+      iex> NetAddr.compare(~p"192.0.2.0/24", ~p"198.51.100.0/24")
+      :lt
+      iex> NetAddr.compare(~p"192.0.2.0/24", ~p"192.0.2.0/25")
+      :lt
+      iex> NetAddr.compare(~p"192.0.2.0/24", ~p"192.0.2.0/24")
+      :eq
+      iex> NetAddr.compare(~p"192.0.2.0/25", ~p"192.0.2.0/24")
+      :gt
+      iex> NetAddr.compare(~p"198.51.100.0/24", ~p"192.0.2.0/24")
+      :gt
+  """
+  @spec compare(NetAddr.t, NetAddr.t)
+    :: :lt | :eq | :gt
+  def compare(netaddr1, netaddr2)
+  def compare(
+    %{address: a1, length: l1} = n1,
+    %{address: a2, length: l2} = n2)
+      when is_binary(a1) and is_binary(a2)
+       and byte_size(a1) == byte_size(a2)
+  do
+    f1 = first_address(n1)
+    f2 = first_address(n2)
+
+    cond do
+      f1  < f2             -> :lt
+      f1 == f2 && l1  < l2 -> :lt
+      f1 == f2 && l1 == l2 -> :eq
+      f1 == f2 && l1  > l2 -> :gt
+      f1  > f2             -> :gt
+    end
   end
 
   defp wrap_result(result) do
@@ -545,9 +895,6 @@ defmodule NetAddr do
   def mask_to_length_2(_),
     do: {:error, :einval}
 
-  defp combine_bytes_into_decimal(bytes),
-    do: collapse(bytes, 256)
-
   defp split_decimal_into_bytes(decimal, byte_count) do
     decimal
     |> expand(256)
@@ -589,7 +936,7 @@ defmodule NetAddr do
   def aton(address) do
     address
     |> :binary.bin_to_list
-    |> combine_bytes_into_decimal
+    |> collapse(256)
   end
 
   @doc """
@@ -626,8 +973,8 @@ defmodule NetAddr do
   @spec netaddr_to_range(NetAddr.t)
     :: Range.t
   def netaddr_to_range(netaddr) do
-    a = aton first_address(netaddr).address
-    b = aton  last_address(netaddr).address
+    a = aton(first_address(netaddr).address)
+    b = aton( last_address(netaddr).address)
 
     a..b
   end
@@ -1670,7 +2017,7 @@ do
   def address(netaddr, _opts) do
     netaddr.address
     |> :binary.bin_to_list
-    |> Enum.chunk(2)
+    |> Enum.chunk_every(2)
     |> Enum.map(fn word ->
       word
       |> :binary.list_to_bin
