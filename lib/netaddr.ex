@@ -1976,6 +1976,140 @@ defmodule NetAddr do
 
   def is_ipv6(_),
     do: false
+
+  @doc """
+  Calculate the join, or least upper bound, of two netaddrs.
+  This effectively returns the smallest summary that
+  contains both netaddrs.
+
+  ## Examples
+
+      iex> use NetAddr
+      iex> NetAddr.join(~p(192.0.2.0/26), ~p(192.0.2.192/26))
+      %NetAddr.IPv4{address: <<192,0,2,0>>, length: 24}
+
+      iex> use NetAddr
+      iex> NetAddr.join(~p(192.0.2.0/26), ~p(192.0.2.128/25))
+      %NetAddr.IPv4{address: <<192,0,2,0>>, length: 24}
+
+      iex> use NetAddr
+      iex> NetAddr.join(~p(192.0.2.0/26), ~p(192.0.2.64/26))
+      %NetAddr.IPv4{address: <<192,0,2,0>>, length: 25}
+
+      iex> use NetAddr
+      iex> NetAddr.join(~p(192.0.2.7/26), ~p(192.0.2.78/26))
+      %NetAddr.IPv4{address: <<192,0,2,0>>, length: 25}
+
+      iex> use NetAddr
+      iex> NetAddr.join(~p(192.0.2.64/26), ~p(192.0.2.128/26))
+      %NetAddr.IPv4{address: <<192,0,2,0>>, length: 24}
+
+      iex> use NetAddr
+      iex> NetAddr.join(~p(192.0.2.0/24), ~p(192.0.2.128/25))
+      %NetAddr.IPv4{address: <<192,0,2,0>>, length: 24}
+
+      iex> use NetAddr
+      iex> NetAddr.join(~p(192.0.2.0/24), ~p(192.0.2.0/25))
+      %NetAddr.IPv4{address: <<192,0,2,0>>, length: 24}
+
+      iex> use NetAddr
+      iex> NetAddr.join(~p(192.0.2.0/24), ~p(192.0.2.0/24))
+      %NetAddr.IPv4{address: <<192,0,2,0>>, length: 24}
+  """
+  @spec join(NetAddr.t, NetAddr.t)
+    :: NetAddr.t
+  def join(netaddr1, netaddr2)
+  def join(
+    %{address: a1} = na1,
+    %{address: a2} = na2
+  )   when byte_size(a1) == byte_size(a2)
+  do
+    bit_size = bit_size(a1)
+    min_len  = min(na1.length, na2.length)
+
+    %{address: <<n1::size(bit_size)>>} =
+      first_address(%{na1|length: min_len})
+
+    %{address: <<n2::size(bit_size)>>} =
+      first_address(%{na2|length: min_len})
+
+    bits =
+      case Bitwise.bxor(n1, n2) do
+        0   -> bit_size - min_len
+        xor -> trunc(1 + :math.log2(xor))
+      end
+
+    len  = bit_size - bits
+    mask = length_to_mask(len, div(bit_size, 8))
+
+    %{na1 |
+      address: apply_mask(a1, mask),
+      length: len,
+    }
+  end
+
+  @doc """
+  Calculate the meet, or greatest lower bound, of two
+  netaddrs. If the two provided netaddrs overlap, this
+  function returns the lowest, smallest netaddr. Otherwise,
+  it returns nil.
+
+  ## Examples
+
+      iex> use NetAddr
+      iex> NetAddr.meet(~p(192.0.2.0/26), ~p(192.0.2.192/26))
+      nil
+
+      iex> use NetAddr
+      iex> NetAddr.meet(~p(192.0.2.0/26), ~p(192.0.2.128/25))
+      nil
+
+      iex> use NetAddr
+      iex> NetAddr.meet(~p(192.0.2.0/26), ~p(192.0.2.64/26))
+      nil
+
+      iex> use NetAddr
+      iex> NetAddr.meet(~p(192.0.2.7/26), ~p(192.0.2.78/26))
+      nil
+
+      iex> use NetAddr
+      iex> NetAddr.meet(~p(192.0.2.64/26), ~p(192.0.2.128/26))
+      nil
+
+      iex> use NetAddr
+      iex> NetAddr.meet(~p(192.0.2.0/24), ~p(192.0.2.128/25))
+      nil
+
+      iex> use NetAddr
+      iex> NetAddr.meet(~p(192.0.2.0/24), ~p(192.0.2.0/25))
+      %NetAddr.IPv4{address: <<192,0,2,0>>, length: 25}
+
+      iex> use NetAddr
+      iex> NetAddr.meet(~p(192.0.2.0/24), ~p(192.0.2.0/24))
+      %NetAddr.IPv4{address: <<192,0,2,0>>, length: 24}
+  """
+  @spec meet(NetAddr.t, NetAddr.t)
+    :: NetAddr.t
+     | nil
+  def meet(netaddr1, netaddr2)
+  def meet(
+    %{address: a1} = na1,
+    %{address: a2} = na2
+  )   when byte_size(a1) == byte_size(a2)
+  do
+    bit_size = bit_size(a1)
+    max_len = max(na1.length, na2.length)
+
+    %{address: <<n1::size(bit_size)>>} =
+      first_address(%{na1|length: max_len})
+
+    %{address: <<n2::size(bit_size)>>} =
+      first_address(%{na2|length: max_len})
+
+    if n1 == n2,
+      do: %{na1|length: max_len},
+      else: nil
+  end
 end
 
 
