@@ -3,7 +3,7 @@ defmodule NetAddr.Mixfile do
 
   def project do
     [ app: :netaddr_ex,
-      version: "1.3.0",
+      version: "1.3.1",
       name: "NetAddr",
       source_url: "https://gitlab.com/jonnystorm/netaddr-elixir.git",
       description: description(),
@@ -15,7 +15,6 @@ defmodule NetAddr.Mixfile do
       docs: [
         main: "NetAddr",
         extras: ~w(README.md),
-        markdown_processor: ExDoc.Markdown.Cmark,
       ],
       dialyzer: [
         add_plt_apps: [
@@ -40,8 +39,7 @@ defmodule NetAddr.Mixfile do
   end
 
   defp deps do
-    [ {:ex_doc, "~> 0.19", only: :dev, runtime: false},
-      {:cmark, "~> 0.6", only: :dev},
+    [ {:ex_doc, "~> 0.24", only: :dev, runtime: false},
     ]
   end
 
