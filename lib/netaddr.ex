@@ -63,7 +63,7 @@ defmodule NetAddr do
       |> Enum.map(fn str ->
         {:ok, netaddr} =
           str
-          |> :elixir_interpolation.unescape_chars
+          |> :elixir_interpolation.unescape_string
           |> NetAddr.ip_2
           |> Macro.escape
 
