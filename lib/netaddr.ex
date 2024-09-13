@@ -718,21 +718,21 @@ defmodule NetAddr do
      | {:error, :einval}
   def netaddr(address, address_length)
       when byte_size(address) == @ipv4_size
-       and address_length in 0..(@ipv4_size * 8),
+       and address_length in 0..(@ipv4_size * 8)//1,
     do: %IPv4{address: address, length: address_length}
 
   def netaddr(address, address_length)
       when byte_size(address) == @mac_48_size
-       and address_length in 0..(@mac_48_size * 8),
+       and address_length in 0..(@mac_48_size * 8)//1,
     do: %MAC_48{address: address, length: address_length}
 
   def netaddr(address, address_length)
       when byte_size(address) == @ipv6_size
-       and address_length in 0..(@ipv6_size * 8),
+       and address_length in 0..(@ipv6_size * 8)//1,
     do: %IPv6{address: address, length: address_length}
 
   def netaddr(address, address_length)
-      when address_length in 0..(byte_size(address) * 8),
+      when address_length in 0..(byte_size(address) * 8)//1,
     do: %Generic{address: address, length: address_length}
 
   def netaddr(_, _),
@@ -775,7 +775,7 @@ defmodule NetAddr do
   @spec netaddr(binary, non_neg_integer, pos_integer)
     :: Generic.t
   def netaddr(address, address_length, size_in_bytes)
-      when address_length in 0..(size_in_bytes * 8)
+      when address_length in 0..(size_in_bytes * 8)//1
   do
     embedded_address =
       embed(address, size_in_bytes)
@@ -980,7 +980,7 @@ defmodule NetAddr do
   end
 
   defp _range_to_netaddr(
-    a.._ = range,
+    a.._//_ = range,
     size_in_bytes,
     struct
   ) do
@@ -1565,8 +1565,8 @@ defmodule NetAddr do
 
   def ip(ip_address_string, ip_address_length0)
       when is_integer(ip_address_length0)
-       and ip_address_length0 in 0..(@ipv4_size * 8)
-        or ip_address_length0 in 0..(@ipv6_size * 8)
+       and ip_address_length0 in 0..(@ipv4_size * 8)//1
+        or ip_address_length0 in 0..(@ipv6_size * 8)//1
         or ip_address_length0 == nil
   do
     with {:ok, ip_bytes} <-
@@ -1660,14 +1660,14 @@ defmodule NetAddr do
   end
 
   defp _parse_mac_48(<<head, tail::binary>>, {[], acc})
-      when head in ':-. '
+      when head in ~c":-. "
   do
     # When a new delimiter is found and the current byte is
     # empty, consume tail
     _parse_mac_48(tail, {[], acc})
   end
   defp _parse_mac_48(<<head, tail::binary>>, {byte_acc, acc})
-      when head in ':-. '
+      when head in ~c":-. "
   do
     # When a new delimiter is found, append the current byte
     # to the accumulator
