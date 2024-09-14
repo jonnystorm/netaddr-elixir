@@ -107,13 +107,13 @@ defmodule NetAddr.Utility do
     :: regex
   def range_to_regex(range)
 
-  def range_to_regex(a..a),
+  def range_to_regex(a..a//_),
     do: "#{a}"
 
-  def range_to_regex(a..b) when a > b,
+  def range_to_regex(a..b//_) when a > b,
     do: range_to_regex(b..a)
 
-  def range_to_regex(a..b) when a < b do
+  def range_to_regex(a..b//_) when a < b do
     a_digits = Integer.digits(a)
     b_digits = Integer.digits(b)
 

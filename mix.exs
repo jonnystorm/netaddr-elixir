@@ -3,7 +3,7 @@ defmodule NetAddr.Mixfile do
 
   def project do
     [ app: :netaddr_ex,
-      version: "1.3.1",
+      version: "1.3.2",
       name: "NetAddr",
       source_url: "https://gitlab.com/jonnystorm/netaddr-elixir.git",
       description: description(),
@@ -32,14 +32,13 @@ defmodule NetAddr.Mixfile do
   end
 
   def application do
-    [ applications: [
-        :logger,
-      ]
-    ]
+      [extra_applications: [:logger]]
   end
 
   defp deps do
-    [ {:ex_doc, "~> 0.24", only: :dev, runtime: false},
+    [
+      #{:ex_doc, "~> 0.34", only: :dev, runtime: false},
+      {:ex_doc, "~> 0.34"}
     ]
   end
 
